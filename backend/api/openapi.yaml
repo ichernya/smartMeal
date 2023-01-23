@@ -1,0 +1,13 @@
+#
+#   API for SmartMeals
+#
+
+openapi: "3.0.3"
+
+info: 
+  description: backend
+  version: 0.1.0
+  title: SmartMeals
+
+servers:
+  - url: http://localhost:3010/v0
