@@ -1,22 +1,23 @@
 ::-webkit-scrollbar {
-  width: 0px;
+    width: 0px;
 }
 
 .container {
-  display: flex;
-  overflow-x: scroll;
-  width: 100%;
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    flex-wrap: nowrap !important;
 }
 
 .card {
-  flex-shrink: 0;
-  width: 175px;
-  height: 100%;
-  border-radius: 10px;
-  margin-left: 10px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+    flex-shrink: 0;
+    width: 175px;
+    height: 100%;
+    border-radius: 10px;
+    margin-left: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .rightBorder {
@@ -44,11 +45,28 @@
     border-style: solid;
 }
 
-.desktopCard {
-    width: 175px;
+.cardWidth {
+    width: 157px;
 }
 
 .desktopGrid {
     justify-content: right;
+}
+
+.margins {
+    margin: 0;
+}
+
+#wrapping {
+    flex-wrap: nowrap !important;
+}
+
+.menu {
+    margin-right: 75px !important;
+    position: relative;
+    display: flex !important;
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    height: 175px;
 }
 
