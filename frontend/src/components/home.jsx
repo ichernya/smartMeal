@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -10,7 +11,6 @@ import {useDimensions} from './dimensions.jsx';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import ListSubheader from '@mui/material/ListSubheader';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import './Home.css';
@@ -109,11 +109,12 @@ const TODOtempdate = {
 };
 
 const TODOfood = [
-    {'name': 'something', 'ingredients': 'food'},
-    {'name': 'something else', 'ingredients': 'water'},
-    {'name': 'nothing', 'ingredients': 'air'},
-]
+  {'name': 'something', 'ingredients': 'food'},
+  {'name': 'something else', 'ingredients': 'water'},
+  {'name': 'nothing', 'ingredients': 'air'},
+];
 
+// eslint-disable-next-line require-jsdoc
 function Calendar(props) {
   const {width} = useDimensions();
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
@@ -130,22 +131,21 @@ function Calendar(props) {
             <Item> {day} </Item>
             <div className='bottomBorder'/>
             <Item>
-              {TODOtempdate[day.toLowerCase()].map((food, ind) =>
-                <div>
+              {TODOtempdate[day.toLowerCase()].map((food, ind) => {
+                return <div>
                   <Card className='wholeBorder cardWidth'>
                     <CardHeader
-                      title={food['name']}
-                    />
+                      title={food['name']} />
                     <CardMedia
                       component="img"
                       image={food['img'] ?
                         food['img'] : require('../assets/ass.png')}
                       alt="Paella dish"
-                      sx={{height: '93px', width: '157px'}}
-                    />
+                      sx={{height: '93px', width: '157px'}} />
                   </Card>
-                  <br hidden={ind === TODOtempdate['mon'].length - 1}/>
-                </div>,
+                  <br hidden={ind === TODOtempdate['mon'].length - 1} />
+                </div>;
+              },
               )}
             </Item>
           </Grid>
@@ -156,13 +156,16 @@ function Calendar(props) {
 }
 
 
+// eslint-disable-next-line require-jsdoc
 function Toolbar(props) {
-    return (
-        <div style={{width: '100%', backgroundColor: 'red', height: '50px', marginTop: '50px'}}/>
-    )
+  return (
+    <div style={{width: '100%', backgroundColor: 'red',
+      height: '50px', marginTop: '50px'}}/>
+  );
 }
 
 
+// eslint-disable-next-line require-jsdoc
 function Menu(props) {
   const {width} = useDimensions();
   return (
@@ -174,7 +177,7 @@ function Menu(props) {
       <ImageList className='menu'
         style={{
           marginLeft: (width - 1218 > 0 ?
-            `${width - 1218}px` : '15px')
+            `${width - 1218}px` : '15px'),
         }}
       >
         {itemData.map((item) => (
@@ -191,7 +194,7 @@ function Menu(props) {
               subtitle={item.author}
               actionIcon={
                 <IconButton
-                  sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                  sx={{color: 'rgba(255, 255, 255, 0.54)'}}
                   aria-label={`info about ${item.title}`}
                 >
                   <InfoIcon />
@@ -202,10 +205,11 @@ function Menu(props) {
         ))}
       </ImageList>
     </Grid>
-  )
+  );
 }
 
 
+// eslint-disable-next-line require-jsdoc
 function Homepage(props) {
   const currentDay = new Date();
   const dateOffset = currentDay.getDay();
