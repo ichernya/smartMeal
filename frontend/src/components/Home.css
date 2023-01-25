@@ -1,0 +1,72 @@
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+.container {
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    flex-wrap: nowrap !important;
+}
+
+.card {
+    flex-shrink: 0;
+    width: 175px;
+    height: 100%;
+    border-radius: 10px;
+    margin-left: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.rightBorder {
+    border: 0px;
+    border-right: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.food {
+    max-width: fit-content !important;
+}
+
+.bottomBorder {
+    border: 0px;
+    border-bottom: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.wholeBorder {
+    border: 0.5px;
+    border-right: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.cardWidth {
+    width: 157px;
+}
+
+.desktopGrid {
+    justify-content: right;
+}
+
+.margins {
+    margin: 0;
+}
+
+#wrapping {
+    flex-wrap: nowrap !important;
+}
+
+.menu {
+    margin-right: 75px !important;
+    position: relative;
+    display: flex !important;
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    height: 175px;
+}
+
