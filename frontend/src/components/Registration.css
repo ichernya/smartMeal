@@ -1,0 +1,9 @@
+#padder {
+  height: 20vh;
+}
+
+#registrationBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
