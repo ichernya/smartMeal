@@ -11,3 +11,21 @@ info:
 
 servers:
   - url: http://localhost:3010/v0
+
+paths:
+  /test:
+    get:
+      description: Test Endpoint
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('swagger-ui-express')
 const app = require('./app.js');
 
 app.listen(3010, () => {
