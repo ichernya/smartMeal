@@ -1,26 +1,24 @@
-import logo from './logo.svg';
+
+// eslint-disable-next-line no-unused-vars
+import {BrowserRouter, Route, Routes, Navigate, Outlet} from 'react-router-dom';
+import DimensionsProvider from './components/dimensions.jsx';
+import Homepage from './components/Home.jsx';
 import './App.css';
 // import Login from './components/Login.jsx';
 import Registration from './components/Registration.jsx';
+// eslint-disable-next-line require-jsdoc
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Registration/>
+      <DimensionsProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path={'/week'} exact element={<Homepage/>}/>
+          </Routes>
+        </BrowserRouter>
+      </DimensionsProvider>
     </div>
   );
 }
-
 export default App;
