@@ -1,0 +1,46 @@
+#grid_Login {
+  right: 0;
+  height: 100vh;
+  position: absolute;
+}
+#box_login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#padder {
+  min-height: 20vh;
+}
+#padder1 {
+  min-height: 2vh;
+}
+#email_form {
+  margin-top: 8;
+  margin-bottom: 8;
+  margin-left: 4;
+  margin-right: 4;
+  width: 80%;
+}
+
+#aboutUs {
+  margin-top: 25vh;
+  font-weight: bold;
+}
+#us {
+  margin-top: 3vh;
+}
+#whatUsDo {
+  margin-top: 10vh;
+  font-weight: bold;
+}
+#usDo {
+  margin-top: 3vh;
+}
+
+
+@media (max-width: 599px) {
+  #grid_About {
+    display: none;
+  }
+
+}
