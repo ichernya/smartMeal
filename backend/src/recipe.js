@@ -1,11 +1,17 @@
 const {Pool} = require('pg');
 
+const user = "postgres";
+    const host = "test";
+    const database = "dev";
+    const password = "pass"; 
+    const port = "5432";
+
 const pool = new Pool({
     host: 'localhost',
-    port: 5432,
-    database: process.env.POSTGRES_DB,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
+    port: port,
+    database: database,
+    user: host,
+    password: password,
 });
 
 // for pulling the recipe to display dishname and ingredients 

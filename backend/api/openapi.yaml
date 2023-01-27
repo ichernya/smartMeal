@@ -97,7 +97,6 @@ components:
           type: string
 
     recipes: 
-      type: object
       items:
         $ref: '#/components/schemas/recipe'
 
@@ -106,7 +105,7 @@ components:
         recipeid:
           type: integer
         dishname:
-          type: integer
+          type: string
         ingredients:
           type: array
           items:
