@@ -11,7 +11,6 @@
 
 .card {
     flex-shrink: 0;
-    width: 175px;
     height: 100%;
     border-radius: 10px;
     margin-left: 10px;
@@ -45,10 +44,6 @@
     border-style: solid;
 }
 
-.cardWidth {
-    width: 157px;
-}
-
 .desktopGrid {
     justify-content: right;
 }
@@ -67,6 +62,14 @@
     display: flex !important;
     overflow-x: scroll;
     flex-wrap: nowrap;
-    height: 175px;
+    height: 100%;
+}
+
+.stillImg {
+    overflow-y: unset !important;
+}
+
+.verticalScroll {
+    overflow-y: scroll;
 }
 
