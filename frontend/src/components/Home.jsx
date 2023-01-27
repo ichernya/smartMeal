@@ -101,21 +101,21 @@ const Item = styled(Paper)(({theme}) => ({
 // eslint-disable-next-line require-jsdoc
 function Calendar(props) {
   const [TODOtempdate, setPlan] = React.useState({
-      'mon': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'tues': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'wed': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'thurs': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'fri': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'sat': [{'name': 'test', 'img': ''},
-        {'name': 'temp', 'img': ''}, {'name': 'temp', 'img': ''}],
-      'sun': [{'name': 'test', 'img': ''},
-        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
-    },
+    'mon': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'tues': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'wed': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'thurs': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'fri': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'sat': [{'name': 'test', 'img': ''},
+      {'name': 'temp', 'img': ''}, {'name': 'temp', 'img': ''}],
+    'sun': [{'name': 'test', 'img': ''},
+      {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+  },
   );
   const {width} = useDimensions();
   const {select, food} = props;
@@ -167,25 +167,26 @@ function Calendar(props) {
                       }}
                       onClick={() => chooseFood(dayLower, ind)}
                     >
-                    <ImageListItem>
-                      <img
-                        component="img"
-                        src={`${image}?w=248&fit=crop&auto=format`}
-                        srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        alt={food['name']}
-                        loading="lazy"
-                        style={{
-                          width: `${cardSize}px`,
-                          height: `${cardSize}px`,
-                        }}
-                      />
-                      <ImageListItemBar
-                        title={food['name']}
-                        style={{height: '20px'}}
-                      />
-                    </ImageListItem>
-                  </ImageList>
-                </div>);
+                      <ImageListItem>
+                        <img
+                          component="img"
+                          src={`${image}?w=248&fit=crop&auto=format`}
+                          // eslint-disable-next-line max-len
+                          srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                          alt={food['name']}
+                          loading="lazy"
+                          style={{
+                            width: `${cardSize}px`,
+                            height: `${cardSize}px`,
+                          }}
+                        />
+                        <ImageListItemBar
+                          title={food['name']}
+                          style={{height: '20px'}}
+                        />
+                      </ImageListItem>
+                    </ImageList>
+                  </div>);
               })}
             </Item>
           </Grid>
@@ -283,7 +284,7 @@ function Homepage(props) {
     <div>
       <div style={{backgroundColor: 'red'}}>
         <h1>
-            {WEEK}
+          {WEEK}
         </h1>
       </div>
       <Box sx={{flexGrow: 1}}>
