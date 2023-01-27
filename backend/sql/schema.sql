@@ -1,18 +1,18 @@
 DROP TABLE IF EXISTS recipes;
 
 CREATE TABLE recipes(
-    recipeid int NOT NULL AUTO_INCREMENT,
+    recipeid SERIAL UNIQUE NOT NULL,
     dishname VARCHAR(32),
     ingredients text[]
     );
 
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
-    userid int NOT NULL AUTO_INCREMENT,
+    userid SERIAL UNIQUE NOT NULL,
     username VARCHAR(32) NOT NULL,
     passwrd VARCHAR(32) NOT NULL,
-    PRIMARY KEY (userid),
+    PRIMARY KEY (userid)
     );
 
 DROP TABLE IF EXISTS meals;
@@ -20,10 +20,10 @@ DROP TABLE IF EXISTS meals;
 CREATE TABLE meals(
     mealsid int,
     recipeid int,
-    day DATETIME,
-    FOREIGN KEY meals(recipeid) REFERENCES recipes(recipeid),
-    FOREIGN KEY meals(mealsid) REFERENCES user(userid)
-)
+    day timestamp,
+    FOREIGN KEY (recipeid) REFERENCES recipes(recipeid),
+    FOREIGN KEY (mealsid) REFERENCES users(userid)
+);
 
 /*
 Every user has an id used to match meals object with same id

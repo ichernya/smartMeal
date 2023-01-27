@@ -13,19 +13,120 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
-  /test:
+  /recipes:
     get:
-      description: Test Endpoint
+      description: returns all recipes
       responses:
         200:
-          description: Successful
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TestResponse'
+                $ref: '#/components/schemas/recipes'
         default:
-          description: unexpected error
+          description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /meals:
+    put:
+      description: add a meal to a user with date and userid
+      requestBody:
+        description: userid date
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putMealToUser'
+      responses:
+        201:
+          description: created
+        404:
+          description: error
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      description: retrieve meals that should be displayed on that date
+      parameters:
+        - in: query
+          name: mealsid
+          schema: 
+            type: integer
+          required: true
+          description: mealsid
+        - in: query
+          name: day
+          schema:
+            type: integer
+          required: true
+          description: day
+      requestBody:
+        description: mealsid day
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getMeal'
+      responses:
+        200: 
+          description: OK
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    recipes: 
+      type: object
+      items:
+        $ref: '#/components/schemas/recipe'
+
+    recipe:
+      properties:
+        recipeid:
+          type: integer
+        dishname:
+          type: integer
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+    
+    putMealToUser:
+      properties:
+        userid:
+          type: integer
+        date:
+          type: string
+        dishname:
+          type: string
+        recipeid:
+          type: integer
+      
+    getMeal:
+      properties:
+        userid:
+          type: integer
+        date:
+          type: string

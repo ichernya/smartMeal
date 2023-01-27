@@ -1,3 +1,4 @@
+
 const {Pool} = require('pg');
 
 const pool = new Pool({
@@ -14,14 +15,22 @@ const pool = new Pool({
 //
 // need to send back to frontend;
 //      all meals saved on that day
-const pullFood = async ( userid, date ) //=> {
-    
-    //return ret;
-//}
+const pullFood = async ( mealsid, day ) => {
+    const select = 'SELECT * FROM meals WHERE mealsid = $1, AND day = $2'
+    const query = {
+        text: select,
+        values: [ mealsid, day ]
+    }
+    return ret;
+}
 
 // for adding a meal to a specific date
 // need to recieve the userid, the meal, and the date they are adding to
-const addFood = async ( userid, date, dishname ) //=> {
-
-    //await pool
-//}
+const addFood = async ( userid, date, dishname, recipeid) => {
+    const insert = 'INSERT INTO meals(userid, date, dishname, recipeid) VALUES ($1, $2, $3, $4)'
+    const query = {
+        text: insert,
+        values: [ userid, date, dishname, recipeid ]
+    }
+    await pool.query(query);
+}
