@@ -98,26 +98,46 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 
-const TODOtempdate = {
-  'mon': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'tues': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'wed': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'thurs': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'fri': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'sat': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-  'sun': [{'name': 'test', 'img': ''}, {'name': 'helo', 'img': ''}],
-};
-
-const TODOfood = [
-  {'name': 'something', 'ingredients': 'food'},
-  {'name': 'something else', 'ingredients': 'water'},
-  {'name': 'nothing', 'ingredients': 'air'},
-];
-
 // eslint-disable-next-line require-jsdoc
 function Calendar(props) {
+  const [TODOtempdate, setPlan] = React.useState({
+      'mon': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'tues': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'wed': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'thurs': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'fri': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'sat': [{'name': 'test', 'img': ''},
+        {'name': 'temp', 'img': ''}, {'name': 'temp', 'img': ''}],
+      'sun': [{'name': 'test', 'img': ''},
+        {'name': 'helo', 'img': ''}, {'name': 'temp', 'img': ''}],
+    },
+  );
   const {width} = useDimensions();
+  const {select, food} = props;
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+  let cardSize = width >= 1200 ? (width * .11) : 175;
+
+  const chooseFood = (day, time) => {
+    if (food) {
+      const meal = [...TODOtempdate[day]];
+      meal[time] = {
+        'name': food['title'],
+        'img': food['img'],
+      };
+      setPlan({...TODOtempdate, [day]: meal});
+      select(null);
+    }
+  };
+
+  React.useEffect(() => {
+    cardSize = width >= 1200 ? (width * .11) : 175;
+  }, [width]);
+
   return (
     <Grid
       container
@@ -130,23 +150,43 @@ function Calendar(props) {
           <Grid item xs={6} md={1.5} className='food rightBorder'>
             <Item> {day} </Item>
             <div className='bottomBorder'/>
-            <Item>
+            <Item
+              className={width < 1200 ? 'verticalScroll' : ''}
+              style={{height: (width < 1200 ? (cardSize * 2 + 24) : '')}}
+            >
               {TODOtempdate[day.toLowerCase()].map((food, ind) => {
-                return <div>
-                  <Card className='wholeBorder cardWidth'>
-                    <CardHeader
-                      title={food['name']} />
-                    <CardMedia
-                      component="img"
-                      image={food['img'] ?
-                        food['img'] : require('../assets/ass.png')}
-                      alt="Paella dish"
-                      sx={{height: '93px', width: '157px'}} />
-                  </Card>
-                  <br hidden={ind === TODOtempdate['mon'].length - 1} />
-                </div>;
-              },
-              )}
+                const dayLower = day.toLowerCase();
+                const image = food['img'] ?
+                  food['img'] : require('../assets/ass.png');
+                return (
+                  <div>
+                    <ImageList
+                      className='wholeBorder stillImg'
+                      sx={{
+                        width: `${cardSize}px`,
+                      }}
+                      onClick={() => chooseFood(dayLower, ind)}
+                    >
+                    <ImageListItem>
+                      <img
+                        component="img"
+                        src={`${image}?w=248&fit=crop&auto=format`}
+                        srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                        alt={food['name']}
+                        loading="lazy"
+                        style={{
+                          width: `${cardSize}px`,
+                          height: `${cardSize}px`,
+                        }}
+                      />
+                      <ImageListItemBar
+                        title={food['name']}
+                        style={{height: '20px'}}
+                      />
+                    </ImageListItem>
+                  </ImageList>
+                </div>);
+              })}
             </Item>
           </Grid>
         </div>,
@@ -168,6 +208,16 @@ function Toolbar(props) {
 // eslint-disable-next-line require-jsdoc
 function Menu(props) {
   const {width} = useDimensions();
+  const {select} = props;
+  const MARGIN = 112;
+  let cardSize = width >= 1200 ? (width * .12) : 175;
+  let menuSize = width >= 1200 ? (width * .18) : 175;
+
+  React.useEffect(() => {
+    cardSize = width >= 1200 ? (width * .12) : 175;
+    menuSize = width >= 1200 ? (width * .18) : 175;
+  }, [width]);
+
   return (
     <Grid
       container
@@ -176,8 +226,8 @@ function Menu(props) {
     >
       <ImageList className='menu'
         style={{
-          marginLeft: (width - 1218 > 0 ?
-            `${width - 1218}px` : '15px'),
+          marginLeft: (width - (cardSize * 7) - MARGIN> 0 ?
+            `${width - (cardSize * 7) - MARGIN}px` : '15px'),
         }}
       >
         {itemData.map((item) => (
@@ -187,7 +237,11 @@ function Menu(props) {
               srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
               alt={item.title}
               loading="lazy"
-              style={{width: '175px'}}
+              onClick={() => select(item)}
+              style={{
+                width: `${menuSize}px`,
+                height: `${menuSize}px`,
+              }}
             />
             <ImageListItemBar
               title={item.title}
@@ -211,6 +265,7 @@ function Menu(props) {
 
 // eslint-disable-next-line require-jsdoc
 function Homepage(props) {
+  const [selectedFood, setSelected] = React.useState(null);
   const currentDay = new Date();
   const dateOffset = currentDay.getDay();
 
@@ -220,21 +275,22 @@ function Homepage(props) {
   const endWeek = new Date();
   endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
 
+  const WEEK = `Week:\t${startWeek.getMonth() + 1}` +
+    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
+    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+
   return (
     <div>
       <div style={{backgroundColor: 'red'}}>
         <h1>
-          {'Week:\t'}
-          {startWeek.getMonth() + 1}
-          /{startWeek.getDate()}/{startWeek.getFullYear()}{' - '}
-          {endWeek.getMonth() + 1}/{endWeek.getDate()}/{endWeek.getFullYear()}
+            {WEEK}
         </h1>
       </div>
       <Box sx={{flexGrow: 1}}>
-        <Calendar/>
+        <Calendar select={setSelected} food={selectedFood}/>
       </Box>
       <Toolbar/>
-      <Menu/>
+      <Menu select={setSelected}/>
     </div>
   );
 }
