@@ -55,27 +55,18 @@ paths:
       description: retrieve meals that should be displayed on that date
       parameters:
         - in: query
-          name: mealsid
-          schema: 
-            type: integer
-          required: true
-          description: mealsid
-        - in: query
-          name: day
+          name: tim
           schema:
-            type: integer
+            type: string
           required: true
           description: day
-      requestBody:
-        description: mealsid day
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/getMeal'
       responses:
         200: 
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getMeal'
         default:
           description: Unexpected Error
           content:
@@ -125,7 +116,7 @@ components:
       
     getMeal:
       properties:
-        userid:
+        recipeid:
           type: integer
-        date:
+        tim:
           type: string

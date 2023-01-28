@@ -9,6 +9,7 @@ const OpenApiValidator = require('express-openapi-validator');
 
 
 const recipe = require('./recipe');
+const meal = require('./meal');
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,7 @@ app.use(
 );
 
 app.get('/v0/recipes', recipe.getAll);
+app.get('/v0/meals', meal.pullFoodDay);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

@@ -1,13 +1,19 @@
-
 const {Pool} = require('pg');
+
+const user = "test";
+    const host = "localhost";
+    const database = "dev";
+    const password = "pass"; 
+    const port = "5432";
 
 const pool = new Pool({
     host: 'localhost',
-    port: 5432,
-    database: process.env.POSTGRES_DB,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
+    port: port,
+    database: database,
+    user: user,
+    password: password,
 });
+
 // for pulling what meal to display on what date, 
 // need to recieve from frontend;
 //      user
@@ -15,13 +21,20 @@ const pool = new Pool({
 //
 // need to send back to frontend;
 //      all meals saved on that day
-const pullFood = async ( mealsid, day ) => {
-    const select = 'SELECT * FROM meals WHERE mealsid = $1, AND day = $2'
+const pullFood = async ( tim ) => {
+    const select = 'SELECT * FROM meals WHERE tim >= $1';
     const query = {
         text: select,
-        values: [ mealsid, day ]
+        values: [ tim ]
     }
-    return ret;
+    const {rows} = await pool.query(query);
+    return rows;
+}
+
+exports.pullFoodDay = async (req, res) => {
+    const food = await pullFood();
+    if (food) {res.status(200).json(food);}
+    else {res.status(404).send();}
 }
 
 // for adding a meal to a specific date
@@ -34,3 +47,4 @@ const addFood = async ( userid, date, dishname, recipeid) => {
     }
     await pool.query(query);
 }
+

@@ -4,7 +4,8 @@ INSERT INTO recipes(dishname, ingredients) VALUES ('Chicken Parmesan', '{"Chicke
 
 DELETE FROM users;
 
-/*INSERT INTO users(username, passwrd) VALUES ('admin', 'password')
-INSERT INTO users(username, passwrd) VALUES ('user', 'drowssap');*/
+INSERT INTO users(username, passwrd) VALUES ('admin', 'password');
+INSERT INTO users(username, passwrd) VALUES ('user', 'drowssap');
 
 DELETE FROM meals;
+INSERT INTO meals(mealsid, recipeid, tim) VALUES (1, 1, '2023-01-19');

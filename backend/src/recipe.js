@@ -1,7 +1,7 @@
 const {Pool} = require('pg');
 
-const user = "postgres";
-    const host = "test";
+const user = "test";
+    const host = "localhost";
     const database = "dev";
     const password = "pass"; 
     const port = "5432";
@@ -10,13 +10,13 @@ const pool = new Pool({
     host: 'localhost',
     port: port,
     database: database,
-    user: host,
+    user: user,
     password: password,
 });
 
 // for pulling the recipe to display dishname and ingredients 
 const pullAllRecipe = async () => {
-    const select = 'SELECT * FROM recipes'
+    const select = 'SELECT * FROM recipes';
     const query = {
         text: select,
         values: [ ]
