@@ -1,0 +1,22 @@
+.tools {
+    background-color: red;
+    height: 50px;
+    margin-top: 50px;
+    padding: 0 !important;
+    float: right;
+}
+
+#search {
+    width: 50%;
+}
+
+#cancelSearch {
+    z-index: 10000;
+    right: 0px;
+    position: absolute;
+}
+
+.searchInput {
+    width: 100%;
+}
+
