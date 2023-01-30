@@ -1,18 +1,14 @@
 #grid_Login {
-  right: 0;
-  height: 100vh;
+  margin-top: 4rem;
+  right: 5rem;
   position: absolute;
+  min-height: 750px;
 }
 #box_login {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-#padder {
-  min-height: 20vh;
-}
-#padder1 {
-  min-height: 2vh;
+  width: 456px;
 }
 #email_form {
   margin-top: 8;
@@ -21,26 +17,68 @@
   margin-right: 4;
   width: 80%;
 }
-
-#aboutUs {
-  margin-top: 25vh;
-  font-weight: bold;
-}
-#us {
-  margin-top: 3vh;
-}
-#whatUsDo {
-  margin-top: 10vh;
-  font-weight: bold;
-}
-#usDo {
-  margin-top: 3vh;
+#projectName {
+  font-family: cursive, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  font-style: italic;
+  font-variant: normal;
+  line-height: 30px; 
 }
 
-
-@media (max-width: 599px) {
+#signIn {
+  font-family: Postoni, garamond, serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 4rem;
+  margin-bottom: 2vh;
+}
+#or {
+  font-family: Postoni, garamond, serif;
+}
+@media (max-width: 600px) {
   #grid_About {
     display: none;
   }
+  #grid_Login {
+    margin-top: 0;
+    margin-bottom: 0;
+    right: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+  #box_login {
+    max-width: 100%;
+  }
+} 
+.projectPad {
+  margin-top: 40px;
+}
 
+.error {
+  color: red;
+  align-content: flex-start;
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+#Fab_SignIn {
+  text-transform: none !important;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#Fab_SignIn_Others {
+  text-transform: none !important;
+  font-size: 16px;
+}
+
+#padder1 {
+  padding-top: 1rem;
+}
+#extra {
+  padding-top: 1rem;
 }
