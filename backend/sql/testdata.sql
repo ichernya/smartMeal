@@ -8,4 +8,4 @@ INSERT INTO users(username, passwrd) VALUES ('admin', 'password');
 INSERT INTO users(username, passwrd) VALUES ('user', 'drowssap');
 
 DELETE FROM meals;
-INSERT INTO meals(mealsid, recipeid, tim) VALUES (1, 1, '2023-01-19');
+INSERT INTO meals(mealsid, recipeid, dayof) VALUES (1, 1, '2023-01-19');

@@ -21,18 +21,19 @@ const pool = new Pool({
 //
 // need to send back to frontend;
 //      all meals saved on that day
-const pullFood = async ( tim ) => {
-    const select = 'SELECT * FROM meals WHERE tim >= $1';
+const pullFood = async ( dayof , mealsid ) => {
+
+    const select = 'SELECT * FROM meals WHERE (dayof = $1) AND (mealsid = $2)';
     const query = {
         text: select,
-        values: [ tim ]
+        values: [ dayof, mealsid ]
     }
     const {rows} = await pool.query(query);
     return rows;
 }
 
 exports.pullFoodDay = async (req, res) => {
-    const food = await pullFood();
+    const food = await pullFood(req.query.dayof, req.query.mealsid);
     if (food) {res.status(200).json(food);}
     else {res.status(404).send();}
 }
