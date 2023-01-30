@@ -1,0 +1,27 @@
+.menu {
+    position: relative;
+    display: flex !important;
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    height: 100%;
+}
+
+#btnList {
+    padding: 10px;
+    width: 100px;
+}
+
+.btn {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+#selected {
+    opacity: 50%;
+}
+
+#unselected {
+    opacity: 100%;
+}
+
+
