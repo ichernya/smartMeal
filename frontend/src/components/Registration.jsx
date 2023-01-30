@@ -14,9 +14,9 @@ const SignUp = () => {
   return (
     <Box>
       <div id="projectName">
-        <div id="project">
+        <a id="project" href="/">
               SmartMeal
-        </div>
+        </a>
       </div>
       <Divider style={{width: '100%'}} />
       <Container component="main" maxWidth="xs">
@@ -100,7 +100,7 @@ const SignUp = () => {
               href=""
               id="Fab_SignUp"
             >
-              Sign up
+              Sign Up
             </Fab>
             <Divider id="bottomPadder" />
             <Grid container justifyContent="center">

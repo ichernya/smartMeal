@@ -43,9 +43,9 @@ const Login = () => {
         id="grid_Login">
         <Box id="box_login">
           <div variant="dense" id="projectName" className=''>
-            <div id="project">
+            <a id="project" href='/'>
               SmartMeal
-            </div>
+            </a>
           </div>
           <Divider style={{width: '80%'}} />
           <Box component="form" noValidate id="email_form">
@@ -80,7 +80,7 @@ const Login = () => {
             <Fab
               variant="extended"
               fullWidth
-              size="small"
+              size="medium"
               color='primary'
               sx={{mt: 3, mb: 2, width: '100%'}}
               onClick={submitLoginForm}
@@ -93,7 +93,7 @@ const Login = () => {
             </div>
             <Fab
               variant="extended"
-              size="small"
+              size="medium"
               fullWidth
               sx={{mt: 3, width: '100%'}}
               id="Fab_SignIn_Others"
@@ -102,7 +102,7 @@ const Login = () => {
             </Fab>
             <Fab
               variant="extended"
-              size="small"
+              size="medium"
               fullWidth
               sx={{mt: 4, mb: 2, width: '100%'}}
               id="Fab_SignIn_Others"
