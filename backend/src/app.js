@@ -31,6 +31,7 @@ app.use(
 
 app.get('/v0/recipes', recipe.getAll);
 app.get('/v0/meals', meal.pullFoodDay);
+app.post('/v0/meals', meal.addFoodUser);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

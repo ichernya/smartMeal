@@ -40,12 +40,17 @@ exports.pullFoodDay = async (req, res) => {
 
 // for adding a meal to a specific date
 // need to recieve the userid, the meal, and the date they are adding to
-const addFood = async ( userid, date, dishname, recipeid) => {
-    const insert = 'INSERT INTO meals(userid, date, dishname, recipeid) VALUES ($1, $2, $3, $4)'
+const addFood = async ( mealsid, recipeid, dayof) => {
+    const insert = 'INSERT INTO meals(mealsid, recipeid, dayof) VALUES ($1, $2, $3)'
     const query = {
         text: insert,
-        values: [ userid, date, dishname, recipeid ]
+        values: [ mealsid, recipeid, dayof ]
     }
     await pool.query(query);
 }
 
+
+exports.addFoodUser = async (req, res) => {
+    await addFood(req.body.mealsid, req.body.recipeid, req.body.dayof);
+    res.status(201).send(req.body);
+}
