@@ -2,96 +2,119 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 
 import './Registration.css';
 
-// eslint-disable-next-line require-jsdoc
 const SignUp = () => {
   return (
-    <Grid container component="main" sx={{height: '100vh'}} direction="row">
-      <Grid item xs={12}
-        component={Paper} elevation={6} square alignItems>
-        <Box>
-          <Toolbar variant="dense" id="projectName" className='projectPad'>
-            <div>
+    <Box>
+      <div id="projectName">
+        <div id="project">
               SmartMeal
-            </div>
-          </Toolbar>
-          <Divider style={{width: '80%'}} />
-          <Box component="form" noValidate id="email_form">
-            <div id="signIn">
-              Sign in
-            </div>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
-            >
-                Sign In
-            </Button>
-            <div id="or">
-              <Divider spacing={1}>or</Divider>
-            </div>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
-            >
-                SIGN IN WITH GOOGLE
-            </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
-            >
-                SIGN IN WITH APPLE
-            </Button>
-            <Divider/>
-            <Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                    Forgot password?
-                </Link>
+        </div>
+      </div>
+      <Divider style={{width: '100%'}} />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box id="registrationBox">
+          <div id="signUp">
+              Sign up
+          </div>
+          <Box component="form" noValidate sx={{mt: 3}}>
+            <Grid container spacing={2}>
+              <Grid item xs={6} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                />
               </Grid>
+              <Grid item xs={6} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="confirm email"
+                  label="Confirm Email Address"
+                  name="confirm email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirm password"
+                  label="Confirm Password"
+                  type="confirm password"
+                  id="confirm password"
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{mt: 3, mb: 2}}
+            >
+              Sign Up
+            </Button>
+            <Divider id="bottomPadder" />
+            <Grid container justifyContent="center">
               <Grid item>
-                <Link href="#" variant="body2">
-                  {'Don\'t have an account? Sign Up'}
+                <span>
+                  Already have an account?
+                </span>
+                &nbsp;
+                <Link href="./login" id="link_c">
+                  Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-      </Grid>
-    </Grid>
+      </Container>
+    </Box>
   );
 };
+
 
 export default SignUp;

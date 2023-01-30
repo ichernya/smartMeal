@@ -8,6 +8,7 @@
 	"dependencies": {
 		"@emotion/react": "*",
 		"@emotion/styled": "*",
+		"@material-ui/icons": "^4.11.3",
 		"@mui/icons-material": "*",
 		"@mui/material": "*",
 		"emoji-picker-react": "*",

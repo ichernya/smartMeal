@@ -16,4 +16,28 @@
   width: 80%;
 }
 
+#signUp {
+  font-family: Postoni, garamond, serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 4rem;
+  margin-bottom: 2vh;
+}
 
+#project {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  justify-content: center;
+  display: flex;
+}
+
+#bottomPadder {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+#link_c {
+  color: black;
+}
