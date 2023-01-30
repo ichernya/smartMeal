@@ -1,15 +1,14 @@
 #grid_Login {
   margin-top: 4rem;
-  margin-bottom: 1.5em;
   right: 5rem;
   position: absolute;
-  min-height: 850px;
+  min-height: 750px;
 }
 #box_login {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 456px;
+  width: 456px;
 }
 #email_form {
   margin-top: 8;
@@ -19,23 +18,12 @@
   width: 80%;
 }
 #projectName {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 30px; font-style: italic;
-  font-variant: normal; font-weight: 700;
-  line-height: 24px; } h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px; font-style: normal; font-variant: normal;
+  font-family: cursive, Helvetica, Arial, sans-serif;
   font-weight: 700;
-  line-height: 15.4px; } p { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 30px; font-style: italic;
+  font-size: 30px;
+  font-style: italic;
   font-variant: normal;
-  font-weight: 700; line-height: 30px; } blockquote { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 21px; font-style: normal;
-  font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px; font-style: normal;
-  font-variant: normal;
-  font-weight: 400;
-  line-height: 18.5714px;
-
+  line-height: 30px; 
 }
 
 #signIn {
@@ -74,4 +62,23 @@
   align-content: flex-start;
   position: relative;
   display: flex;
+  width: 100%;
+}
+
+#Fab_SignIn {
+  text-transform: none !important;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#Fab_SignIn_Others {
+  text-transform: none !important;
+  font-size: 16px;
+}
+
+#padder1 {
+  padding-top: 1rem;
+}
+#extra {
+  padding-top: 1rem;
 }

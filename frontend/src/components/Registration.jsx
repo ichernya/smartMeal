@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -50,6 +50,7 @@ const SignUp = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  margin="normal"
                   required
                   fullWidth
                   id="email"
@@ -69,6 +70,7 @@ const SignUp = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  margin="normal"
                   required
                   fullWidth
                   name="password"
@@ -89,14 +91,17 @@ const SignUp = () => {
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
+            <Fab
+              variant="extended"
               fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
+              size="medium"
+              color='primary'
+              sx={{mt: 3, width: '100%'}}
+              href=""
+              id="Fab_SignUp"
             >
-              Sign Up
-            </Button>
+              Sign up
+            </Fab>
             <Divider id="bottomPadder" />
             <Grid container justifyContent="center">
               <Grid item>

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Button from '@mui/material/Button';
+import Fab from '@mui/material/Fab';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-
+import BgImg from '../assets/p1t.jpg';
 import './Login.css';
 
 // eslint-disable-next-line require-jsdoc
@@ -30,12 +30,10 @@ const Login = () => {
       <Grid
         item
         xs={false}
-        elevation={5} alignItems
+        sm={12}
+        md={12}
         sx={{
-          backgroundImage: 'url(https://source.unsplash.com/random)',
-          backgroundColor: (t) =>
-            t.palette.mode === 'light' ? t.palette.grey[50] :
-              t.palette.grey[900],
+          backgroundImage: `url(${BgImg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -79,33 +77,40 @@ const Login = () => {
             {status ? <div class='error'>
               Invalid Credentials
             </div> : null}
-            <Button
+            <Fab
+              variant="extended"
               fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
+              size="small"
+              color='primary'
+              sx={{mt: 3, mb: 2, width: '100%'}}
               onClick={submitLoginForm}
+              id="Fab_SignIn"
             >
                 Sign In
-            </Button>
+            </Fab>
             <div id="or">
               <Divider spacing={1}>or</Divider>
             </div>
-            <Button
+            <Fab
+              variant="extended"
+              size="small"
               fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
+              sx={{mt: 3, width: '100%'}}
+              id="Fab_SignIn_Others"
             >
                 Continue with Google
-            </Button>
-            <Button
+            </Fab>
+            <Fab
+              variant="extended"
+              size="small"
               fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
+              sx={{mt: 4, mb: 2, width: '100%'}}
+              id="Fab_SignIn_Others"
             >
                 Continue with Apple
-            </Button>
-            <Divider/>
-            <Grid>
+            </Fab>
+            <Divider id="padder1"/>
+            <Grid id="extra">
               <Grid item>
                 <span>
                 Don't have an account?
