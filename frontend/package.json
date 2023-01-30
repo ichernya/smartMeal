@@ -14,8 +14,9 @@
 		"emoji-picker-react": "*",
 		"prop-types": "*",
 		"react": "*",
+		"react-jsx": "^1.0.0",
 		"react-router": "*",
-		"react-router-dom": "*"
+		"react-router-dom": "^6.7.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "*",

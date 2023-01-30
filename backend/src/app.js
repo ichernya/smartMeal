@@ -7,6 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
+
+const recipe = require('./recipe');
+const meal = require('./meal');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -18,11 +22,24 @@ const apidoc = yaml.load(fs.readFileSync(apiSpec, 'utf8'));
 app.use('/v0/api-docs', swaggerUi.serve, swaggerUi.setup(apidoc));
 
 app.use(
-    OpenApiValidator.middleware({
-      apiSpec: apiSpec,
-      validateRequests: true,
-      validateResponses: true,
-    }),
+  OpenApiValidator.middleware({
+    apiSpec: apiSpec,
+    validateRequests: true,
+    validateResponses: true,
+  }),
 );
+
+app.get('/v0/recipes', recipe.getAll);
+app.get('/v0/recipe', recipe.getOne);
+app.get('/v0/meals', meal.pullFoodDay);
+app.post('/v0/meals', meal.addFoodUser);
+
+app.use((err, req, res, next) => {
+  res.status(err.status).json({
+    message: err.message,
+    errors: err.errors,
+    status: err.status,
+  });
+});
   
-  module.exports = app;
+module.exports = app;
