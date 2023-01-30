@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import {BrowserRouter, Route, Routes, Navigate, Outlet} from 'react-router-dom';
-import DimensionsProvider from './components/dimensions.jsx';
+import DimensionsProvider from './components/DimensionsProvider.jsx';
 import Homepage from './components/Homepage/Home.jsx';
 import Login from './components/Login.jsx';
 import Registration from './components/Registration.jsx';
