@@ -30,6 +30,7 @@ app.use(
 );
 
 app.get('/v0/recipes', recipe.getAll);
+app.get('/v0/recipe', recipe.getOne);
 app.get('/v0/meals', meal.pullFoodDay);
 app.post('/v0/meals', meal.addFoodUser);
 

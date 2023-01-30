@@ -26,12 +26,23 @@ const pullAllRecipe = async () => {
 }
 
 exports.getAll = async (req, res) => {
-    const channels = await pullAllRecipe();
-    if (channels) {res.status(200).json(channels);}
+    const recipe = await pullAllRecipe();
+    if (recipe) {res.status(200).json(recipe);}
     else {res.status(404).send();}
 }
 
-// for pulling the ingredients from a single recipe 
-//const pullIngredients = async () => {
+const pullOneRecipe = async ( recipeid ) => {
+    const select = 'SELECT * FROM recipes WHERE recipeid = $1';
+    const query = {
+        text: select,
+        values: [ recipeid ]
+    }
+    const {rows} = await pool.query(query);
+    return rows;
+}
 
-//}
+exports.getOne = async (req, res) => {
+    const recipe = await pullOneRecipe(req.query.recipeid);
+    if (recipe) {res.status(200).json(recipe);}
+    else {res.status(404).send();}
+}
