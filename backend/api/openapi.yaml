@@ -13,19 +13,146 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
-  /test:
+
+  /recipe:
     get:
-      description: Test Endpoint
+      description: returns one recipe
+      parameters:
+        - in: query
+          name: recipeid
+          schema:
+            type: string
+          required: true
+          description: returns one recipe
       responses:
         200:
-          description: Successful
+          description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TestResponse'
+                $ref: '#/components/schemas/recipe'
         default:
-          description: unexpected error
+          description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  
+  /recipes:
+    get:
+      description: returns all recipes
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipes'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /meals:
+    post:
+      description: add a meal to a user with date and userid
+      requestBody:
+        description: userid date
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putMealToUser'
+      responses:
+        201:
+          description: created meal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putMealToUser'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      description: retrieve meals that should be displayed on that date
+      parameters:
+        - in: query
+          name: dayof
+          schema:
+            type: string
+          required: true
+          description: day
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: mealsid
+      responses:
+        200: 
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getMeal'
+        404:
+          description: wrong date
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    recipes: 
+      items:
+        $ref: '#/components/schemas/recipe'
+
+    recipe:
+      properties:
+        recipeid:
+          type: integer
+        dishname:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+    
+    putMealToUser:
+      properties:
+        mealsid:
+          type: integer
+        recipeid:
+          type: integer
+        dayof:
+          type: string
+      
+    getMeal:
+      properties:
+        recipeid:
+          type: integer
+        mealsid:
+          type: integer
+        dayof:
+          type: string

@@ -1,1 +1,0 @@
-INSERT INTO dummy (created) VALUES (current_timestamp);

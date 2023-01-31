@@ -8,13 +8,15 @@
 	"dependencies": {
 		"@emotion/react": "*",
 		"@emotion/styled": "*",
+		"@material-ui/icons": "^4.11.3",
 		"@mui/icons-material": "*",
 		"@mui/material": "*",
 		"emoji-picker-react": "*",
 		"prop-types": "*",
 		"react": "*",
+		"react-jsx": "^1.0.0",
 		"react-router": "*",
-		"react-router-dom": "*"
+		"react-router-dom": "^6.7.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "*",

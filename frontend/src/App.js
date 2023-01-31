@@ -1,11 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 import {BrowserRouter, Route, Routes, Navigate, Outlet} from 'react-router-dom';
-import DimensionsProvider from './components/dimensions.jsx';
-import Homepage from './components/Home.jsx';
+import DimensionsProvider from './components/DimensionsProvider.jsx';
+import Homepage from './components/Homepage/Home.jsx';
 import Login from './components/Login.jsx';
 import Registration from './components/Registration.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import './App.css';
 
+// eslint-disable-next-line require-jsdoc
 function App() {
   return (
     <div className="App">
@@ -23,4 +25,13 @@ function App() {
   );
 }
 
+const RequireAuth = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user) {
+    return <Navigate to="/login"/>;
+  }
+  return <Outlet/>;
+};
+
 export default App;
+
