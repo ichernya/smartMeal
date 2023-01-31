@@ -1,0 +1,13 @@
+.root{
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  resize: both;
+  overflow: scroll;
+}
+
+#infoSection{
+  font-weight: bold;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 200%
+}

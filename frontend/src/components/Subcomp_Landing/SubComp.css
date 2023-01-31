@@ -1,0 +1,14 @@
+.link {
+  margin: 1rem;
+  text-decoration: none;
+}
+
+.title{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.appBar{
+  background-color: rgba(0,0,0,0); 
+}
