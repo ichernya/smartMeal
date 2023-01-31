@@ -76,6 +76,15 @@ function Tools(props) {
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
+        <IconButton
+          onClick={() => setSearch('')}
+          id='cancelSearch'
+          sx={{
+            visibility: !search ? 'hidden' : '',
+          }}
+        >
+          <CloseIcon/>
+        </IconButton>
         <StyledInputBase
           className='searchInput'
           placeholder="Search…"
