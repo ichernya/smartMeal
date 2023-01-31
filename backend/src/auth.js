@@ -1,11 +1,17 @@
 const {Pool} = require('pg');
 
+const user = "postgres";
+const host = "localhost";
+const database = "dev";
+const password = "postgres";
+const port = "5432";
+
 const pool = new Pool({
   host: 'localhost',
-  port: 5432,
-  database: process.env.POSTGRES_DB,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
+  port: port,
+  database: database,
+  user: user,
+  password: password,
 });
 
 const jwt = require('jsonwebtoken');
@@ -15,7 +21,7 @@ const secrets = require('./secrets');
 
 const selectEmailPassword = async (email) => {
   // const select = 'SELECT email, password FROM member WHERE email= $1';
-  const select = 'SELECT username, passwrd FROM member WHERE username= $1';
+  const select = 'SELECT username, passwrd FROM users WHERE username= $1';
   const query = {
     text: select,
     values: [email],
