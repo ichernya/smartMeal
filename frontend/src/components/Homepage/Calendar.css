@@ -1,0 +1,64 @@
+@media (min-width: 1200px) {
+    .container {
+        justify-content: right;
+    }
+}
+
+@media (max-width: 1199px) {
+    .container {
+        display: flex;
+        overflow-x: scroll;
+        width: 100%;
+        flex-wrap: nowrap !important;
+    }
+}
+
+.imgListBar {
+    height: 20px;
+}
+
+.stillImg {
+    overflow-y: unset !important;
+    border-left: 0;
+    border-right: 0;
+}
+
+.wholeBorder {
+    border: 0.5px;
+    border-right: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.verticalScroll {
+    overflow-y: scroll;
+}
+
+.bottomBorder {
+    border: 0px;
+    border-bottom: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.rightBorder {
+    border: 0px;
+    border-right: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.food {
+    max-width: fit-content !important;
+}
+
+.card {
+    flex-shrink: 0;
+    height: 100%;
+    border-radius: 10px;
+    margin-left: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
