@@ -25,6 +25,7 @@ function App() {
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 const RequireAuth = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {

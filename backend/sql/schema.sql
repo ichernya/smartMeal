@@ -10,8 +10,8 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
     userid SERIAL UNIQUE NOT NULL,
-    username VARCHAR(32) NOT NULL,
-    passwrd VARCHAR(32) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    passwrd VARCHAR(255) NOT NULL,
     PRIMARY KEY (userid)
     );
 
