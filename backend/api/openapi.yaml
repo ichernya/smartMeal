@@ -4,7 +4,7 @@
 
 openapi: "3.0.3"
 
-info: 
+info:
   description: backend
   version: 0.1.0
   title: SmartMeals
@@ -13,6 +13,30 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+
+  /login:
+    post:
+      description: login
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        200:
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /recipe:
     get:
@@ -37,7 +61,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /recipes:
     get:
       description: returns all recipes
@@ -95,7 +119,7 @@ paths:
           required: true
           description: mealsid
       responses:
-        200: 
+        200:
           description: OK
           content:
             application/json:
@@ -123,7 +147,7 @@ components:
         message:
           type: string
 
-    recipes: 
+    recipes:
       items:
         $ref: '#/components/schemas/recipe'
 
@@ -138,7 +162,7 @@ components:
           items:
             type: string
           example: ["str1", "str2", "str3"]
-    
+
     putMealToUser:
       properties:
         mealsid:
@@ -147,7 +171,7 @@ components:
           type: integer
         dayof:
           type: string
-      
+
     getMeal:
       properties:
         recipeid:
@@ -156,3 +180,25 @@ components:
           type: integer
         dayof:
           type: string
+
+    Credentials:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        accessToken:
+          type: string
+      required:
+        - name
+        - accessToken
