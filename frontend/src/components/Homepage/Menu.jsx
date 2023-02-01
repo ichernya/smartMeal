@@ -27,9 +27,14 @@ const Item = styled(Paper)(({theme}) => ({
 
 
 const getRecipes = (setMenu) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
   fetch('http://localhost:3010/v0/recipes', {
+  // fetch('http://localhost:3010/v0/mealWeek?mealsid=1&dayof=2023-01-19', {
     method: 'get',
     headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
   })

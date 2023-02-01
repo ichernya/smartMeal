@@ -39,7 +39,7 @@ const Login = () => {
       })
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
-        history('/week');
+        history('/home');
       }).catch((err) => {
         setStatus(true);
       });
