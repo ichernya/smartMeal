@@ -9,10 +9,37 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InfoIcon from '@mui/icons-material/Info';
+import Stack from '@mui/material/Stack';
+import {styled} from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
 
 import Tools from './Tools.jsx';
 import './Menu.css';
 import './Home.css';
+
+const Item = styled(Paper)(({theme}) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+
+const getRecipes = (setMenu) => {
+  fetch('http://localhost:3010/v0/recipes', {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setMenu([...json]);
+    });
+};
 
 const itemData = [
   {
@@ -94,12 +121,20 @@ function Menu(props) {
   const {width, cardSize, selectedFood, setSelected} =
     React.useContext(props['HomeContext']);
 
+  const [recipes, setMenu] = React.useState([]);
+  const [updated, setUpdated] = React.useState(false);
+
+  if (!updated) {
+    setUpdated(true);
+    getRecipes(setMenu);
+  }
+
   const [chosenFood] = selectedFood || [null, null];
   const MARGIN = 7 * 16;
-  const menuSize = React.useRef(width >= 1200 ? (width * .18) : 175);
+  const menuSize = React.useRef(width >= 1200 ? (width * .13) : 175);
 
   React.useEffect(() => {
-    menuSize.current = width >= 1200 ? (width * .18) : 175;
+    menuSize.current = width >= 1200 ? (width * .13) : 175;
   }, [width]);
 
   const clickItem = (item) => {
@@ -110,6 +145,17 @@ function Menu(props) {
     }
   };
 
+  const topMenu = React.useRef(0);
+  const botMenu = React.useRef(0);
+
+  const handleTopScroll = (scroll) => {
+    botMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
+  const handleBotScroll = (scroll) => {
+    topMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
   return (
     <div>
       <Tools HomeContext={props['HomeContext']}/>
@@ -118,44 +164,105 @@ function Menu(props) {
         spacing={0}
         id='wrapping'
       >
-        <ImageList className='menu'
-          style={{
-            marginLeft: (width - (cardSize.current * 7) - MARGIN > 0 ?
-              `${width - (cardSize.current * 7) - MARGIN}px` : '15px'),
-          }}
-        >
-          {itemData.map((item, ind) => (
-            <ImageListItem
-              className='margins'
-              onClick={() => clickItem(item)}
-              key={item['dishname'] + ind}
+        <Stack className='menu' spacing={0}>
+          <Item
+            style={{height: `${menuSize.current}px`}}
+            className='menus'
+          >
+            <ImageList
+              onScroll={handleTopScroll}
+              ref={topMenu}
+              className='menu hiddenScrollbar'
             >
-              <img
-                src={`${item.img}?w=248&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                alt={item['dishname']}
-                loading="lazy"
-                id={chosenFood === item ? 'selected' : 'unselected'}
-                style={{
-                  width: `${menuSize.current}px`,
-                  height: `${menuSize.current}px`,
-                }}
-              />
-              <ImageListItemBar
-                title={item['dishname']}
-                actionIcon={
-                  <IconButton
-                    sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                    aria-label={`info about ${item['dishname']}`}
-                  >
-                    <InfoIcon/>
-                  </IconButton>
-                }
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-
+              {new Array(Math.ceil(recipes.length / 2))
+                .fill(0)
+                .map((_, ind) => {
+                  const item = recipes[(ind * 2) + 1];
+                  return (
+                    <ImageListItem
+                      className='margins'
+                      onClick={() => clickItem(item)}
+                      key={item['dishname'] + ind}
+                    >
+                      <img
+                        src={`${item.img}?w=248&fit=crop&auto=format`}
+                        srcSet={
+                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                        }
+                        alt={item['dishname']}
+                        loading="lazy"
+                        id={chosenFood === item ? 'selected' : 'unselected'}
+                        style={{
+                          width: `${menuSize.current}px`,
+                          height: `${menuSize.current}px`,
+                        }}
+                      />
+                      <ImageListItemBar
+                        title={item['dishname']}
+                        actionIcon={
+                          <IconButton
+                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                            aria-label={`info about ${item['dishname']}`}
+                          >
+                            <InfoIcon/>
+                          </IconButton>
+                        }
+                      />
+                    </ImageListItem>
+                  );
+                })}
+            </ImageList>
+          </Item>
+          <Item
+            style={{height: `${menuSize.current}px`}}
+            className='menus'
+          >
+            <ImageList
+              onScroll={handleBotScroll}
+              ref={botMenu}
+              className='menu'
+            >
+              {new Array(Math.floor(recipes.length / 2))
+                .fill(0)
+                .map((_, ind) => {
+                  const item = recipes[ind * 2];
+                  return (
+                    <ImageListItem
+                      className='margins'
+                      onClick={() => clickItem(item)}
+                      key={item['dishname'] + ind}
+                    >
+                      <img
+                        src={`${item.img}?w=248&fit=crop&auto=format`}
+                        srcSet={
+                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                        }
+                        alt={item['dishname']}
+                        loading="lazy"
+                        id={chosenFood === item ? 'selected' : 'unselected'}
+                        style={{
+                          width: `${menuSize.current}px`,
+                          height: `${menuSize.current}px`,
+                        }}
+                      />
+                      <ImageListItemBar
+                        title={item['dishname']}
+                        actionIcon={
+                          <IconButton
+                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                            aria-label={`info about ${item['dishname']}`}
+                          >
+                            <InfoIcon/>
+                          </IconButton>
+                        }
+                      />
+                    </ImageListItem>
+                  );
+                })}
+            </ImageList>
+          </Item>
+        </Stack>
+        <div className='stretch'/>
         <div id='btnList'>
           <Button
             variant="filled"
