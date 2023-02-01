@@ -39,18 +39,28 @@ function Homepage(props) {
 
   return (
     <HomeContext.Provider
-      value={{width, cardSize, selectedFood, setSelected, setSearch, search}}
+      value={{
+        width, cardSize, selectedFood, setSelected,
+        setSearch, search, startWeek,
+      }}
     >
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
       >
-        <div style={{backgroundColor: 'red'}}>
+        <div
+          style={{
+            backgroundColor: 'red',
+            float: 'right',
+            width: width >= 1200 ?
+              '100%' : '100%',
+          }}
+        >
           <h1>
             {WEEK}
           </h1>
         </div>
-        <Box sx={{flexGrow: 1}}>
+        <Box className='stretch'>
           <Calendar HomeContext={HomeContext}/>
         </Box>
         <Menu HomeContext={HomeContext}/>

@@ -38,9 +38,6 @@ export const StyledInputBase = styled(InputBase)(({theme}) => ({
     'width': 'inherit',
     [theme.breakpoints.up('sm')]: {
       'width': 'inherit',
-      '&:focus': {
-        'width': '20ch',
-      },
     },
   },
 }));
@@ -68,8 +65,6 @@ function Tools(props) {
 
   return (
     <Toolbar
-      style={{width: width >= 1200 ?
-        (cardSize.current * 7) + (16 * 8) : '100%'}}
       className='tools'
     >
       <Search id='search'>
