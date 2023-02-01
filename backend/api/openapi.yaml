@@ -40,6 +40,8 @@ paths:
 
   /recipe:
     get:
+      security:
+        - bearerAuth: []
       description: returns one recipe
       parameters:
         - in: query
@@ -64,6 +66,8 @@ paths:
 
   /recipes:
     get:
+      security:
+        - bearerAuth: []
       description: returns all recipes
       responses:
         200:
@@ -81,6 +85,8 @@ paths:
 
   /meals:
     post:
+      security:
+        - bearerAuth: []
       description: add a meal to a user with date and userid
       requestBody:
         description: userid date
@@ -104,6 +110,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     get:
+      security:
+        - bearerAuth: []
       description: retrieve meals that should be displayed on that date
       parameters:
         - in: query
@@ -202,3 +210,10 @@ components:
       required:
         - name
         - accessToken
+
+
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
