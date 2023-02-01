@@ -1,6 +1,6 @@
 @media (min-width: 1200px) {
     .container {
-        justify-content: right;
+        justify-content: center;
     }
 }
 
@@ -14,7 +14,13 @@
 }
 
 .imgListBar {
-    height: 20px;
+    height: 40px;
+    font-size: 15px;
+}
+
+.MuiImageListItemBar-title {
+    white-space: break-spaces !important;
+    font-size: 12px !important;
 }
 
 .stillImg {

@@ -19,28 +19,82 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 
+const getMeal = (setMeal, calendar, id, weekday, time) => {
+  fetch(`http://localhost:3010/v0/recipe?recipeid=${id}`, {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      const meal = [...calendar[weekday]];
+      meal[time] = {
+        'dishname': json[0]['dishname'],
+        'img': json[0]['img'],
+      };
+      setMeal({...calendar, [weekday]: meal});
+    });
+};
+
+
+const getMealsForWeek = (calendar, setMeal, date, user) => {
+  for (let day = 0; day < 7; ++day) {
+    const ISOdate = date.toISOString().split('T')[0];
+    fetch(`http://localhost:3010/v0/meals?dayof=${ISOdate}&mealsid=${user}`, {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+        const weekday = daysOfWeek[day].toLowerCase();
+
+        for (let time = 0; time < json.length; ++time) {
+          getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+        }
+      });
+
+    date.setDate(date.getDate() + 1);
+  }
+};
+
+
 // eslint-disable-next-line require-jsdoc
 function Calendar(props) {
-  const {width, cardSize, selectedFood, setSelected} =
+  const {width, cardSize, selectedFood, setSelected, startWeek} =
     React.useContext(props['HomeContext']);
   const [chosenFood, used] = selectedFood || [null, 0];
+  const [updated, setUpdated] = React.useState(false);
 
   const [TODOtempdate, setPlan] = React.useState({
-    'mon': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'tues': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'wed': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'thurs': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'fri': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'sat': [{'dishname': 'test', 'img': ''},
+    'mon': [{'dishname': 'temp', 'img': ''},
       {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'sun': [{'dishname': 'test', 'img': ''},
-      {'dishname': 'helo', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'tues': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'wed': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'thurs': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'fri': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'sat': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
+    'sun': [{'dishname': 'temp', 'img': ''},
+      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
   });
+
+  if (!updated) {
+    getMealsForWeek(TODOtempdate, setPlan, startWeek, 1);
+    setUpdated(true);
+  }
+
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
   const chooseFood = (event, day, time) => {
