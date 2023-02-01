@@ -11,6 +11,7 @@ const OpenApiValidator = require('express-openapi-validator');
 const recipe = require('./recipe');
 const meal = require('./meal');
 const auth = require('./auth');
+const mealWeek = require('./mealWeek');
 
 const app = express();
 app.use(cors());
