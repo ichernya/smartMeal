@@ -1,0 +1,12 @@
+.SideBar {
+  display: flex;
+}
+
+
+@media (max-width: 600px) {
+  .SideBar {
+    display: none;
+  }
+}
+
+
