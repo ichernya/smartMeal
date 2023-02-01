@@ -75,31 +75,34 @@ const Login = () => {
             <TextField
               margin="normal"
               required
-              fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
               onChange={handleInputChange}
               autoFocus
+              sx={{
+                width: '100%',
+              }}
             />
             <TextField
               margin="normal"
               required
-              fullWidth
               name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
               onChange={handleInputChange}
+              sx={{
+                width: '100%',
+              }}
             />
             {status ? <div className='error'>
               Invalid Credentials
             </div> : null}
             <Fab
               variant="extended"
-              fullWidth
               size="medium"
               color='primary'
               sx={{mt: 3, mb: 2, width: '100%'}}
@@ -114,18 +117,16 @@ const Login = () => {
             <Fab
               variant="extended"
               size="medium"
-              fullWidth
               sx={{mt: 3, width: '100%'}}
-              id="Fab_SignIn_Others"
+              className="Fab_SignIn_Others"
             >
                 Continue with Google
             </Fab>
             <Fab
               variant="extended"
               size="medium"
-              fullWidth
               sx={{mt: 4, mb: 2, width: '100%'}}
-              id="Fab_SignIn_Others"
+              className="Fab_SignIn_Others"
             >
                 Continue with Apple
             </Fab>
