@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Fab from '@mui/material/Fab';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -7,23 +7,43 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import BgImg from '../assets/p1t.jpg';
+import BgImg from '../../assets/p1t.jpg';
+import {useNavigate} from 'react-router-dom';
 import './Login.css';
 
 // eslint-disable-next-line require-jsdoc
 const Login = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [user, setUser] = React.useState({email: '', password: ''});
   const [status, setStatus] = useState();
-  const submitLoginForm = () => {
-    setStatus(true);
+  const history = useNavigate();
+  const handleInputChange = (event) => {
+    const {value, name} = event.target;
+    const u = user;
+    u[name] = value;
+    setUser(u);
   };
-  useEffect(() => {
-    console.log(email);
-  }, [email]);
-  useEffect(() => {
-    console.log(password);
-  }, [password]);
+  const submitLoginForm = (event) => {
+    event.preventDefault();
+    fetch('http://localhost:3010/v0/login', {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then((json) => {
+        localStorage.setItem('user', JSON.stringify(json));
+        history('/week');
+      }).catch((err) => {
+        setStatus(true);
+      });
+  };
   return (
     <Grid container component="main" sx={{height: '100vh'}} direction="row">
       <CssBaseline />
@@ -60,7 +80,7 @@ const Login = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleInputChange}
               autoFocus
             />
             <TextField
@@ -72,9 +92,9 @@ const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleInputChange}
             />
-            {status ? <div class='error'>
+            {status ? <div className='error'>
               Invalid Credentials
             </div> : null}
             <Fab
