@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import {BrowserRouter, Route, Routes, Navigate, Outlet} from 'react-router-dom';
 import DimensionsProvider from './components/DimensionsProvider.jsx';
-import Homepage from './components/Homepage/Home.jsx';
 import Login from './components/Login_Registration/Login.jsx';
 import Registration from './components/Login_Registration/Registration.jsx';
 import Error from './components/Page404.jsx';
@@ -17,9 +16,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<RequireAuth/>}>
-              <Route path={'/week'} exact element={<Homepage/>}/>
               <Route path={'/home'} exact element={<PageLayout/>}/>
-
             </Route>
             <Route path={'/signup'} exact element={<Registration/>}/>
             <Route path={'/login'} exact element={<Login/>}/>

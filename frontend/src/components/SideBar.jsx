@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-import {useDimensions} from './DimensionsProvider';
 import Content from './Drawer_Content';
 import './SideBar.css';
 const drawerWidth = '240px';
@@ -63,8 +62,6 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 export default function TheDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const dimensions = useDimensions();
-  console.log(dimensions);
   const handleDrawerClose = () => {
     setOpen(!open);
   };
