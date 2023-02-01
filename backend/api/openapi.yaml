@@ -13,6 +13,36 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /mealWeek:
+    get:
+      description: returns full week of food
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: mealsid
+        - in: query
+          name: dayof
+          schema:
+            type: string
+          required: true
+          description: day
+      responses:
+        200: 
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getMealWeek'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
   /recipe:
     get:
@@ -149,6 +179,15 @@ components:
           type: string
       
     getMeal:
+      properties:
+        recipeid:
+          type: integer
+        mealsid:
+          type: integer
+        dayof:
+          type: string
+
+    getMealWeek:
       properties:
         recipeid:
           type: integer
