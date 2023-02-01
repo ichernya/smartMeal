@@ -4,7 +4,7 @@
 
 openapi: "3.0.3"
 
-info: 
+info:
   description: backend
   version: 0.1.0
   title: SmartMeals
@@ -44,8 +44,34 @@ paths:
                 $ref: '#/components/schemas/Error'
 
 
+  /login:
+    post:
+      description: login
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        200:
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /recipe:
     get:
+      security:
+        - bearerAuth: []
       description: returns one recipe
       parameters:
         - in: query
@@ -67,9 +93,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /recipes:
     get:
+      security:
+        - bearerAuth: []
       description: returns all recipes
       responses:
         200:
@@ -87,6 +115,8 @@ paths:
 
   /meals:
     post:
+      security:
+        - bearerAuth: []
       description: add a meal to a user with date and userid
       requestBody:
         description: userid date
@@ -110,6 +140,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     get:
+      security:
+        - bearerAuth: []
       description: retrieve meals that should be displayed on that date
       parameters:
         - in: query
@@ -125,7 +157,7 @@ paths:
           required: true
           description: mealsid
       responses:
-        200: 
+        200:
           description: OK
           content:
             application/json:
@@ -153,7 +185,7 @@ components:
         message:
           type: string
 
-    recipes: 
+    recipes:
       items:
         $ref: '#/components/schemas/recipe'
 
@@ -168,7 +200,7 @@ components:
           items:
             type: string
           example: ["str1", "str2", "str3"]
-    
+
     putMealToUser:
       properties:
         mealsid:
@@ -177,7 +209,7 @@ components:
           type: integer
         dayof:
           type: string
-      
+
     getMeal:
       properties:
         recipeid:
@@ -187,11 +219,31 @@ components:
         dayof:
           type: string
 
-    getMealWeek:
+    Credentials:
+      type: object
       properties:
-        recipeid:
-          type: integer
-        mealsid:
-          type: integer
-        dayof:
+        email:
           type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        accessToken:
+          type: string
+      required:
+        - name
+        - accessToken
+
+
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes

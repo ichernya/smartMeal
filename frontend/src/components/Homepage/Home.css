@@ -25,10 +25,13 @@
 
 .margins {
     margin: 0;
-    margin-bottom: 2px;
 }
 
 #wrapping {
     flex-wrap: nowrap !important;
+}
+
+.stretch {
+    flex: 1;
 }
 

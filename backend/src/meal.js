@@ -1,10 +1,16 @@
 const {Pool} = require('pg');
 
-const user = "test";
-    const host = "localhost";
-    const database = "dev";
-    const password = "pass"; 
-    const port = "5432";
+// const user = "test";
+//     const host = "localhost";
+//     const database = "dev";
+//     const password = "pass";
+//     const port = "5432";
+
+const user = "postgres";
+const host = "localhost";
+const database = "dev";
+const password = "postgres";
+const port = "5432";
 
 const pool = new Pool({
     host: 'localhost',
@@ -14,7 +20,7 @@ const pool = new Pool({
     password: password,
 });
 
-// for pulling what meal to display on what date, 
+// for pulling what meal to display on what date,
 // need to recieve from frontend;
 //      user
 //      date (day, year, month)

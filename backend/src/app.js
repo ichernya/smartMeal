@@ -10,7 +10,7 @@ const OpenApiValidator = require('express-openapi-validator');
 
 const recipe = require('./recipe');
 const meal = require('./meal');
-const mealWeek = require('./mealWeek');
+const auth = require('./auth');
 
 const app = express();
 app.use(cors());
@@ -30,7 +30,8 @@ app.use(
   }),
 );
 
-app.get('/v0/recipes', recipe.getAll);
+app.post('/v0/login', auth.login);
+app.get('/v0/recipes', auth.check, recipe.getAll);
 app.get('/v0/recipe', recipe.getOne);
 app.get('/v0/meals', meal.pullFoodDay);
 app.post('/v0/meals', meal.addFoodUser);
@@ -43,5 +44,5 @@ app.use((err, req, res, next) => {
     status: err.status,
   });
 });
-  
+
 module.exports = app;
