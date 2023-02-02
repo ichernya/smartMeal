@@ -16,7 +16,10 @@ const pool = new Pool({
 
 const userQuery = async (userInput) => {
     
-    const select = 'SELECT * FROM recipes WHERE dishname LIKE $1'
+    const select = `SELECT * FROM recipes WHERE LOWER(dishname)LIKE LOWER($1) 
+                    UNION 
+                    SELECT * FROM recipes WHERE EXISTS 
+                    (SELECT FROM unnest(ingredients) elem WHERE LOWER(elem) LIKE LOWER($1))`
     const query = {
         text: select,
         values: [ '%' + userInput + '%' ]
