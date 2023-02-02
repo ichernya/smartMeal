@@ -1,6 +1,8 @@
 DELETE FROM recipes;
 INSERT INTO recipes(dishname, ingredients) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}');
 INSERT INTO recipes(dishname, ingredients) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}');
+INSERT INTO recipes(dishname, ingredients) VALUES ('Cheeseburger', '{"Beef Patty","Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}');
+INSERT INTO recipes(dishname, ingredients) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}');
 
 DELETE FROM users;
 
