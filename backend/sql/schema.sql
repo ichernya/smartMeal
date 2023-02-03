@@ -5,7 +5,11 @@ CREATE TABLE recipes(
     dishname VARCHAR(32),
     ingredients text[],
     ingredientAm integer,
-    imageData text
+    imageData text,
+    vegan boolean DEFAULT FALSE,
+    halal boolean DEFAULT FALSE,
+    healthy boolean DEFAULT FALSE,
+    kosher boolean DEFAULT FALSE
     );
 
 DROP TABLE IF EXISTS users;
@@ -25,6 +29,14 @@ CREATE TABLE meals(
     dayof date NOT NULL,
     FOREIGN KEY (recipeid) REFERENCES recipes(recipeid),
     FOREIGN KEY (mealsid) REFERENCES users(userid)
+);
+
+DROP TABLE IF EXISTS substitutions;
+
+CREATE TABLE substitutions (
+    ingredient text,
+    tradeFor text [],
+    veganAlternative text []
 );
 
 /*

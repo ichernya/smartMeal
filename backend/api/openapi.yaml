@@ -208,7 +208,6 @@ components:
           format: int32
         message:
           type: string
-
     recipes:
       items:
         $ref: '#/components/schemas/recipe'
@@ -227,8 +226,16 @@ components:
         ingredientAm:
           type: integer
         imageData:
-          type: text
-
+          type: string
+        vegan:
+          type: boolean
+        halal:
+          type: boolean
+        healthy:
+          type: boolean
+        kosher:
+          type: boolean
+        
     putMealToUser:
       properties:
         mealsid:
