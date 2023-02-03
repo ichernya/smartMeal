@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import {BrowserRouter, Route, Routes, Navigate, Outlet} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Navigate, Outlet}
+  from 'react-router-dom';
 import DimensionsProvider from './components/DimensionsProvider.jsx';
 import Login from './components/Login_Registration/Login.jsx';
 import Registration from './components/Login_Registration/Registration.jsx';
@@ -10,6 +11,7 @@ import './App.css';
 
 // eslint-disable-next-line require-jsdoc
 function App() {
+  // logic to check if the user is already logged in
   return (
     <div className="App">
       <DimensionsProvider>
@@ -19,7 +21,7 @@ function App() {
               <Route path={'/home'} exact element={<PageLayout/>}/>
             </Route>
             <Route path={'/signup'} exact element={<Registration/>}/>
-            <Route path={'/login'} exact element={<Login/>}/>
+            <Route path={'/login'} exact element= {<Login/>}/>
             <Route path={'/sidebar'} exact element={<SideBar/>}/>
             <Route path={'*'} exact element={<Error/>}/>
           </Routes>

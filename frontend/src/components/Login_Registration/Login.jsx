@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Fab from '@mui/material/Fab';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -44,6 +44,11 @@ const Login = () => {
         setStatus(true);
       });
   };
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      history('/home');
+    }
+  }, [history]);
   return (
     <Grid container component="main" sx={{height: '100vh'}} direction="row">
       <CssBaseline />
