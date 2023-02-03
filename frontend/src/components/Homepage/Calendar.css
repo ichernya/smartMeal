@@ -54,6 +54,14 @@
     border-style: solid;
 }
 
+.sideBorder {
+    border: 0px;
+    border-right: 1px;
+    border-left: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
 .food {
     max-width: fit-content !important;
 }

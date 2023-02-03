@@ -52,7 +52,6 @@ export const SearchIconWrapper = styled('div')(({theme}) => ({
   'justifyContent': 'center',
 }));
 
-
 // eslint-disable-next-line require-jsdoc
 function Tools(props) {
   const {width, cardSize, search, setSearch} =

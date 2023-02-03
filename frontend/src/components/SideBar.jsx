@@ -13,6 +13,7 @@ const drawerWidth = '240px';
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
+  maxWidth: drawerWidth,
   transition: theme.transitions.create('width', {
     duration: theme.transitions.duration.enteringScreen,
   }),
@@ -25,7 +26,8 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  maxWidth: 'inherit',
+  width: '100% !important',
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
@@ -43,7 +45,8 @@ const DrawerHeader = styled('div')(({theme}) => ({
 const Drawer = styled(MuiDrawer, {shouldForwardProp:
   (prop) => prop !== 'open'})(
   ({theme, open}) => ({
-    width: drawerWidth,
+    maxWidth: 'inherit',
+    width: '100%',
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',

@@ -1,5 +1,6 @@
 const {Pool} = require('pg');
 
+<<<<<<<<< Temporary merge branch 1
 /*
 const user = "test";
     const host = "localhost";
@@ -7,6 +8,8 @@ const user = "test";
     const password = "pass";
     const port = "5432";
     */
+=========
+>>>>>>>>> Temporary merge branch 2
 const user = "postgres";
 const host = "localhost";
 const database = "dev";
