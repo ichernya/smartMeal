@@ -1,11 +1,15 @@
 .SideBar {
   display: flex;
+  max-width: inherit;
+  width: 100%;
 }
 
 
 @media (max-width: 800px) {
   .SideBar {
     display: none;
+    max-width: inherit;
+    width: 100%;
   }
 }
 

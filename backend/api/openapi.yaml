@@ -13,6 +13,30 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /userSearch:
+    get:
+      description: returns user query
+      parameters:
+        - in: query
+          name: userInput
+          schema:
+            type: string
+          required: true
+          description: what the user gives
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipes'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
   /mealWeek:
     get:
       description: returns full week of food

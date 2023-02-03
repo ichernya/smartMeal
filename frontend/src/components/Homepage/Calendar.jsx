@@ -19,6 +19,7 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 
+// Queries the database for the recipe associated with an ID
 const getMeal = (setMeal, calendar, id, weekday, time) => {
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
@@ -128,9 +129,16 @@ function Calendar(props) {
       className='container'
       id='wrapping'
     >
-      {daysOfWeek.map((day) =>
+      {daysOfWeek.map((day, ind) =>
         <div className='card margins' key={day}>
-          <Grid item xs={6} md={1.5} className='food rightBorder'>
+          <Grid
+            item
+            xs={6}
+            md={1.5}
+            className={
+              'food ' + (ind === 0 ? 'sideBorder' : 'rightBorder')
+            }
+          >
             <Item> {day} </Item>
             <div className='bottomBorder'/>
             <Item
@@ -185,4 +193,3 @@ function Calendar(props) {
 }
 
 export default Calendar;
-
