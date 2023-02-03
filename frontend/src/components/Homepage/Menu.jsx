@@ -62,7 +62,6 @@ const searchRecipes = (query, setMenu) => {
     })
     .then((json) => {
       setMenu(json);
-      console.log(json);
     });
 };
 
