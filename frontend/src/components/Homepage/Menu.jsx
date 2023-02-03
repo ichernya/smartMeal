@@ -27,9 +27,14 @@ const Item = styled(Paper)(({theme}) => ({
 
 
 const getRecipes = (setMenu) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
   fetch('http://localhost:3010/v0/recipes', {
+  // fetch('http://localhost:3010/v0/mealWeek?mealsid=1&dayof=2023-01-19', {
     method: 'get',
     headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
   })
@@ -40,6 +45,206 @@ const getRecipes = (setMenu) => {
       setMenu([...json]);
     });
 };
+
+const searchRecipes = (query, setMenu) => {
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}`, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setMenu(json);
+      console.log(json);
+    });
+};
+
+
+// eslint-disable-next-line require-jsdoc
+function Menu(props) {
+  const {width, cardSize, selectedFood, setSelected, search} =
+    React.useContext(props['HomeContext']);
+
+  const [recipes, setMenu] = React.useState([]);
+  const [updated, setUpdated] = React.useState(false);
+
+  if (!updated) {
+    setUpdated(true);
+    getRecipes(setMenu);
+  }
+
+  const [chosenFood] = selectedFood || [null, null];
+  const MARGIN = 7 * 16;
+  const menuSize = React.useRef(width >= 1200 ? (width * .13) : 175);
+
+  React.useEffect(() => {
+    menuSize.current = width >= 1200 ? (width * .13) : 175;
+  }, [width]);
+
+  React.useEffect(() => {
+    if (search) {
+      searchRecipes(search, setMenu);
+    }
+  }, [search]);
+
+  const clickItem = (item) => {
+    if (chosenFood === item) {
+      setSelected(null);
+    } else {
+      setSelected([item, 0]);
+    }
+  };
+
+  const topMenu = React.useRef(0);
+  const botMenu = React.useRef(0);
+
+  const handleTopScroll = (scroll) => {
+    botMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
+  const handleBotScroll = (scroll) => {
+    topMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
+  return (
+    <div>
+      <Tools HomeContext={props['HomeContext']}/>
+      <Grid
+        container
+        spacing={0}
+        id='wrapping'
+      >
+        <Stack className='menu' spacing={0}>
+          <Item
+            style={{height: `${menuSize.current}px`}}
+            className='menus'
+          >
+            <ImageList
+              onScroll={handleTopScroll}
+              ref={topMenu}
+              className='menu hiddenScrollbar'
+            >
+              {new Array(Math.ceil(recipes.length / 2))
+                .fill(0)
+                .map((_, ind) => {
+                  const item = recipes[(ind * 2)];
+                  return (
+                    <ImageListItem
+                      className='margins'
+                      onClick={() => clickItem(item)}
+                      key={item['dishname'] + ind}
+                    >
+                      <img
+                        src={item['img'] ?
+                          `${item['img']}?w=248&fit=crop&auto=format` : ''}
+                        srcSet={item['img'] ?
+                          `${item['img']}` +
+                            `?w=248&fit=crop&auto=format&dpr=2 2x` : ''
+                        }
+                        alt={item['dishname']}
+                        loading="lazy"
+                        id={chosenFood === item ? 'selected' : 'unselected'}
+                        style={{
+                          width: `${menuSize.current}px`,
+                          height: `${menuSize.current}px`,
+                        }}
+                      />
+                      <ImageListItemBar
+                        title={item['dishname']}
+                        actionIcon={
+                          <IconButton
+                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                            aria-label={`info about ${item['dishname']}`}
+                          >
+                            <InfoIcon/>
+                          </IconButton>
+                        }
+                      />
+                    </ImageListItem>
+                  );
+                })}
+            </ImageList>
+          </Item>
+          <Item
+            style={{height: `${menuSize.current}px`}}
+            className='menus'
+          >
+            <ImageList
+              onScroll={handleBotScroll}
+              ref={botMenu}
+              className='menu'
+            >
+              {new Array(Math.floor(recipes.length / 2))
+                .fill(0)
+                .map((_, ind) => {
+                  const item = recipes[(ind * 2) + 1];
+                  return (
+                    <ImageListItem
+                      className='margins'
+                      onClick={() => clickItem(item)}
+                      key={item['dishname'] + ind}
+                    >
+                      <img
+                        src={`${item.img}?w=248&fit=crop&auto=format`}
+                        srcSet={
+                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                        }
+                        alt={item['dishname']}
+                        loading="lazy"
+                        id={chosenFood === item ? 'selected' : 'unselected'}
+                        style={{
+                          width: `${menuSize.current}px`,
+                          height: `${menuSize.current}px`,
+                        }}
+                      />
+                      <ImageListItemBar
+                        title={item['dishname']}
+                        actionIcon={
+                          <IconButton
+                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                            aria-label={`info about ${item['dishname']}`}
+                          >
+                            <InfoIcon/>
+                          </IconButton>
+                        }
+                      />
+                    </ImageListItem>
+                  );
+                })}
+            </ImageList>
+          </Item>
+        </Stack>
+        <div className='stretch'/>
+        <div id='btnList'>
+          <Button
+            variant="filled"
+            disabled
+            color="primary"
+          >
+            $MONEY
+          </Button>
+          <IconButton
+            color="secondary"
+          >
+            <ShoppingCartIcon className='btn'/>
+          </IconButton>
+          <IconButton color="secondary">
+            <FormatListBulletedIcon className='btn'/>
+          </IconButton>
+        </div>
+      </Grid>
+    </div>
+  );
+}
+
+export default Menu;
 
 const itemData = [
   {
@@ -115,174 +320,3 @@ const itemData = [
   },
 ];
 
-
-// eslint-disable-next-line require-jsdoc
-function Menu(props) {
-  const {width, cardSize, selectedFood, setSelected} =
-    React.useContext(props['HomeContext']);
-
-  const [recipes, setMenu] = React.useState([]);
-  const [updated, setUpdated] = React.useState(false);
-
-  if (!updated) {
-    setUpdated(true);
-    getRecipes(setMenu);
-  }
-
-  const [chosenFood] = selectedFood || [null, null];
-  const MARGIN = 7 * 16;
-  const menuSize = React.useRef(width >= 1200 ? (width * .13) : 175);
-
-  React.useEffect(() => {
-    menuSize.current = width >= 1200 ? (width * .13) : 175;
-  }, [width]);
-
-  const clickItem = (item) => {
-    if (chosenFood === item) {
-      setSelected(null);
-    } else {
-      setSelected([item, 0]);
-    }
-  };
-
-  const topMenu = React.useRef(0);
-  const botMenu = React.useRef(0);
-
-  const handleTopScroll = (scroll) => {
-    botMenu.current.scrollLeft = scroll.target.scrollLeft;
-  };
-
-  const handleBotScroll = (scroll) => {
-    topMenu.current.scrollLeft = scroll.target.scrollLeft;
-  };
-
-  return (
-    <div>
-      <Tools HomeContext={props['HomeContext']}/>
-      <Grid
-        container
-        spacing={0}
-        id='wrapping'
-      >
-        <Stack className='menu' spacing={0}>
-          <Item
-            style={{height: `${menuSize.current}px`}}
-            className='menus'
-          >
-            <ImageList
-              onScroll={handleTopScroll}
-              ref={topMenu}
-              className='menu hiddenScrollbar'
-            >
-              {new Array(Math.ceil(recipes.length / 2))
-                .fill(0)
-                .map((_, ind) => {
-                  const item = recipes[(ind * 2) + 1];
-                  return (
-                    <ImageListItem
-                      className='margins'
-                      onClick={() => clickItem(item)}
-                      key={item['dishname'] + ind}
-                    >
-                      <img
-                        src={`${item.img}?w=248&fit=crop&auto=format`}
-                        srcSet={
-                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                        }
-                        alt={item['dishname']}
-                        loading="lazy"
-                        id={chosenFood === item ? 'selected' : 'unselected'}
-                        style={{
-                          width: `${menuSize.current}px`,
-                          height: `${menuSize.current}px`,
-                        }}
-                      />
-                      <ImageListItemBar
-                        title={item['dishname']}
-                        actionIcon={
-                          <IconButton
-                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                            aria-label={`info about ${item['dishname']}`}
-                          >
-                            <InfoIcon/>
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  );
-                })}
-            </ImageList>
-          </Item>
-          <Item
-            style={{height: `${menuSize.current}px`}}
-            className='menus'
-          >
-            <ImageList
-              onScroll={handleBotScroll}
-              ref={botMenu}
-              className='menu'
-            >
-              {new Array(Math.floor(recipes.length / 2))
-                .fill(0)
-                .map((_, ind) => {
-                  const item = recipes[ind * 2];
-                  return (
-                    <ImageListItem
-                      className='margins'
-                      onClick={() => clickItem(item)}
-                      key={item['dishname'] + ind}
-                    >
-                      <img
-                        src={`${item.img}?w=248&fit=crop&auto=format`}
-                        srcSet={
-                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                        }
-                        alt={item['dishname']}
-                        loading="lazy"
-                        id={chosenFood === item ? 'selected' : 'unselected'}
-                        style={{
-                          width: `${menuSize.current}px`,
-                          height: `${menuSize.current}px`,
-                        }}
-                      />
-                      <ImageListItemBar
-                        title={item['dishname']}
-                        actionIcon={
-                          <IconButton
-                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                            aria-label={`info about ${item['dishname']}`}
-                          >
-                            <InfoIcon/>
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  );
-                })}
-            </ImageList>
-          </Item>
-        </Stack>
-        <div className='stretch'/>
-        <div id='btnList'>
-          <Button
-            variant="filled"
-            disabled
-            color="primary"
-          >
-            $MONEY
-          </Button>
-          <IconButton
-            color="secondary"
-          >
-            <ShoppingCartIcon className='btn'/>
-          </IconButton>
-          <IconButton color="secondary">
-            <FormatListBulletedIcon className='btn'/>
-          </IconButton>
-        </div>
-      </Grid>
-    </div>
-  );
-}
-
-export default Menu;
