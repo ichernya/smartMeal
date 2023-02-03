@@ -1,4 +1,11 @@
 const {Pool} = require('pg');
+/*
+const user = "test";
+    const host = "localhost";
+    const database = "dev";
+    const password = "pass";
+    const port = "5432";
+    */
 
 const user = "postgres";
 const host = "localhost";

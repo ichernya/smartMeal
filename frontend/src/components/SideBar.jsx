@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {styled, useTheme} from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
@@ -63,7 +63,6 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 
 // eslint-disable-next-line require-jsdoc
 export default function TheDrawer() {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const handleDrawerClose = () => {
     setOpen(!open);
@@ -73,8 +72,8 @@ export default function TheDrawer() {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> :
-              <ChevronLeftIcon />}
+            {open ? <ChevronLeftIcon /> :
+              <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
