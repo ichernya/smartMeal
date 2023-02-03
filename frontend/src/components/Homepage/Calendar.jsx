@@ -20,9 +20,13 @@ const Item = styled(Paper)(({theme}) => ({
 
 
 const getMeal = (setMeal, calendar, id, weekday, time) => {
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
   fetch(`http://localhost:3010/v0/recipe?recipeid=${id}`, {
     method: 'get',
     headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
   })
@@ -41,11 +45,15 @@ const getMeal = (setMeal, calendar, id, weekday, time) => {
 
 
 const getMealsForWeek = (calendar, setMeal, date, user) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
   for (let day = 0; day < 7; ++day) {
     const ISOdate = date.toISOString().split('T')[0];
     fetch(`http://localhost:3010/v0/meals?dayof=${ISOdate}&mealsid=${user}`, {
       method: 'get',
       headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       }),
     })
