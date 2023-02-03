@@ -1,8 +1,8 @@
 DELETE FROM recipes;
-INSERT INTO recipes(dishname, ingredients) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}');
-INSERT INTO recipes(dishname, ingredients) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}');
-INSERT INTO recipes(dishname, ingredients) VALUES ('Cheeseburger', '{"Beef Patty","Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}');
-INSERT INTO recipes(dishname, ingredients) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}', '3', '/test.png');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}', '4', '/test.png');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Cheeseburger', '{"Beef Patty", "Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}', '7', '/test.png');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}', '3', '/test.png');
 
 DELETE FROM users;
 
