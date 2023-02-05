@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import './SubComp.css'
+import Logo from '../../assets/CroppedLogo.png'
 
 export default function HeaderBar() {
   return (
@@ -16,27 +17,21 @@ export default function HeaderBar() {
       }}>
       <AppBar class="appBar" position='static'>
         <Toolbar>
-          {/* Put here our logo */}
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
+          <IconButton>
+            <Box
+              component="img"
+              sx={{
+              height: 65,
+              }}
+              alt="Logo"
+              src={Logo}
+            />
           </IconButton>
           <Typography align="center" variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <div className='title'>
-              SMARTMEAL
+              SMARTMEAL 
             </div>
           </Typography>
-          <Link to='/login' className='link'>
-            <Button variant="contained">Login</Button>
-          </Link>
-          <Link to='/signup' className='link'>
-            <Button variant="contained">Sign Up</Button>
-          </Link>
         </Toolbar>
       </AppBar>
     </Box>  

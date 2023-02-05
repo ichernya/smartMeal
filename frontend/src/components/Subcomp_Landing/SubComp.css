@@ -3,12 +3,27 @@
   text-decoration: none;
 }
 
+.buttons{
+  float: right;
+}
+
 .title{
   display: flex;
   justify-content: center;
   text-align: center;
+  font-family: cursive, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  font-style: italic;
+  line-height: 30px;
+  font-variant: normal;
+  font-feature-settings: normal;
 }
 
 .appBar{
   background-color: rgba(0,0,0,0); 
+}
+
+.headerButton{
+  float: right;
 }
