@@ -1,3 +1,4 @@
+const { hasSelectionSupport } = require('@testing-library/user-event/dist/utils');
 const {Pool} = require('pg');
 
 const user = "postgres";
@@ -36,6 +37,8 @@ const userQuery = async (userInput) => {
 exports.getUserQuery = async (req, res) => {
     // caller function that awaits and returns entire recipe for hit, send 404 on error
     const user = await userQuery(req.query.userInput);
-    if (user) {res.status(200).json(user);}
+    if (user) {
+        res.status(200).json(user);
+    }
     else {res.status(404).send();}
 }

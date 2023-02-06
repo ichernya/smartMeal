@@ -59,6 +59,7 @@ const addFood = async ( mealsid, recipeid, dayof) => {
 
 exports.addFoodUser = async (req, res) => {
     // caller function that awaits addFood and returns a 201 on Success 
-    await addFood(req.body.mealsid, req.body.recipeid, req.body.dayof);
-    res.status(201).send(req.body);
+    const food = await addFood(req.body.mealsid, req.body.recipeid, req.body.dayof);
+    if(food) {res.status(201).send(req.body);}
+    else {res.status(404).send();}
 }

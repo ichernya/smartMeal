@@ -13,6 +13,29 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /switchOut:
+    get:
+      description: returns subsitutions given ingredient
+      parameters:
+        - in: query
+          name: ingredient
+          schema:
+            type: string
+          required: true
+          description: ingredient to check swaps of
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/swap'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /userSearch:
     get:
       description: returns user query
@@ -275,6 +298,22 @@ components:
       required:
         - name
         - accessToken
+    
+    swap:
+      properties:
+        ingredients:
+          type: string
+        tradeFor:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+        veganAlternative:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+
 
 
   securitySchemes:
