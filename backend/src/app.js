@@ -32,9 +32,9 @@ app.use(
 
 app.post('/v0/login', auth.login);
 app.get('/v0/recipes', auth.check, recipe.getAll);
-app.get('/v0/recipe', recipe.getOne);
-app.get('/v0/meals', meal.pullFoodDay);
-app.post('/v0/meals', meal.addFoodUser);
+app.get('/v0/recipe', auth.check, recipe.getOne);
+app.get('/v0/meals', auth.check, meal.pullFoodDay);
+app.post('/v0/meals', auth.check, meal.addFoodUser);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

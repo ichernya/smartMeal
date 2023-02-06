@@ -31,6 +31,10 @@ const selectEmailPassword = async (email) => {
   return rows;
 };
 
+const createUser = async (email, password) => {
+
+};
+
 exports.login = async (req, res) => {
   const {email, password} = req.body;
   const loginInfo = await selectEmailPassword(email);
