@@ -11,6 +11,7 @@ const HomeContext = React.createContext();
 
 // eslint-disable-next-line require-jsdoc
 function Homepage(props) {
+  // Generate the start and end of the week to display
   const currentDay = new Date();
   const dateOffset = currentDay.getDay();
   const startWeek = new Date();
@@ -22,8 +23,11 @@ function Homepage(props) {
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
 
   const {width} = useDimensions();
+  // Precalculated card size for the calendar
   const cardSize = React.useRef(width >= 1200 ? (width * .11) : 175);
+  // Selected food from the menu  
   const [selectedFood, setSelected] = React.useState(null);
+  // Contents of the search bar
   const [search, setSearch] = React.useState('');
 
   React.useEffect(() => {
@@ -31,6 +35,7 @@ function Homepage(props) {
   }, [width]);
 
   const shiftRelease = (event) => {
+    // unshift unselects menu item if the item was used before
     if (event['code'].toLowerCase().includes('shift') &&
       selectedFood && selectedFood[1] > 0) {
       setSelected(null);

@@ -1,0 +1,9 @@
+@media (max-width: 599px) {
+    .filter {
+        display: none;
+    }
+}
+
+.tags {
+    display: inline;
+}

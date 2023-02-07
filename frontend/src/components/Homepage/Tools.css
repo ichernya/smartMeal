@@ -1,3 +1,13 @@
+@media (max-width: 599px) {
+    .clearBtn {
+        display: none !important;
+    }
+
+    .verticalDiv {
+        display: none !important;
+    }
+}
+
 .tools {
     background-color: red;
     height: 50px;
@@ -22,3 +32,6 @@
     font-size: 20px;
 }
 
+.verticalDiv {
+    margin-left: 4px !important;
+}

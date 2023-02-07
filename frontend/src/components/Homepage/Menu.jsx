@@ -26,6 +26,7 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 
+// Grabs the recipes for the menu from the database
 const getRecipes = (setMenu) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
@@ -46,6 +47,7 @@ const getRecipes = (setMenu) => {
     });
 };
 
+// Query for meals based on a search query
 const searchRecipes = (query, setMenu) => {
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
@@ -71,13 +73,12 @@ function Menu(props) {
   const {width, cardSize, selectedFood, setSelected, search} =
     React.useContext(props['HomeContext']);
 
+  // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
-  const [updated, setUpdated] = React.useState(false);
 
-  if (!updated) {
-    setUpdated(true);
+  React.useEffect(() => {
     getRecipes(setMenu);
-  }
+  }, []);
 
   const [chosenFood] = selectedFood || [null, null];
   const MARGIN = 7 * 16;
@@ -88,12 +89,14 @@ function Menu(props) {
   }, [width]);
 
   React.useEffect(() => {
+    // Update search state
     if (search) {
       searchRecipes(search, setMenu);
     }
   }, [search]);
 
   const clickItem = (item) => {
+    // Choose item on click
     if (chosenFood === item) {
       setSelected(null);
     } else {
@@ -101,6 +104,7 @@ function Menu(props) {
     }
   };
 
+  // Use references to move both menu sliders together
   const topMenu = React.useRef(0);
   const botMenu = React.useRef(0);
 
