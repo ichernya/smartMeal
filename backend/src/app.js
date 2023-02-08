@@ -40,6 +40,7 @@ app.get('/v0/recipes', auth.check, recipe.getAll);
 app.get('/v0/recipe', recipe.getOne);
 app.get('/v0/meals', meal.pullFoodDay);
 app.post('/v0/meals', meal.addFoodUser);
+app.put('/v0/meals', meal.updateFoodUser);
 app.get('/v0/mealWeek', mealWeek.pullFoodWeek);
 app.get('/v0/userSearch', userSearch.getUserQuery);
 app.get('/v0/switchOut', switchOut.swaps);

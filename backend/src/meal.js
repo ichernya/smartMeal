@@ -48,18 +48,34 @@ exports.pullFoodDay = async (req, res) => {
 // need to send back to frontend;
 //      a 201 confirmation when the meal was created to the user
 //      or default error when not possible
-const addFood = async ( mealsid, recipeid, dayof) => {
-    const insert = 'INSERT INTO meals(mealsid, recipeid, dayof) VALUES ($1, $2, $3)'
+const addFood = async ( mealsid, breakfast, lunch, dinner, dayof) => {
+    var insert = 'INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES ($1, $2, $3, $4, $5)'
     const query = {
-        text: insert,
-        values: [ mealsid, recipeid, dayof ]
-    }
+            text: insert,
+            values: [ mealsid, breakfast, lunch, dinner, dayof ]
+        }
     await pool.query(query);
 }
 
 exports.addFoodUser = async (req, res) => {
     // caller function that awaits addFood and returns a 201 on Success 
-    const food = await addFood(req.body.mealsid, req.body.recipeid, req.body.dayof);
-    if(food) {res.status(201).send(req.body);}
-    else {res.status(404).send();}
+    const food = await addFood(req.body.mealsid, req.body.breakfast, req.body.lunch, req.body.dinner, req.body.dayof);
+    res.status(201).send(req.body);
+    
+}
+
+const updateFood = async ( mealsid, breakfast, lunch, dinner, dayof) => {
+    var insert = 'UPDATE meals SET breakfast = $2, lunch = $3, dinner = $4 WHERE mealsid = $1 AND dayof = $5'
+    const query = {
+            text: insert,
+            values: [ mealsid, breakfast, lunch, dinner, dayof ]
+        }
+    await pool.query(query);
+}
+
+exports.updateFoodUser = async (req, res) => {
+    // caller function that awaits addFood and returns a 201 on Success 
+    const food = await updateFood(req.body.mealsid, req.body.breakfast, req.body.lunch, req.body.dinner, req.body.dayof);
+    res.status(201).send(req.body);
+    
 }

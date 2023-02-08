@@ -12,7 +12,7 @@ INSERT INTO users(username, passwrd) VALUES ('molly@books.com', '$2b$10$Y00XOZD/
 
 
 DELETE FROM meals;
-INSERT INTO meals(mealsid, recipeid, dayof) VALUES (1, 1, '2023-01-19');
+INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES (1, 1, 0, 0, '2023-01-19');
 
 DELETE FROM substitutions;
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Whole Milk', '{"Skimmed Milk", "Fat Free Milk"}', '{"Almond Milk", "Soy Milk", "Oat Milk"}');
