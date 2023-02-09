@@ -34,13 +34,22 @@ const testData = [
   },
 ];
 
+const ingredientDict = {
+  'Protein': ['Chicken Breast'],
+  'Dairy': ['Parmesan', 'Butter', 'Cheese'],
+  'Vegetable': ['Baby Bella Mushrooms', 'Jalepeno'],
+  'Breads | Pasta | Grains': ['Pasta'],
+};
+
 export const MealsProvider = ({children}) => {
   const [meals, setMeals] = useState([]);
+  const [ingredients, setIngredients] = useState({});
   useEffect(() => {
     setMeals(testData);
+    setIngredients(ingredientDict);
   }, []);
   return (
-    <MealsContext.Provider value={{meals}}>
+    <MealsContext.Provider value={{meals, ingredients}}>
       {children}
     </MealsContext.Provider>
   );

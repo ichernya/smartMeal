@@ -9,7 +9,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 
 import './Registration.css';
-
+/**
+ * Registration component
+ * @return {object}
+ */
 const SignUp = () => {
   return (
     <Box>

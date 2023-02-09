@@ -3,20 +3,21 @@ import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import {useMeals} from '../MealContextProvider';
 
-const children = (props) => {
-  const handleChange1 = (event) => {
-    props.setChecked([event.target.checked, event.target.checked]);
+const Children = () => {
+  const {ingredients} = useMeals();
+  const handleChange = (event) => {
   };
   return (
     <Box sx={{display: 'flex', flexDirection:
     'column', ml: 3, gap: 1, mt: 1}}>
       <FormControlLabel
-        label={props.name}
+        label={'s'}
         control={
           <Checkbox
-            checked={props.checked[0] && props.checked[1]}
-            onChange={handleChange1}
+            checked={false}
+            onChange={handleChange}
           />
         }
       />
@@ -24,4 +25,4 @@ const children = (props) => {
   );
 };
 
-export default children;
+export default Children;

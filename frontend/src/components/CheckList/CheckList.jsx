@@ -6,7 +6,12 @@ import CheckListElement from './CheckListElements.jsx';
 
 import '../SideBar.css';
 
-const page = () => {
+/**
+ * The way the page is formatted for mobile, desktop, and tablet
+ *
+ * @return {object}
+ */
+const ChecklistPage = () => {
   return (
     <Grid container spacing={0}>
       <Grid item xs={false} md={1} lg={1}>
@@ -22,4 +27,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ChecklistPage;
