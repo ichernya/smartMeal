@@ -2,8 +2,6 @@ import React from 'react';
 import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import {Toolbar} from '@mui/material';
 
 import CheckBox from './Checkbox.jsx';
 
@@ -18,24 +16,21 @@ const Item = styled(Paper)(({theme}) => ({
 
 const CheckListElement = () => {
   return (
-    <Box height={'100vh'}>
-      <Toolbar/>
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        spacing={12}
-      >
-        <Grid item xs={5}>
-          <Item>1</Item>
-        </Grid>
-        <Grid item xs={5}>
-          <Item>
-            <CheckBox/>
-          </Item>
-        </Grid>
+    <Grid
+      container
+      direction="row"
+      justifyContent="center"
+      spacing={12}
+    >
+      <Grid item xs={false} md={5} lg={5} id="leftCheck">
+        <Item>1</Item>
       </Grid>
-    </Box>
+      <Grid item xs={12} md={5} lg={5}>
+        <Item>
+          <CheckBox/>
+        </Item>
+      </Grid>
+    </Grid>
   );
 };
 
