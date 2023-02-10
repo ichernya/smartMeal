@@ -18,7 +18,7 @@
 }
 
 #search {
-    width: 50%;
+    width: 100%;
 }
 
 #cancelSearch {
@@ -34,4 +34,12 @@
 
 .verticalDiv {
     margin-left: 4px !important;
+}
+
+.splitGrid {
+    width: 50% !important;
+}
+
+.filtering {
+    flex-wrap: nowrap !important;
 }

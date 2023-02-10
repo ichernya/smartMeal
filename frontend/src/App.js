@@ -8,6 +8,7 @@ import PageLayout from './components/PageLayout.jsx';
 import SideBar from './components/SideBar.jsx';
 import './App.css';
 
+
 // eslint-disable-next-line require-jsdoc
 function App() {
   return (

@@ -63,11 +63,14 @@ const getMealsForWeek = (calendar, setMeal, startWeek, user) => {
         return response.json();
       })
       .then((json) => {
+        console.log(json);
         const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const weekday = daysOfWeek[day].toLowerCase();
 
         for (let time = 0; time < json.length; ++time) {
-          getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+          if (json[time]['recipeid']) {
+            getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+          }
         }
       });
 
@@ -81,6 +84,7 @@ const addMeal = (userId, mealId, startWeek, weekday) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const dateCopy = new Date(startWeek);
+
   dateCopy.setDate(dateCopy.getDate() + weekday);
   const body = {
     'mealsid': userId,
@@ -92,8 +96,8 @@ const addMeal = (userId, mealId, startWeek, weekday) => {
     body: JSON.stringify(body),
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
     }),
   });
 };
@@ -104,9 +108,12 @@ function Calendar(props) {
   const {width, cardSize, selectedFood, setSelected, startWeek} =
     React.useContext(props['HomeContext']);
 
-  // Represents the food currently selected from the menu as well as the number of times it was added to the calendar
-  // Keeping track of the number of times used because we wanted to unselect a food used multiple times on unshift
-  // Without keeping track of the count, the user could unselect with unshift even if they havent added the selected item before
+  // Represents the food currently selected from the menu as well as the number
+  // of times it was added to the calendar
+  // Keeping track of the number of times used because we wanted to unselect a
+  // food used multiple times on unshift
+  // Without keeping track of the count, the user could unselect with unshift
+  // even if they havent added the selected item before
   const [chosenFood, used] = selectedFood || [null, 0];
 
   const [TODOtempdate, setPlan] = React.useState({
@@ -154,21 +161,22 @@ function Calendar(props) {
     }
   };
 
+  // className='container'
   return (
     <Grid
       container
       spacing={0}
-      className='container'
+      className={width < 1200 ? 'mobileContainer' : 'webContainer'}
       id='wrapping'
     >
-      {daysOfWeek.map((day, ind) =>
+      {daysOfWeek.map((day, weekday) =>
         <div className='card margins' key={day}>
           <Grid
             item
             xs={6}
             md={1.5}
             className={
-              'food ' + (ind === 0 ? 'sideBorder' : 'rightBorder')
+              'food ' + (weekday === 0 ? 'sideBorder' : 'rightBorder')
             }
           >
             <Item> {day} </Item>
@@ -190,7 +198,8 @@ function Calendar(props) {
                       sx={{
                         width: `${cardSize.current}px`,
                       }}
-                      onClick={(event) => chooseFood(event, dayLower, ind, weekday)}
+                      onClick={(event) =>
+                        chooseFood(event, dayLower, ind, weekday)}
                     >
                       <ImageListItem>
                         <img

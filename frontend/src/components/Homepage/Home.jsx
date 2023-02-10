@@ -5,9 +5,22 @@ import Box from '@mui/material/Box';
 import {useDimensions} from '../DimensionsProvider.jsx';
 import Calendar from './Calendar.jsx';
 import Menu from './Menu.jsx';
+import Tags from './Filter/Tags.jsx';
 import './Home.css';
 
 const HomeContext = React.createContext();
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
 
 // eslint-disable-next-line require-jsdoc
 function Homepage(props) {
@@ -25,10 +38,21 @@ function Homepage(props) {
   const {width} = useDimensions();
   // Precalculated card size for the calendar
   const cardSize = React.useRef(width >= 1200 ? (width * .11) : 175);
-  // Selected food from the menu  
+  // Selected food from the menu
   const [selectedFood, setSelected] = React.useState(null);
   // Contents of the search bar
   const [search, setSearch] = React.useState('');
+  // Represents whether the tags drawer is open or not
+  const [tagsDrawer, setDrawer] = React.useState(false);
+  // Represents whether the filtered tags
+  const [tags, setTags] = React.useState({});
+  // Represents the alignments of the tags
+  const [alignments, setAlignment] =
+  // TODO query db for tags
+    React.useState(Object.fromEntries(
+      names.map((name) => [name, 'default']),
+    ));
+
 
   React.useEffect(() => {
     cardSize.current = width >= 1200 ? (width * .11) : 175;
@@ -46,13 +70,15 @@ function Homepage(props) {
     <HomeContext.Provider
       value={{
         width, cardSize, selectedFood, setSelected,
-        setSearch, search, startWeek,
+        setSearch, search, startWeek, tagsDrawer, setDrawer,
+        tags, setTags, alignments, setAlignment,
       }}
     >
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
       >
+        <Tags HomeContext={HomeContext}/>
         <div
           style={{
             backgroundColor: 'red',

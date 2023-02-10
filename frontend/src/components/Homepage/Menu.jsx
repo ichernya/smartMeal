@@ -82,10 +82,10 @@ function Menu(props) {
 
   const [chosenFood] = selectedFood || [null, null];
   const MARGIN = 7 * 16;
-  const menuSize = React.useRef(width >= 1200 ? (width * .13) : 175);
+  const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
 
   React.useEffect(() => {
-    menuSize.current = width >= 1200 ? (width * .13) : 175;
+    menuSize.current = width >= 1200 ? (width * .14) : 175;
   }, [width]);
 
   React.useEffect(() => {
@@ -138,6 +138,8 @@ function Menu(props) {
                 .fill(0)
                 .map((_, ind) => {
                   const item = recipes[(ind * 2)];
+                  const image = item['img'] ? item['img'] :
+                    require('../../assets/ass.png');
                   return (
                     <ImageListItem
                       className='margins'
@@ -145,12 +147,8 @@ function Menu(props) {
                       key={item['dishname'] + ind}
                     >
                       <img
-                        src={item['img'] ?
-                          `${item['img']}?w=248&fit=crop&auto=format` : ''}
-                        srcSet={item['img'] ?
-                          `${item['img']}` +
-                            `?w=248&fit=crop&auto=format&dpr=2 2x` : ''
-                        }
+                        src={`${image}w=248&fit=crop&auto=format`}
+                        srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                         alt={item['dishname']}
                         loading="lazy"
                         id={chosenFood === item ? 'selected' : 'unselected'}
