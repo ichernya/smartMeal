@@ -10,6 +10,7 @@ import CheckList from './components/CheckList/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
 import './App.css';
 
+
 // eslint-disable-next-line require-jsdoc
 function App() {
   // logic to check if the user is already logged in

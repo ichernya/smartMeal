@@ -9,12 +9,19 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
+import {useNavigate} from 'react-router-dom';
 
 
 import './DrawerContent.css';
 
 // eslint-disable-next-line require-jsdoc
-const DrawerContent = (prop) => {
+function DrawerContent(prop) {
+  const history = useNavigate();
+  const logout = () => {
+    localStorage.removeItem('user');
+    history('/login');
+  };
+
   return (
     <div className='options'>
       <List className='pages'>
@@ -45,7 +52,12 @@ const DrawerContent = (prop) => {
       <List className='bottomBtns'>
         <Divider />
         {['Settings', 'Logout'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{display: 'block'}}>
+          <ListItem
+            key={text}
+            disablePadding
+            sx={{display: 'block'}}
+            onClick={text === 'Logout' ? logout : null}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,

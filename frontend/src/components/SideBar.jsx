@@ -64,9 +64,11 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 // eslint-disable-next-line require-jsdoc
 export default function TheDrawer() {
   const [open, setOpen] = React.useState(false);
+
   const handleDrawerClose = () => {
     setOpen(!open);
   };
+
   return (
 
     <Box className="SideBar">

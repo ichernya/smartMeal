@@ -12,7 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 
-import Filter from './Filter.jsx';
+import Filter from './Filter/Filter.jsx';
 import './Tools.css';
 
 export const Search = styled('div')(({theme}) => ({
@@ -69,47 +69,43 @@ function Tools(props) {
     <Toolbar
       className='tools'
     >
-      <Search id='search'>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <IconButton
-          onClick={() => setSearch('')}
-          id='cancelSearch'
-          sx={{
-            visibility: !search ? 'hidden' : '',
-          }}
-        >
-          <CloseIcon/>
-        </IconButton>
-        <StyledInputBase
-          className='searchInput'
-          placeholder="Search…"
-          inputProps={{'aria-label': 'search', 'width': 'inherit'}}
-          onChange={searchInput}
-          value={search}
-        />
-      </Search>
-      <Divider orientation="vertical" flexItem className='verticalDiv'/>
-
       <Grid
         container
         direction="row"
         justifyContent="center"
         alignItems="center"
-        style={{width: '50%'}}
+        className='splitGrid'
+      >
+        <Search id='search'>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <IconButton
+            onClick={() => setSearch('')}
+            id='cancelSearch'
+            sx={{
+              visibility: !search ? 'hidden' : '',
+            }}
+          >
+            <CloseIcon/>
+          </IconButton>
+          <StyledInputBase
+            className='searchInput'
+            placeholder="Search…"
+            inputProps={{'aria-label': 'search', 'width': 'inherit'}}
+            onChange={searchInput}
+            value={search}
+          />
+        </Search>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        className='splitGrid filtering'
       >
         <Filter HomeContext={props['HomeContext']}/>
-        <div className='stretch'/>
-        <IconButton
-          color="secondary"
-          className='clearBtn'
-        >
-          <RefreshIcon/>
-        </IconButton>
-        <div className='stretch'/>
-        <Divider orientation="vertical" flexItem className='verticalDiv'/>
-        <div className='stretch'/>
         <IconButton
           color="secondary"
         >
