@@ -33,23 +33,40 @@ const testData = [
     'kosher': true,
   },
 ];
-
-const ingredientDict = {
-  'Protein': ['Chicken Breast'],
-  'Dairy': ['Parmesan', 'Butter', 'Cheese'],
-  'Vegetable': ['Baby Bella Mushrooms', 'Jalepeno'],
-  'Breads | Pasta | Grains': ['Pasta'],
+const testIngredientList = {
+  'Protein': {
+    'amount': 3,
+    'amountChecked': 2,
+    'hidden': false,
+    'ingredients': {
+      'Beef': {
+        'checked': true,
+        'quantity': '15 lbs',
+        'price': '$20',
+      },
+      'Lentils': {
+        'checked': false,
+        'quantity': '12 kg',
+        'price': '$10',
+      },
+      'Salmon': {
+        'checked': true,
+        'quantity': '50 fillets',
+        'price': '$25',
+      },
+    },
+  },
 };
 
 export const MealsProvider = ({children}) => {
   const [meals, setMeals] = useState([]);
-  const [ingredients, setIngredients] = useState({});
+  const [ingredientState, setIngredientState] = useState({});
   useEffect(() => {
     setMeals(testData);
-    setIngredients(ingredientDict);
+    setIngredientState(testIngredientList);
   }, []);
   return (
-    <MealsContext.Provider value={{meals, ingredients}}>
+    <MealsContext.Provider value={{meals, ingredientState, setIngredientState}}>
       {children}
     </MealsContext.Provider>
   );

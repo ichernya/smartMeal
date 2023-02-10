@@ -1,78 +1,114 @@
-/* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import IconButton from '@mui/material/IconButton';
+
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import {useMeals} from '../MealContextProvider';
-// import children from './CheckChildren';
 import './Checkbox.css';
-
-// All the supported categories
-const categories = [
-  'Protein',
-  'Vegetable',
-  'Dairy',
-  'Canned & Dried Produce',
-  'Baking',
-  'Herbs & Spices',
-  'Breads | Pasta | Grains',
-];
 
 /**
  * @return {object} Which represents the list of categories
  *                  and thier sublist of ingredients
  */
 const IndeterminateCheckbox = () => {
-  const {ingredients} = useMeals();
+  const {ingredientState, setIngredientState} = useMeals();
   // When first lanuch \load meal from database and when the week change
-  const [needLoad, setNeedLoad] = useState(true);
-  // Loading the sechematic of the dictinoary state
-  const [categorieState, setCategorieState] = useState({
-    'Protein': {'checked': false, 'ingredients': []},
-    'Vegetable': {'checked': false, 'ingredients': []},
-    'Dairy': {'checked': false, 'ingredients': []},
-    'Canned & Dried Produce': {'checked': false, 'ingredients': []},
-    'Baking': {'checked': false, 'ingredients': []},
-    'Herbs & Spices': {'checked': false, 'ingredients': []},
-    'Breads | Pasta | Grains': {'checked': false, 'ingredients': []},
-  });
+  const [loading, setLoading] = useState(true);
+  const setAll = (target, location, value) => {
+    Object.keys(target[location]['ingredients']).forEach((key) => {
+      target[location]['ingredients'][key].checked = value;
+    });
+  };
+  const setAllCategory = (target, location, value) => {
+    Object.keys(target[location]).forEach((key) => {
+      target[location].hidden = value;
+    });
+  };
   // Checking the box
   const handleChange = (event) => {
-    const newDic = {...categorieState};
-    newDic[event.target.id]['checked'] = !newDic[event.target.id]['checked'];
-    setCategorieState(newDic);
+    const newDic = {...ingredientState};
+    if (newDic[event.target.id]['amount'] ===
+    newDic[event.target.id]['amountChecked']) {
+      newDic[event.target.id]['amountChecked'] = 0;
+      setAll(newDic, event.target.id, false);
+    } else {
+      newDic[event.target.id]['amountChecked'] =
+      newDic[event.target.id]['amount'];
+      setAll(newDic, event.target.id, true);
+    }
+    setIngredientState(newDic);
+  };
+  const handleChildChange = (event) => {
+    const newDic = {...ingredientState};
+    const [parentCategory, myIngredient] = event.target.id.split('-');
+    if (newDic[parentCategory]['ingredients'][myIngredient].checked) {
+      newDic[parentCategory]['ingredients'][myIngredient].checked = false;
+      newDic[parentCategory]['amountChecked'] -= 1;
+    } else {
+      newDic[parentCategory]['ingredients'][myIngredient].checked = true;
+      newDic[parentCategory]['amountChecked'] += 1;
+    }
+    setIngredientState(newDic);
+  };
+  const handleHidden = (category) => {
+    const newDic = {...ingredientState};
+    setAllCategory(newDic, category, !newDic[category].hidden);
+    setIngredientState(newDic);
   };
   // Fetch from the database
   useEffect(() => {
-    categories.forEach((category) => {
-      if (categorieState[category] && ingredients[category] && needLoad) {
-        const newState = categorieState;
-        newState[category]['ingredients'] = (ingredients[category]);
-        setCategorieState(newState);
-        setNeedLoad(false);
-      }
-    });
-  }, [categorieState, ingredients, needLoad]);
+    setLoading(false);
+  }, [ingredientState]);
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-    >
-      {categories.map((category) => (
-        <Grid item key={category}>
-          <FormControlLabel
-            label={category}
-            id={category}
-            control={
-              <Checkbox
-                id={category}
-                checked={categorieState[category]['checked']}
-                onChange={handleChange}
-              />}
-          />
+    <Grid>
+      {Object.keys(ingredientState).map((category) => (
+        <Grid container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="flex-start" key={category}>
+          <Grid item>
+            <FormControlLabel
+              label={category}
+              control={
+                <Checkbox
+                  id={category}
+                  checked={!loading ? ingredientState[category]['amount'] ===
+                ingredientState[category]['amountChecked'] : false}
+                  indeterminate={!loading ?
+                    ingredientState[category]['amountChecked'] > 0 &&
+                  ingredientState[category]['amount'] !==
+                  ingredientState[category]['amountChecked'] : false}
+                  onChange={handleChange}
+                />}
+            />
+            <IconButton onClick={() => handleHidden(category)}>
+              {ingredientState[category].hidden ?
+                <ExpandMoreIcon/> : <ExpandLessIcon/>}
+            </IconButton>
+          </Grid>
+          {!loading ? Object.keys(ingredientState[category]['ingredients'])
+            .map((ingredient) =>
+              (<Box sx={{display: ingredientState[category].hidden ?
+                'none' : 'flex', flexDirection:
+              'column', ml: 3, gap: 1, mt: 1}} key={ingredient}>
+                <FormControlLabel
+                  label={ingredient}
+                  control={
+                    <Checkbox
+                      id={`${category}-${ingredient}`}
+                      checked=
+                        {ingredientState[category]['ingredients'][ingredient]
+                          .checked}
+                      onChange={handleChildChange}
+                    />
+                  }
+                />
+              </Box>)) : <div/>}
         </Grid>
       ))}
     </Grid>
