@@ -9,7 +9,10 @@ import IconButton from '@mui/material/IconButton';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import Toolbar from '@mui/material/Toolbar';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 
+import Filter from './Filter.jsx';
 import './Tools.css';
 
 export const Search = styled('div')(({theme}) => ({
@@ -87,17 +90,37 @@ function Tools(props) {
           value={search}
         />
       </Search>
-      <div style={{flex: 1}}/>
-      <IconButton
-        color="secondary"
+      <Divider orientation="vertical" flexItem className='verticalDiv'/>
+
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        style={{width: '50%'}}
       >
-        <RefreshIcon/>
-      </IconButton>
-      <IconButton
-        color="secondary"
-      >
-        <ReorderIcon/>
-      </IconButton>
+        <Filter HomeContext={props['HomeContext']}/>
+        <div className='stretch'/>
+        <IconButton
+          color="secondary"
+          className='clearBtn'
+        >
+          <RefreshIcon/>
+        </IconButton>
+        <div className='stretch'/>
+        <Divider orientation="vertical" flexItem className='verticalDiv'/>
+        <div className='stretch'/>
+        <IconButton
+          color="secondary"
+        >
+          <RefreshIcon/>
+        </IconButton>
+        <IconButton
+          color="secondary"
+        >
+          <ReorderIcon/>
+        </IconButton>
+      </Grid>
     </Toolbar>
   );
 }
