@@ -13,21 +13,21 @@ export default function MediaCard() {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
-        sx={{ height: 140 }}
+        sx={{ height: 165 }}
         image={immagine}
-        title="green iguana"
+        title="Weekly Schedule"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Lizard
+          Weekly Schedule
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+          Personalize your weekly meal plan, find the meals that fit you the best
+          and add them to your schedule. Balance your calories amount with the filter tool and much more
         </Typography>
       </CardContent>
       <CardActions>
-      <Link to='/login' className='link'>
+      <Link to='/login' class='center'>
         <Button size="small">Get started</Button>
       </Link>
       </CardActions>

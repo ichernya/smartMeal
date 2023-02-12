@@ -7,6 +7,7 @@ import Error from './components/Page404.jsx';
 import PageLayout from './components/PageLayout.jsx';
 import SideBar from './components/SideBar.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
+import AddMealDialog from './components/AddMealDialog.jsx';
 import './App.css';
 
 // eslint-disable-next-line require-jsdoc
@@ -23,6 +24,7 @@ function App() {
             <Route path={'/signup'} exact element={<Registration/>}/>
             <Route path={'/login'} exact element={<Login/>}/>
             <Route path={'/sidebar'} exact element={<SideBar/>}/>
+            <Route path={'/addMeal'} exact element={<AddMealDialog/>}/>
             <Route path={'*'} exact element={<Error/>}/>
           </Routes>
         </BrowserRouter>

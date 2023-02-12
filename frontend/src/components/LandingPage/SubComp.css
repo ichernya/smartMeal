@@ -3,8 +3,20 @@
   text-decoration: none;
 }
 
-.buttons{
+.center{
+  margin: 1rem;
+  text-decoration: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toolbarButtons{
   float: right;
+  resize: both;
+}
+
+.button{
+  background-color: rgba(40,187,183,255);
 }
 
 .title{
@@ -18,12 +30,11 @@
   line-height: 30px;
   font-variant: normal;
   font-feature-settings: normal;
+  /*padding is added to center the title (uncentered cause of the logo)*/
+  padding-right: 65px;
 }
 
 .appBar{
-  background-color: rgba(0,0,0,0); 
-}
-
-.headerButton{
-  float: right;
+  background-color: rgba(0,0,0,0);
+  resize: both;
 }
