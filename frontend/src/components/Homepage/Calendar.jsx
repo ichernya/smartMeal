@@ -44,11 +44,12 @@ const getMeal = (setMeal, calendar, id, weekday, time) => {
     });
 };
 
-
-const getMealsForWeek = (calendar, setMeal, date, user) => {
+// Queries the database for the meals the user has chosen for the week
+const getMealsForWeek = (calendar, setMeal, startWeek, user) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
+  const date = new Date(startWeek);
   for (let day = 0; day < 7; ++day) {
     const ISOdate = date.toISOString().split('T')[0];
     fetch(`http://localhost:3010/v0/meals?dayof=${ISOdate}&mealsid=${user}`, {
@@ -62,11 +63,14 @@ const getMealsForWeek = (calendar, setMeal, date, user) => {
         return response.json();
       })
       .then((json) => {
+        console.log(json);
         const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const weekday = daysOfWeek[day].toLowerCase();
 
         for (let time = 0; time < json.length; ++time) {
-          getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+          if (json[time]['recipeid']) {
+            getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+          }
         }
       });
 
@@ -74,13 +78,43 @@ const getMealsForWeek = (calendar, setMeal, date, user) => {
   }
 };
 
+// Adds a meal to the week
+const addMeal = (userId, mealId, startWeek, weekday) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const dateCopy = new Date(startWeek);
+
+  dateCopy.setDate(dateCopy.getDate() + weekday);
+  const body = {
+    'mealsid': userId,
+    'recipeid': mealId,
+    'dayof': dateCopy.toISOString().split('T')[0],
+  };
+  fetch(`http://localhost:3010/v0/meals`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
+
 
 // eslint-disable-next-line require-jsdoc
 function Calendar(props) {
   const {width, cardSize, selectedFood, setSelected, startWeek} =
     React.useContext(props['HomeContext']);
+
+  // Represents the food currently selected from the menu as well as the number
+  // of times it was added to the calendar
+  // Keeping track of the number of times used because we wanted to unselect a
+  // food used multiple times on unshift
+  // Without keeping track of the count, the user could unselect with unshift
+  // even if they havent added the selected item before
   const [chosenFood, used] = selectedFood || [null, 0];
-  const [updated, setUpdated] = React.useState(false);
 
   const [TODOtempdate, setPlan] = React.useState({
     'mon': [{'dishname': 'temp', 'img': ''},
@@ -99,14 +133,15 @@ function Calendar(props) {
       {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
   });
 
-  if (!updated) {
+  React.useEffect(() => {
+    // Grab the meals for the week when loading the page
     getMealsForWeek(TODOtempdate, setPlan, startWeek, 1);
-    setUpdated(true);
-  }
+  }, []);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
-  const chooseFood = (event, day, time) => {
+  const chooseFood = (event, day, time, weekday) => {
+    // Add chosen menu item to the calendar
     if (chosenFood) {
       const meal = [...TODOtempdate[day]];
       meal[time] = {
@@ -114,6 +149,10 @@ function Calendar(props) {
         'img': chosenFood['img'],
       };
       setPlan({...TODOtempdate, [day]: meal});
+      // Replace 1 with userID in the future TODO
+      // Adds the meal to the backend meal plan
+      addMeal(1, chosenFood['mealsid'], startWeek, weekday);
+      // Holding shift key allows for multi-select
       if (!event['shiftKey']) {
         setSelected(null);
       } else {
@@ -122,21 +161,22 @@ function Calendar(props) {
     }
   };
 
+  // className='container'
   return (
     <Grid
       container
       spacing={0}
-      className='container'
+      className={width < 1200 ? 'mobileContainer' : 'webContainer'}
       id='wrapping'
     >
-      {daysOfWeek.map((day, ind) =>
+      {daysOfWeek.map((day, weekday) =>
         <div className='card margins' key={day}>
           <Grid
             item
             xs={6}
             md={1.5}
             className={
-              'food ' + (ind === 0 ? 'sideBorder' : 'rightBorder')
+              'food ' + (weekday === 0 ? 'sideBorder' : 'rightBorder')
             }
           >
             <Item> {day} </Item>
@@ -158,7 +198,8 @@ function Calendar(props) {
                       sx={{
                         width: `${cardSize.current}px`,
                       }}
-                      onClick={(event) => chooseFood(event, dayLower, ind)}
+                      onClick={(event) =>
+                        chooseFood(event, dayLower, ind, weekday)}
                     >
                       <ImageListItem>
                         <img

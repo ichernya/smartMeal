@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Fab from '@mui/material/Fab';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -11,17 +11,24 @@ import BgImg from '../../assets/p1t.jpg';
 import {useNavigate} from 'react-router-dom';
 import './Login.css';
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Login component
+ * @return {object}
+ */
 const Login = () => {
+  // User input fields
   const [user, setUser] = React.useState({email: '', password: ''});
+  // Represent if logged in
   const [status, setStatus] = useState();
   const history = useNavigate();
+  // Handle using input
   const handleInputChange = (event) => {
     const {value, name} = event.target;
     const u = user;
     u[name] = value;
     setUser(u);
   };
+  // Login request
   const submitLoginForm = (event) => {
     event.preventDefault();
     fetch('http://localhost:3010/v0/login', {
@@ -44,6 +51,12 @@ const Login = () => {
         setStatus(true);
       });
   };
+  // Store user login access token into local storage
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      history('/home');
+    }
+  }, [history]);
   return (
     <Grid container component="main" sx={{height: '100vh'}} direction="row">
       <CssBaseline />

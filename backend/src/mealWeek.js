@@ -35,9 +35,19 @@ const pullFoodFull = async ( mealsid, dayof) => {
     let last = first + 6; 
     let start = new Date(curr.setDate(first)).toISOString().split('T')[0];
     let end = new Date(curr.setDate(last)).toISOString().split('T')[0] ;
-    const select = 'SELECT * FROM meals WHERE (mealsid = $3) AND dayof::date BETWEEN $1::date AND $2::date';
+    const select = `
+    SELECT * 
+    FROM recipes
+    WHERE recipeid (SELECT dinner FROM meals WHERE (mealsid = $3) AND dayof::date BETWEEN $1::date AND $2::date`;
+
+    const select_2 = `
+    SELECT * 
+    FROM recipes
+       JOIN meals ON recipeid = breakfast OR recipeid = lunch OR recipeid = dinner
+    WHERE (mealsid = $3) AND dayof::date BETWEEN $1::date AND $2::date
+    `
     const query = {
-        text: select,
+        text: select_2,
         values: [ start, end, mealsid ]
     }
     const {rows} = await pool.query(query);

@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-import Content from './Drawer_Content';
+import DrawerContent from './DrawerContent.jsx';
 import './SideBar.css';
 const drawerWidth = '240px';
 
@@ -64,10 +64,13 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 // eslint-disable-next-line require-jsdoc
 export default function TheDrawer() {
   const [open, setOpen] = React.useState(false);
+
   const handleDrawerClose = () => {
     setOpen(!open);
   };
+
   return (
+
     <Box className="SideBar">
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -77,8 +80,7 @@ export default function TheDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <Content open={open}/>
-        <Divider />
+        <DrawerContent open={open}/>
       </Drawer>
     </Box>
   );

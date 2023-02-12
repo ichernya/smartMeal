@@ -1,3 +1,13 @@
+@media (max-width: 599px) {
+    .clearBtn {
+        display: none !important;
+    }
+
+    .verticalDiv {
+        display: none !important;
+    }
+}
+
 .tools {
     background-color: red;
     height: 50px;
@@ -8,7 +18,7 @@
 }
 
 #search {
-    width: 50%;
+    width: 100%;
 }
 
 #cancelSearch {
@@ -22,3 +32,14 @@
     font-size: 20px;
 }
 
+.verticalDiv {
+    margin-left: 4px !important;
+}
+
+.splitGrid {
+    width: 50% !important;
+}
+
+.filtering {
+    flex-wrap: nowrap !important;
+}

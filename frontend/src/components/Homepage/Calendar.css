@@ -1,16 +1,12 @@
-@media (min-width: 1200px) {
-    .container {
-        justify-content: center;
-    }
+.webContainer {
+    justify-content: center;
 }
 
-@media (max-width: 1199px) {
-    .container {
-        display: flex;
-        overflow-x: scroll;
-        width: 100%;
-        flex-wrap: nowrap !important;
-    }
+.mobileContainer {
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    flex-wrap: nowrap !important;
 }
 
 .imgListBar {
@@ -19,7 +15,6 @@
 }
 
 .MuiImageListItemBar-title {
-    white-space: break-spaces !important;
     font-size: 12px !important;
 }
 
@@ -75,4 +70,3 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
-

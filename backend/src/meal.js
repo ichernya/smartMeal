@@ -23,9 +23,30 @@ const pool = new Pool({
 //      all meals saved on that day for that user matching mealid
 const pullFood = async ( dayof , mealsid ) => {
     // select query for when day matches and mealid matches
-    const select = 'SELECT * FROM meals WHERE (dayof = $1) AND (mealsid = $2)';
+    const select_2 = `
+    SELECT * 
+    FROM recipes
+       JOIN meals ON recipeid = breakfast OR recipeid = lunch OR recipeid = dinner
+    WHERE (dayof = $1) AND (mealsid = $2)
+    `
+    // const select = `
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT breakfast FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // UNION
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT lunch FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // UNION
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT dinner FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // `
     const query = {
-        text: select,
+        text: select_2,
         values: [ dayof, mealsid ]
     }
     const {rows} = await pool.query(query);
@@ -48,17 +69,34 @@ exports.pullFoodDay = async (req, res) => {
 // need to send back to frontend;
 //      a 201 confirmation when the meal was created to the user
 //      or default error when not possible
-const addFood = async ( mealsid, recipeid, dayof) => {
-    const insert = 'INSERT INTO meals(mealsid, recipeid, dayof) VALUES ($1, $2, $3)'
+const addFood = async ( mealsid, breakfast, lunch, dinner, dayof) => {
+    var insert = 'INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES ($1, $2, $3, $4, $5)'
     const query = {
-        text: insert,
-        values: [ mealsid, recipeid, dayof ]
-    }
+            text: insert,
+            values: [ mealsid, breakfast, lunch, dinner, dayof ]
+        }
     await pool.query(query);
 }
 
 exports.addFoodUser = async (req, res) => {
     // caller function that awaits addFood and returns a 201 on Success 
-    await addFood(req.body.mealsid, req.body.recipeid, req.body.dayof);
+    const food = await addFood(req.body.mealsid, req.body.breakfast, req.body.lunch, req.body.dinner, req.body.dayof);
     res.status(201).send(req.body);
+    
+}
+
+const updateFood = async ( mealsid, breakfast, lunch, dinner, dayof) => {
+    var insert = 'UPDATE meals SET breakfast = $2, lunch = $3, dinner = $4 WHERE mealsid = $1 AND dayof = $5'
+    const query = {
+            text: insert,
+            values: [ mealsid, breakfast, lunch, dinner, dayof ]
+        }
+    await pool.query(query);
+}
+
+exports.updateFoodUser = async (req, res) => {
+    // caller function that awaits addFood and returns a 201 on Success 
+    const food = await updateFood(req.body.mealsid, req.body.breakfast, req.body.lunch, req.body.dinner, req.body.dayof);
+    res.status(201).send(req.body);
+    
 }

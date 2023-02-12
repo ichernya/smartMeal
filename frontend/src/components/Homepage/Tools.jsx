@@ -9,7 +9,10 @@ import IconButton from '@mui/material/IconButton';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import Toolbar from '@mui/material/Toolbar';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 
+import Filter from './Filter/Filter.jsx';
 import './Tools.css';
 
 export const Search = styled('div')(({theme}) => ({
@@ -66,38 +69,54 @@ function Tools(props) {
     <Toolbar
       className='tools'
     >
-      <Search id='search'>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        className='splitGrid'
+      >
+        <Search id='search'>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <IconButton
+            onClick={() => setSearch('')}
+            id='cancelSearch'
+            sx={{
+              visibility: !search ? 'hidden' : '',
+            }}
+          >
+            <CloseIcon/>
+          </IconButton>
+          <StyledInputBase
+            className='searchInput'
+            placeholder="Search…"
+            inputProps={{'aria-label': 'search', 'width': 'inherit'}}
+            onChange={searchInput}
+            value={search}
+          />
+        </Search>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        className='splitGrid filtering'
+      >
+        <Filter HomeContext={props['HomeContext']}/>
         <IconButton
-          onClick={() => setSearch('')}
-          id='cancelSearch'
-          sx={{
-            visibility: !search ? 'hidden' : '',
-          }}
+          color="secondary"
         >
-          <CloseIcon/>
+          <RefreshIcon/>
         </IconButton>
-        <StyledInputBase
-          className='searchInput'
-          placeholder="Search…"
-          inputProps={{'aria-label': 'search', 'width': 'inherit'}}
-          onChange={searchInput}
-          value={search}
-        />
-      </Search>
-      <div style={{flex: 1}}/>
-      <IconButton
-        color="secondary"
-      >
-        <RefreshIcon/>
-      </IconButton>
-      <IconButton
-        color="secondary"
-      >
-        <ReorderIcon/>
-      </IconButton>
+        <IconButton
+          color="secondary"
+        >
+          <ReorderIcon/>
+        </IconButton>
+      </Grid>
     </Toolbar>
   );
 }
