@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Fab from '@mui/material/Fab';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -7,23 +7,43 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import BgImg from '../assets/p1t.jpg';
+import BgImg from '../../assets/p1t.jpg';
+import {useNavigate} from 'react-router-dom';
 import './Login.css';
 
 // eslint-disable-next-line require-jsdoc
 const Login = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [user, setUser] = React.useState({email: '', password: ''});
   const [status, setStatus] = useState();
-  const submitLoginForm = () => {
-    setStatus(true);
+  const history = useNavigate();
+  const handleInputChange = (event) => {
+    const {value, name} = event.target;
+    const u = user;
+    u[name] = value;
+    setUser(u);
   };
-  useEffect(() => {
-    console.log(email);
-  }, [email]);
-  useEffect(() => {
-    console.log(password);
-  }, [password]);
+  const submitLoginForm = (event) => {
+    event.preventDefault();
+    fetch('http://localhost:3010/v0/login', {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then((json) => {
+        localStorage.setItem('user', JSON.stringify(json));
+        history('/home');
+      }).catch((err) => {
+        setStatus(true);
+      });
+  };
   return (
     <Grid container component="main" sx={{height: '100vh'}} direction="row">
       <CssBaseline />
@@ -55,31 +75,34 @@ const Login = () => {
             <TextField
               margin="normal"
               required
-              fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleInputChange}
               autoFocus
+              sx={{
+                width: '100%',
+              }}
             />
             <TextField
               margin="normal"
               required
-              fullWidth
               name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleInputChange}
+              sx={{
+                width: '100%',
+              }}
             />
-            {status ? <div class='error'>
+            {status ? <div className='error'>
               Invalid Credentials
             </div> : null}
             <Fab
               variant="extended"
-              fullWidth
               size="medium"
               color='primary'
               sx={{mt: 3, mb: 2, width: '100%'}}
@@ -94,18 +117,16 @@ const Login = () => {
             <Fab
               variant="extended"
               size="medium"
-              fullWidth
               sx={{mt: 3, width: '100%'}}
-              id="Fab_SignIn_Others"
+              className="Fab_SignIn_Others"
             >
                 Continue with Google
             </Fab>
             <Fab
               variant="extended"
               size="medium"
-              fullWidth
               sx={{mt: 4, mb: 2, width: '100%'}}
-              id="Fab_SignIn_Others"
+              className="Fab_SignIn_Others"
             >
                 Continue with Apple
             </Fab>

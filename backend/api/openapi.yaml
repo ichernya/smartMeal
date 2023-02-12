@@ -13,6 +13,60 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /userSearch:
+    get:
+      description: returns user query
+      parameters:
+        - in: query
+          name: userInput
+          schema:
+            type: string
+          required: true
+          description: what the user gives
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipes'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /mealWeek:
+    get:
+      description: returns full week of food
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: mealsid
+        - in: query
+          name: dayof
+          schema:
+            type: string
+          required: true
+          description: day
+      responses:
+        200: 
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getMeal'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
   /login:
     post:
@@ -40,6 +94,8 @@ paths:
 
   /recipe:
     get:
+      security:
+        - bearerAuth: []
       description: returns one recipe
       parameters:
         - in: query
@@ -64,6 +120,8 @@ paths:
 
   /recipes:
     get:
+      security:
+        - bearerAuth: []
       description: returns all recipes
       responses:
         200:
@@ -81,6 +139,8 @@ paths:
 
   /meals:
     post:
+      security:
+        - bearerAuth: []
       description: add a meal to a user with date and userid
       requestBody:
         description: userid date
@@ -104,6 +164,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     get:
+      security:
+        - bearerAuth: []
       description: retrieve meals that should be displayed on that date
       parameters:
         - in: query
@@ -146,7 +208,6 @@ components:
           format: int32
         message:
           type: string
-
     recipes:
       items:
         $ref: '#/components/schemas/recipe'
@@ -162,7 +223,19 @@ components:
           items:
             type: string
           example: ["str1", "str2", "str3"]
-
+        ingredientAm:
+          type: integer
+        imageData:
+          type: string
+        vegan:
+          type: boolean
+        halal:
+          type: boolean
+        healthy:
+          type: boolean
+        kosher:
+          type: boolean
+        
     putMealToUser:
       properties:
         mealsid:
@@ -202,3 +275,10 @@ components:
       required:
         - name
         - accessToken
+
+
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes

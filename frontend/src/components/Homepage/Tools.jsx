@@ -38,9 +38,6 @@ export const StyledInputBase = styled(InputBase)(({theme}) => ({
     'width': 'inherit',
     [theme.breakpoints.up('sm')]: {
       'width': 'inherit',
-      '&:focus': {
-        'width': '20ch',
-      },
     },
   },
 }));
@@ -55,7 +52,6 @@ export const SearchIconWrapper = styled('div')(({theme}) => ({
   'justifyContent': 'center',
 }));
 
-
 // eslint-disable-next-line require-jsdoc
 function Tools(props) {
   const {width, cardSize, search, setSearch} =
@@ -68,8 +64,6 @@ function Tools(props) {
 
   return (
     <Toolbar
-      style={{width: width >= 1200 ?
-        (cardSize.current * 7) + (16 * 8) : '100%'}}
       className='tools'
     >
       <Search id='search'>
