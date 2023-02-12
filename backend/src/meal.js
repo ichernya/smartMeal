@@ -23,9 +23,30 @@ const pool = new Pool({
 //      all meals saved on that day for that user matching mealid
 const pullFood = async ( dayof , mealsid ) => {
     // select query for when day matches and mealid matches
-    const select = 'SELECT * FROM meals WHERE (dayof = $1) AND (mealsid = $2)';
+    const select_2 = `
+    SELECT * 
+    FROM recipes
+       JOIN meals ON recipeid = breakfast OR recipeid = lunch OR recipeid = dinner
+    WHERE (dayof = $1) AND (mealsid = $2)
+    `
+    // const select = `
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT breakfast FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // UNION
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT lunch FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // UNION
+    // SELECT * 
+    // FROM recipes
+    // WHERE recipeid IN 
+    // (SELECT dinner FROM meals WHERE (dayof = $1) AND (mealsid = $2))
+    // `
     const query = {
-        text: select,
+        text: select_2,
         values: [ dayof, mealsid ]
     }
     const {rows} = await pool.query(query);

@@ -16,5 +16,5 @@ INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES (1, 1, 0, 0, 
 
 DELETE FROM substitutions;
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Whole Milk', '{"Skimmed Milk", "Fat Free Milk"}', '{"Almond Milk", "Soy Milk", "Oat Milk"}');
-INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Cheese', '{"Skimmed Milk", "Fat Free Milk"}', '{"Cashew Cheese", "Daiya Cheese"}');
+INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Cheese', '{"Low Fat Cheese", "Fat Free Cheese"}', '{"Cashew Cheese", "Daiya Cheese"}');
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Beef', '{"Bison", "Lamb"}', '{"Tempeh"}');
