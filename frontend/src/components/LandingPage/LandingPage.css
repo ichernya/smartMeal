@@ -1,0 +1,16 @@
+.root{
+  min-height: 100vh;
+  background-image: url('../../assets/food_background.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  resize: both;
+  overflow: scroll;
+}
+
+#infoSection{
+  font-weight:lighter;
+  font-family: cursive, Helvetica, Arial, sans-serif;
+  /* font-size: 2vw; */
+  padding-top: 1%;
+  resize: both;
+}
