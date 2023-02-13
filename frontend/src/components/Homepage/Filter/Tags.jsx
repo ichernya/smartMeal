@@ -129,7 +129,7 @@ function Tags(props) {
       {Object.keys(categoryView).map((category) => {
         const allTags = Object.keys(alignments[category]);
         return (
-          <Grid container spacing={1} className='tagsRow'>
+          <Grid container spacing={1} className='tagsRow' key='category'>
             <Grid item className='category'>
               {category}
               <IconButton onClick={() => updateView(category)}>

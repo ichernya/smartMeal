@@ -23,19 +23,10 @@ const MenuProps = {
   },
 };
 
-// eslint-disable-next-line require-jsdoc
+// eslint-disable-next-line require-jsdocZZ
 function Filter(props) {
   const {setDrawer, setFilter, filters, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
-
-  const handleClear = () => {
-    setTags({});
-    const copy = {...alignments};
-    for (const key of Object.keys(alignments)) {
-      copy[key] = 'default';
-    }
-    setAlignment({...copy});
-  };
 
   const handleChange = (name) => {
     let copy = {...filters};
@@ -82,22 +73,6 @@ function Filter(props) {
         </Select>
       </FormControl>
 
-      <IconButton
-        color="secondary"
-        onClick={() => {
-          setDrawer(true);
-        }}
-      >
-        <FilterAltIcon/>
-      </IconButton>
-
-      <IconButton
-        color="secondary"
-        style={{display: Object.keys(tags).length > 0 ? '' : 'none'}}
-        onClick={handleClear}
-      >
-        <DeleteIcon/>
-      </IconButton>
     </div>
   );
 }

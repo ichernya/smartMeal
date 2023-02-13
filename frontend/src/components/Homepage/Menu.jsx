@@ -137,6 +137,7 @@ function Menu(props) {
                 <Item
                   style={{height: `${menuSize.current}px`}}
                   className='menus'
+                  key={index}
                 >
                   <ImageList
                     onScroll={scroller}
