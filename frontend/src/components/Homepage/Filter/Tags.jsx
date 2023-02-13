@@ -4,64 +4,85 @@ import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+import SentimentDissatisfiedOutlinedIcon
+  from '@mui/icons-material/SentimentDissatisfiedOutlined';
+import SentimentSatisfiedAltOutlinedIcon
+  from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Divider from '@mui/material/Divider';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import CheckIcon from '@mui/icons-material/Check';
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-
+import './Tags.css';
 
 // eslint-disable-next-line require-jsdoc
 function Toggles(props) {
-  const {alignments, setAlignment, name, setTags, tags} = props;
+  const {alignments, setAlignment, name, setFilter, filters, category} = props;
 
-  const state = alignments[name];
+  const value = alignments[category][name];
   const control = {
-    value: state,
+    value: value,
     exclusive: true,
   };
 
   const updateTags = (name, newAlignment) => {
-    if (tags[name] &&
-      (newAlignment === 'default' || newAlignment === alignments[name])) {
-      const copy = {...tags};
+    if (filters[name] &&
+      (newAlignment === 'default' || newAlignment === value)) {
+      const copy = {...filters};
       delete copy[name];
-      setTags(copy);
-    } else if (newAlignment !== alignments[name]) {
-      setTags({...tags, [name]: newAlignment});
+      setFilter(copy);
+    } else if (newAlignment !== value) {
+      setFilter({...filters, [name]: newAlignment});
     }
 
-    if (alignments[name] === newAlignment) {
-      setAlignment({...alignments, [name]: 'default'});
+    if (value === newAlignment) {
+      setAlignment(
+        {...alignments,
+          [category]: {...alignments[category],
+            [name]: 'default'},
+        },
+      );
     } else {
-      setAlignment({...alignments, [name]: newAlignment});
+      setAlignment(
+        {...alignments,
+          [category]: {...alignments[category],
+            [name]: newAlignment},
+        },
+      );
     }
   };
 
   return (
-    <ToggleButtonGroup size="small" {...control} aria-label="Small sizes">
+    <ToggleButtonGroup
+      size="small"
+      {...control}
+      aria-label="Small sizes"
+    >
       <ToggleButton
         value="no"
         onClick={() => updateTags(name, 'no')}
         style={{
-          color: state === 'no' ? 'red' : '',
+          color: value === 'no' ? 'red' : '',
         }}
       >
-        <DoNotDisturbIcon />
+        <SentimentDissatisfiedOutlinedIcon />
       </ToggleButton>
       <ToggleButton
         value="default"
         onClick={() => updateTags(name, 'default')}
       >
-        <FormatAlignCenterIcon />
+        <SentimentNeutralIcon/>
       </ToggleButton>
       <ToggleButton
         value="yes"
         onClick={() => updateTags(name, 'yes')}
         style={{
-          color: state === 'yes' ? 'green' : '',
+          color: value === 'yes' ? 'green' : '',
         }}
       >
-        <CheckIcon />
+        <SentimentSatisfiedAltOutlinedIcon />
       </ToggleButton>
     </ToggleButtonGroup>
   );
@@ -69,10 +90,22 @@ function Toggles(props) {
 
 // eslint-disable-next-line require-jsdoc
 function Tags(props) {
-  const {tagsDrawer, setDrawer, setTags, tags,
+  const {tagsDrawer, setDrawer, setFilter, filters,
     alignments, setAlignment,
   } = React.useContext(props['HomeContext']);
 
+
+  // Represents whether the category is hidden or not
+  // TODO should be a query to db later
+  const [categoryView, setView] = React.useState({
+    'tag1': true,
+    'tag2': true,
+  });
+
+  const updateView = (category) => {
+    // Swap the view
+    setView({...categoryView, [category]: !categoryView[category]});
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -88,48 +121,72 @@ function Tags(props) {
 
   const list = () => (
     <Box
-      sx={{width: 250}}
+      className='tagsList'
       role="presentation"
       onKeyDown={toggleDrawer(false)}
     >
-
-      <Grid container spacing={1}>
-        {Object.keys(alignments).map((name) => (
-          <Grid container item spacing={0}>
-            <React.Fragment>
-              <Grid Item xs={6}>
-                {name}
-              </Grid>
-              <Grid Item xs={6}>
-                <Toggles
-                  setAlignment={setAlignment}
-                  alignments={alignments}
-                  name={name}
-                  setTags={setTags}
-                  tags={tags}
-                />
-              </Grid>
-            </React.Fragment>
+      {Object.keys(categoryView).map((category) => {
+        const allTags = Object.keys(alignments[category]);
+        return (
+          <Grid container spacing={1} className='tagsRow' key={category}>
+            <Grid item className='category'>
+              {category}
+              <IconButton onClick={() => updateView(category)}>
+                {categoryView[category] ?
+                  <ExpandLessIcon/> :
+                  <ExpandMoreIcon/>
+                }
+              </IconButton>
+            </Grid>
+            <Grid
+              container
+              spacing={1}
+              style={{
+                display: categoryView[category] ? '' : 'none',
+              }}
+            >
+              {allTags.map((name) => {
+                return (
+                  <Grid container item spacing={0} key={name} className='row'>
+                    <React.Fragment>
+                      <Grid item xs={6}>
+                        {name}
+                      </Grid>
+                      <Grid item xs={6} className='selections'>
+                        <Toggles
+                          setAlignment={setAlignment}
+                          alignments={alignments}
+                          name={name}
+                          setFilter={setFilter}
+                          filters={filters}
+                          category={category}
+                        />
+                      </Grid>
+                    </React.Fragment>
+                  </Grid>
+                );
+              })}
+            </Grid>
           </Grid>
-
-        ))}
-      </Grid>
+        );
+      })}
     </Box>
   );
 
   return (
-    <div>
-      <React.Fragment>
-        <Drawer
-          anchor={'right'}
-          open={tagsDrawer}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-        >
-          {list()}
-        </Drawer>
-      </React.Fragment>
-    </div>
+    <Drawer
+      anchor={'right'}
+      open={tagsDrawer}
+      onClose={toggleDrawer(false)}
+    >
+      <div className='header'>
+        <IconButton onClick={toggleDrawer(false)}>
+          <CloseIcon/>
+        </IconButton>
+      </div>
+      <Divider/>
+      {list()}
+    </Drawer>
   );
 }
 

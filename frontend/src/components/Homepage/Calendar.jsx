@@ -7,6 +7,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import Divider from '@mui/material/Divider';
 
+
 import './Calendar.css';
 import './Home.css';
 
@@ -63,7 +64,6 @@ const getMealsForWeek = (calendar, setMeal, startWeek, user) => {
         return response.json();
       })
       .then((json) => {
-        console.log(json);
         const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const weekday = daysOfWeek[day].toLowerCase();
 
@@ -136,7 +136,9 @@ function Calendar(props) {
   React.useEffect(() => {
     // Grab the meals for the week when loading the page
     getMealsForWeek(TODOtempdate, setPlan, startWeek, 1);
-  }, [TODOtempdate, startWeek]);
+  // TODO
+  // eslint-disable-next-line
+  }, []);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
@@ -202,6 +204,11 @@ function Calendar(props) {
                         chooseFood(event, dayLower, ind, weekday)}
                     >
                       <ImageListItem>
+                        <ImageListItemBar
+                          title={'TODO temp label?'}
+                          position='top'
+
+                        />
                         <img
                           component="img"
                           src={`${image}?w=248&fit=crop&auto=format`}

@@ -6,10 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import IconButton from '@mui/material/IconButton';
-
 
 import './Filter.css';
 
@@ -26,23 +22,13 @@ const MenuProps = {
 
 // eslint-disable-next-line require-jsdoc
 function Filter(props) {
-  const {setDrawer, setTags, tags, setAlignment, alignments} =
+  const {setDrawer, setFilter, filters, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
 
-  const handleClear = () => {
-    setTags({});
-    const copy = {...alignments};
-    for (const key of Object.keys(alignments)) {
-      copy[key] = 'default';
-    }
-    setAlignment({...copy});
-  };
-
   const handleChange = (name) => {
-    console.log(name);
-    let copy = {...tags};
+    let copy = {...filters};
     delete copy[name];
-    setTags({...copy});
+    setFilter({...copy});
     copy = {...alignments};
     copy[name] = 'default';
     setAlignment({...copy});
@@ -52,13 +38,13 @@ function Filter(props) {
     <div
       className='filter'
     >
-      <FormControl sx={{m: 1, width: 300}}>
+      <FormControl sx={{m: 1, width: '100%'}}>
         <InputLabel>Filters</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
-          value={Object.keys(tags)}
+          value={Object.keys(filters)}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
             <Box
@@ -72,7 +58,7 @@ function Filter(props) {
           )}
           MenuProps={MenuProps}
         >
-          {Object.keys(tags).map((name) => (
+          {Object.keys(filters).map((name) => (
             <MenuItem
               key={name}
               value={name}
@@ -84,22 +70,6 @@ function Filter(props) {
         </Select>
       </FormControl>
 
-      <IconButton
-        color="secondary"
-        onClick={() => {
-          setDrawer(true);
-        }}
-      >
-        <FilterAltIcon/>
-      </IconButton>
-
-      <IconButton
-        color="secondary"
-        style={{display: Object.keys(tags).length > 0 ? '' : 'none'}}
-        onClick={handleClear}
-      >
-        <DeleteIcon/>
-      </IconButton>
     </div>
   );
 }

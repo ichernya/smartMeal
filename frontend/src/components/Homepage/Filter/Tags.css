@@ -1,0 +1,39 @@
+@media (max-width: 599px) {
+
+    .MuiDrawer-paperAnchorRight	{
+        width: 100%;
+    }
+}
+
+@media (min-width: 600px) {
+    .tagsList {
+        width: 300px;
+    }
+}
+
+.tagsRow {
+    width: auto;
+    padding: 15px;
+}
+
+.selections {
+    text-align: right;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px;
+    height: 54px;
+}
+
+.row {
+    padding-left: 25px !important;
+}
+
+.category {
+    padding-bottom: 10px !important;
+    margin-right: 16px;
+    width: 100%;
+}
