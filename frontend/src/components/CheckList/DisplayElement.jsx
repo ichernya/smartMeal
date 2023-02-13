@@ -63,9 +63,7 @@ const DisplayElement = () => {
               value={isChoosenIngredient.name}
               variant="filled"
               size="small"
-              onChange={(e) => {
-                setChoosenIngredient({isChoosenIngredient: e.target.value});
-              }}
+              onChange={handleUpdateElement}
             />}
         </FormControl>
       </Grid>
