@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import CheckBox from './Checkbox.jsx';
+import DisplayElement from './DisplayElement.jsx';
 
 const Item = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -27,7 +28,9 @@ const CheckListElement = () => {
       spacing={12}
     >
       <Grid item xs={false} md={5} lg={5} id="leftCheck">
-        <Item>1</Item>
+        <Item>
+          <DisplayElement/>
+        </Item>
       </Grid>
       <Grid item xs={12} md={5} lg={5}>
         <Item>
