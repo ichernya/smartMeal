@@ -16,7 +16,8 @@ import './Checkbox.css';
  *                  and thier sublist of ingredients
  */
 const IndeterminateCheckbox = () => {
-  const {ingredientState, setIngredientState} = useMeals();
+  const {ingredientState, setIngredientState,
+    setChoosenIngredient} = useMeals();
   // When first lanuch \load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
@@ -42,6 +43,16 @@ const IndeterminateCheckbox = () => {
       setAll(newDic, event.target.id, true);
     }
     setIngredientState(newDic);
+  };
+  const handleUpdateElement = (event) => {
+    const [parentCategory, myIngredient] = event.target.id.split(': ');
+    const info = ingredientState[parentCategory].ingredients[myIngredient];
+    setChoosenIngredient( {
+      'name': myIngredient,
+      'img': info.img,
+      'pricePerUnitWeight': info.pricePerUnitWeight,
+      'quantity': info.quantity,
+    });
   };
   const handleChildChange = (event) => {
     const newDic = {...ingredientState};
@@ -94,10 +105,9 @@ const IndeterminateCheckbox = () => {
           {!loading ? Object.keys(ingredientState[category]['ingredients'])
             .map((ingredient) =>
               (<Box sx={{display: ingredientState[category].hidden ?
-                'none' : 'flex', flexDirection:
-              'column', ml: 3, gap: 1, mt: 1}} key={ingredient}>
+                'none' : 'inline-block', ml: 3, gap: 1, mt: 1}}
+              key={ingredient}>
                 <FormControlLabel
-                  label={ingredient}
                   control={
                     <Checkbox
                       id={`${category}-${ingredient}`}
@@ -108,6 +118,12 @@ const IndeterminateCheckbox = () => {
                     />
                   }
                 />
+                <div className='listElement' id={`${category}: ${ingredient}`}
+                  onClick={handleUpdateElement}>
+                  {ingredient}{', '}
+                  {ingredientState[category]['ingredients'][ingredient]
+                    .quantity}
+                </div>
               </Box>)) : <div/>}
         </Grid>
       ))}

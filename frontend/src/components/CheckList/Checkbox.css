@@ -1,12 +1,13 @@
 #list {
   position: absolute;
 }
-
-
+.listElement {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 @media (max-width: 900px) {
   #leftCheck {
     display: none !important;
   }
-  
 }

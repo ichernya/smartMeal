@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,7 +9,6 @@ import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
 
 
 import './Filter.css';
@@ -26,22 +24,10 @@ const MenuProps = {
   },
 };
 
-
-// eslint-disable-next-line require-jsdoc
-function getStyles(name, tags, theme) {
-  return {
-    fontWeight:
-      Object.keys(tags).indexOf(name) === -1 ?
-        theme.typography.fontWeightRegular :
-        theme.typography.fontWeightMedium,
-  };
-}
-
 // eslint-disable-next-line require-jsdoc
 function Filter(props) {
   const {setDrawer, setTags, tags, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
-  const theme = useTheme();
 
   const handleClear = () => {
     setTags({});
@@ -102,7 +88,6 @@ function Filter(props) {
         color="secondary"
         onClick={() => {
           setDrawer(true);
-          setAlignment;
         }}
       >
         <FilterAltIcon/>
