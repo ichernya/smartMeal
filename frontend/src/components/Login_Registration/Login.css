@@ -61,7 +61,11 @@
     position: absolute;
   }
 }
-
+@media (max-height: 768px) {
+  #backgroundImage {
+    height: 110vh;
+  }
+}
 
 .projectPad {
   margin-top: 40px;

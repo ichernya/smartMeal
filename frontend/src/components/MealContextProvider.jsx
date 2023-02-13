@@ -42,17 +42,17 @@ const testIngredientList = {
       'Beef': {
         'checked': true,
         'quantity': '15 lbs',
-        'price': '$20',
+        'pricePerUnitWeight': '$20',
       },
       'Lentils': {
         'checked': false,
         'quantity': '12 kg',
-        'price': '$10',
+        'pricePerUnitWeight': '$10',
       },
       'Salmon': {
         'checked': true,
         'quantity': '50 fillets',
-        'price': '$25',
+        'pricePerUnitWeight': '$25',
       },
     },
   },
@@ -61,12 +61,21 @@ const testIngredientList = {
 export const MealsProvider = ({children}) => {
   const [meals, setMeals] = useState([]);
   const [ingredientState, setIngredientState] = useState({});
+  const [isChoosenIngredient, setChoosenIngredient] = useState(
+    {
+      'name': 'Pick an item from the list',
+      'img': '',
+      'pricePerUnitWeight': 'by clicking on the name of the item',
+      'quantity': '',
+    },
+  );
   useEffect(() => {
     setMeals(testData);
     setIngredientState(testIngredientList);
   }, []);
   return (
-    <MealsContext.Provider value={{meals, ingredientState, setIngredientState}}>
+    <MealsContext.Provider value={{meals, ingredientState, setIngredientState,
+      isChoosenIngredient, setChoosenIngredient}}>
       {children}
     </MealsContext.Provider>
   );

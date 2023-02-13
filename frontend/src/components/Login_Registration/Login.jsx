@@ -62,6 +62,7 @@ const Login = () => {
       <CssBaseline />
       <Grid
         item
+        id='backgroundImage'
         xs={false}
         sm={12}
         md={12}

@@ -136,7 +136,7 @@ function Calendar(props) {
   React.useEffect(() => {
     // Grab the meals for the week when loading the page
     getMealsForWeek(TODOtempdate, setPlan, startWeek, 1);
-  }, []);
+  }, [TODOtempdate, startWeek]);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
