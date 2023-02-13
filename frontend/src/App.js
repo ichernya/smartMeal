@@ -8,6 +8,8 @@ import Error from './components/Page404.jsx';
 import PageLayout from './components/PageLayout.jsx';
 import CheckList from './components/CheckList/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
+import LandingPage from './components/LandingPage/LandingPage.jsx';
+import AddMealDialog from './components/AddMealDialog.jsx';
 import './App.css';
 
 
@@ -26,6 +28,8 @@ function App() {
               </Route>
               <Route path={'/signup'} exact element={<Registration/>}/>
               <Route path={'/login'} exact element= {<Login/>}/>
+              <Route path={'/'} exact element= {<LandingPage/>}/>
+              <Route path={'/dialog'} exact element= {<AddMealDialog/>}/>
               <Route path={'*'} exact element={<Error/>}/>
             </Routes>
           </BrowserRouter>
