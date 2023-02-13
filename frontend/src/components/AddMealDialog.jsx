@@ -32,6 +32,12 @@ export default function AddMealDialog() {
   //States to handle input errors
   const [errorN, setErrorN] = React.useState(false);
   const [errorW, setErrorW] = React.useState(false);
+  const [errorSameN, setErrorSameN] = React.useState(false);
+
+  //Return an array with only the name of ingredients (used to check for repetitions)
+  function nameArray(value, index, array){
+    return value.name;
+  }
 
   //Open the dialog
   const handleClickOpen = () => {
@@ -45,16 +51,27 @@ export default function AddMealDialog() {
 
   //Adds ingredient to the list shown
   const addIngredient = () => {
+    const array = ingredients.map(nameArray);
 
+    //Check if the name field is empty
     if(inputName === '')
     {
       setErrorN(true);
     }
+    //Check for repetitions
+    else if(array.includes(inputName))
+    {
+      setErrorSameN(true);
+      setErrorN(false);
+    }
+    //Check if weight input is correct
     else if(inputWeight <= 0 || isNaN(inputWeight))
     {
-      setErrorN(false);
       setErrorW(true);
-    }   
+      setErrorN(false);
+      setErrorSameN(false);
+    }
+    //Add the ingredient   
     else
     {
       const newIng = {
@@ -69,6 +86,7 @@ export default function AddMealDialog() {
       setInputWeight(0);
       setErrorN(false);
       setErrorW(false);
+      setErrorSameN(false);
     }
   };
 
@@ -118,7 +136,8 @@ export default function AddMealDialog() {
             variant='outlined'
             margin='normal'
             value={inputName}
-            error={errorN}
+            error={errorN || errorSameN}
+            helperText={errorSameN ? 'You already added this ingredient' : ''}
             onChange={(event) => setInputName(event.target.value)}
           />
           <FormControl sx={{ m: 2, width: 80 }} variant="outlined">
