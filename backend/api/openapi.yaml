@@ -13,6 +13,29 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /switchOut:
+    get:
+      description: returns subsitutions given ingredient
+      parameters:
+        - in: query
+          name: ingredient
+          schema:
+            type: string
+          required: true
+          description: ingredient to check swaps of
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/swap'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /userSearch:
     get:
       description: returns user query
@@ -59,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getMeal'
+                $ref: '#/components/schemas/putMealToUser'
         default:
           description: Unexpected Error
           content:
@@ -143,7 +166,7 @@ paths:
         - bearerAuth: []
       description: add a meal to a user with date and userid
       requestBody:
-        description: userid date
+        description: userid date lunch dinner or breakfast
         required: true
         content:
           application/json:
@@ -162,7 +185,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+    
+    put:
+      security:
+        - bearerAuth: []
+      description: Update meal for user
+      requestBody:
+        description: userid date lunch dinner or breakfast
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putMealToUser'
+      responses:
+        201:
+          description: uodated meal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putMealToUser'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     get:
       security:
         - bearerAuth: []
@@ -186,7 +233,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getMeal'
+                $ref: '#/components/schemas/putMealToUser'
         404:
           description: wrong date
         default:
@@ -240,16 +287,11 @@ components:
       properties:
         mealsid:
           type: integer
-        recipeid:
+        breakfast:
           type: integer
-        dayof:
-          type: string
-
-    getMeal:
-      properties:
-        recipeid:
+        lunch:
           type: integer
-        mealsid:
+        dinner:
           type: integer
         dayof:
           type: string
@@ -275,6 +317,22 @@ components:
       required:
         - name
         - accessToken
+    
+    swap:
+      properties:
+        ingredients:
+          type: string
+        tradeFor:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+        veganAlternative:
+          type: array
+          items:
+            type: string
+          example: ["str1", "str2", "str3"]
+
 
 
   securitySchemes:
