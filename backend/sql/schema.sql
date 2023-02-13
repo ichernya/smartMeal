@@ -25,9 +25,10 @@ DROP TABLE IF EXISTS meals;
 
 CREATE TABLE meals(
     mealsid int,
-    recipeid int,
+    breakfast int,
+    lunch int,
+    dinner int,
     dayof date NOT NULL,
-    FOREIGN KEY (recipeid) REFERENCES recipes(recipeid),
     FOREIGN KEY (mealsid) REFERENCES users(userid)
 );
 
