@@ -4,12 +4,11 @@ import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import CheckIcon from '@mui/icons-material/Check';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
-import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
-import SentimentDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentDissatisfiedOutlined';
-import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import SentimentDissatisfiedOutlinedIcon
+  from '@mui/icons-material/SentimentDissatisfiedOutlined';
+import SentimentSatisfiedAltOutlinedIcon
+  from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
@@ -129,7 +128,7 @@ function Tags(props) {
       {Object.keys(categoryView).map((category) => {
         const allTags = Object.keys(alignments[category]);
         return (
-          <Grid container spacing={1} className='tagsRow' key='category'>
+          <Grid container spacing={1} className='tagsRow' key={category}>
             <Grid item className='category'>
               {category}
               <IconButton onClick={() => updateView(category)}>
