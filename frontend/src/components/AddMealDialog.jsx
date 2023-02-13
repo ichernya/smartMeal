@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
@@ -8,9 +7,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -18,23 +18,32 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Paper, Typography } from '@mui/material';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { Paper } from '@mui/material';
 import { TextField } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 export default function AddMealDialog() {
 
+  const metricUnits = [ "ml", "dl", "l", "mg", "g", "kg", "mm", "cm", "m", "°C", "unit"];
+  const USUnits = [ "tsp", "tbs", "fl oz", "gill", "cup", "pint", "quart", "gal", "lb", "oz", "in", "°F", "unit" ];
 
   //State
   const [open, setOpen] = React.useState(true);
   const [ingredients, setIngredients] = React.useState([]);
   const [inputName, setInputName] = React.useState("");
   const [inputWeight, setInputWeight] = React.useState();
+  const [unit, setUnit] = React.useState("");
+  const [system, setSystem] = React.useState("metric");
   //States to handle input errors
-  const [errorN, setErrorN] = React.useState(false);
-  const [errorW, setErrorW] = React.useState(false);
-  const [errorSameN, setErrorSameN] = React.useState(false);
+  const [errorN, setErrorN] = React.useState(false);  //Error on blank input name
+  const [errorW, setErrorW] = React.useState(false);  //Error on blank or 0 quantity
+  const [errorSameN, setErrorSameN] = React.useState(false);  //Error on duplicate input name
+  const [errorU, setErrorU] = React.useState(false);  //Error on blank unit
 
-  //Return an array with only the name of ingredients (used to check for repetitions)
+  //UTILS: Return an array with only the name of ingredients (used to check for repetitions)
   function nameArray(value, index, array){
     return value.name;
   }
@@ -58,12 +67,14 @@ export default function AddMealDialog() {
     {
       setErrorN(true);
     }
+
     //Check for repetitions
     else if(array.includes(inputName))
     {
       setErrorSameN(true);
       setErrorN(false);
     }
+
     //Check if weight input is correct
     else if(inputWeight <= 0 || isNaN(inputWeight))
     {
@@ -71,24 +82,47 @@ export default function AddMealDialog() {
       setErrorN(false);
       setErrorSameN(false);
     }
+
+    //Check if unit input is correct
+    else if(unit === '')
+    {
+      setErrorU(true);
+      setErrorW(false);
+      setErrorN(false);
+      setErrorSameN(false);
+    }
+
     //Add the ingredient   
     else
     {
       const newIng = {
         name: inputName,
-        quantity: inputWeight
+        quantity: inputWeight,
+        unit: unit
       };
   
       const newIngredients = [...ingredients, newIng];
   
       setIngredients(newIngredients);
       setInputName("");
-      setInputWeight(0);
+      setInputWeight("");
       setErrorN(false);
       setErrorW(false);
       setErrorSameN(false);
+      setErrorU(false);
     }
   };
+
+  //change the unit in the select item
+  const changeUnit = (event) => {
+    setUnit(event.target.value);
+  }
+
+  //change the unit System in the radio element
+  const changeSystem = (event) => {
+    setSystem(event.target.value);
+    setUnit('');
+  }
 
   //Remove an ingredient from the list
   const removeIngredient = (name) => {
@@ -115,7 +149,7 @@ export default function AddMealDialog() {
         <DialogTitle>Add your Recipe</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You can add your own recipe adding a title, ingredients and an image.
+            You can add your own recipe adding a title, ingredients and an optional URL image.
           </DialogContentText>
           <TextField
             sx={{width: 300}}
@@ -124,11 +158,24 @@ export default function AddMealDialog() {
             required
             margin='normal'
           />
+          <FormControl sx={{mt:2, ml:4}}>
+            <FormLabel id="radio-label">System</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="radio-label"
+              name="row-radio-buttons-group"
+              value={system}
+              onChange={changeSystem}
+            >
+              <FormControlLabel value="metric" control={<Radio />} label="Metric" />
+              <FormControlLabel value="US" control={<Radio />} label="US" />
+            </RadioGroup>
+          </FormControl>
           <TextField
             fullWidth
             label="Image"
             variant='outlined'
-            margin='normal'
+            margin='normal'            
           />
           <TextField
             sx={{width: 300}}
@@ -142,9 +189,8 @@ export default function AddMealDialog() {
           />
           <FormControl sx={{ m: 2, width: 80 }} variant="outlined">
             <OutlinedInput
-              id="outlined-adornment-weight"
+              id="outlined-weight"
               value={inputWeight}
-              endAdornment={<InputAdornment position="end">g</InputAdornment>}
               aria-describedby="outlined-weight-helper-text"
               inputProps={{
                 'aria-label': 'weight',
@@ -152,11 +198,24 @@ export default function AddMealDialog() {
               error={errorW}
               onChange={(event) => setInputWeight(event.target.value)}
             />
-            <FormHelperText id="outlined-weight-helper-text">Weight</FormHelperText>
+            <FormHelperText id="outlined-weight-helper-text">Quantitiy</FormHelperText>
+          </FormControl>
+          <FormControl>
+            <Select sx={{ mt: 2, maxWidth: 70}}
+              aria-describedby="select-text"
+              error={errorU}
+              value={unit}
+              onChange={changeUnit}
+            >
+              {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
+                <MenuItem value={unit}>{unit}</MenuItem>
+              ))}
+            </Select>
+            <FormHelperText id="select-text">Unit</FormHelperText>
           </FormControl>
           <IconButton 
             variant="outlined"
-            sx={{mt: 2}}
+            sx={{mt: 2, ml: 1}}
             size="large"
             onClick={addIngredient}
           >
@@ -176,7 +235,7 @@ export default function AddMealDialog() {
                     </Grid>
                     <Grid item sm={3}>
                       <ListItemText>
-                        {ingredient.quantity}g
+                        {ingredient.quantity}{ingredient.unit}
                       </ListItemText>
                     </Grid>
                     <Grid item sm={2} alignItems='right' sx={{
