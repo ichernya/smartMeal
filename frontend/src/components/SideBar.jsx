@@ -6,6 +6,8 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Fab from '@mui/material/Fab';
+import {useDimensions} from './DimensionsProvider.jsx';
 
 import DrawerContent from './DrawerContent.jsx';
 import './SideBar.css';
@@ -61,28 +63,41 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
   }),
 );
 
+
 // eslint-disable-next-line require-jsdoc
 export default function TheDrawer() {
   const [open, setOpen] = React.useState(false);
+  const {width} = useDimensions();
 
-  const handleDrawerClose = () => {
+  const handleDrawer = () => {
     setOpen(!open);
   };
 
   return (
-
-    <Box className="SideBar">
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon /> :
-              <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <DrawerContent open={open}/>
-      </Drawer>
-    </Box>
+    <div className='maxWidth'>
+      <Fab className='mobileOpen' onClick={handleDrawer} color={'primary'}>
+        <ChevronRightIcon/>
+      </Fab>
+      <Box className="SideBar">
+        <React.Fragment>
+          <Drawer
+            sx={{display: (!open && width < 800) ? 'none' : 'flex'}}
+            variant='permanent'
+            anchor={'left'}
+            open={open}
+          >
+            <DrawerHeader>
+              <IconButton onClick={handleDrawer}>
+                {open ? <ChevronLeftIcon /> :
+                  <ChevronRightIcon />}
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <DrawerContent open={open}/>
+          </Drawer>
+        </React.Fragment>
+      </Box>
+    </div>
   );
 }
 

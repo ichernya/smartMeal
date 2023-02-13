@@ -70,6 +70,8 @@ const searchRecipes = (query, setMenu) => {
 
 // eslint-disable-next-line require-jsdoc
 function Menu(props) {
+  // number of rows for the menu display
+  const ROWS = 2;
   const {width, cardSize, selectedFood, setSelected, search} =
     React.useContext(props['HomeContext']);
 
@@ -125,102 +127,67 @@ function Menu(props) {
         id='wrapping'
       >
         <Stack className='menu' spacing={0}>
-          <Item
-            style={{height: `${menuSize.current}px`}}
-            className='menus'
-          >
-            <ImageList
-              onScroll={handleTopScroll}
-              ref={topMenu}
-              className='menu hiddenScrollbar'
-            >
-              {new Array(Math.ceil(recipes.length / 2))
-                .fill(0)
-                .map((_, ind) => {
-                  const item = recipes[(ind * 2)];
-                  const image = item['img'] ? item['img'] :
-                    require('../../assets/ass.png');
-                  return (
-                    <ImageListItem
-                      className='margins'
-                      onClick={() => clickItem(item)}
-                      key={item['dishname'] + ind}
-                    >
-                      <img
-                        src={`${image}w=248&fit=crop&auto=format`}
-                        srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        alt={item['dishname']}
-                        loading="lazy"
-                        id={chosenFood === item ? 'selected' : 'unselected'}
-                        style={{
-                          width: `${menuSize.current}px`,
-                          height: `${menuSize.current}px`,
-                        }}
-                      />
-                      <ImageListItemBar
-                        title={item['dishname']}
-                        actionIcon={
-                          <IconButton
-                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                            aria-label={`info about ${item['dishname']}`}
+          {new Array(ROWS)
+            .fill(0)
+            .map((_, index) => {
+              const scroller = index === 0 ? handleTopScroll : handleBotScroll;
+              const scrollRef = index === 0 ? topMenu : botMenu;
+              const menuClass = index === 0 ? 'hiddenScrollbar' : '';
+              return (
+                <Item
+                  style={{height: `${menuSize.current}px`}}
+                  className='menus'
+                >
+                  <ImageList
+                    onScroll={scroller}
+                    ref={scrollRef}
+                    className={'menu ' + menuClass}
+                  >
+                    {new Array(Math.ceil(recipes.length / 2))
+                      .fill(0)
+                      .map((_, ind) => {
+                        const item = recipes[(ind * 2) + index];
+                        const image = item['img'] ? item['img'] :
+                          require('../../assets/ass.png');
+                        return (
+                          <ImageListItem
+                            className='margins'
+                            onClick={() => clickItem(item)}
+                            key={item['dishname'] + ind}
                           >
-                            <InfoIcon/>
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  );
-                })}
-            </ImageList>
-          </Item>
-          <Item
-            style={{height: `${menuSize.current}px`}}
-            className='menus'
-          >
-            <ImageList
-              onScroll={handleBotScroll}
-              ref={botMenu}
-              className='menu'
-            >
-              {new Array(Math.floor(recipes.length / 2))
-                .fill(0)
-                .map((_, ind) => {
-                  const item = recipes[(ind * 2) + 1];
-                  return (
-                    <ImageListItem
-                      className='margins'
-                      onClick={() => clickItem(item)}
-                      key={item['dishname'] + ind}
-                    >
-                      <img
-                        src={`${item.img}?w=248&fit=crop&auto=format`}
-                        srcSet={
-                          `${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                        }
-                        alt={item['dishname']}
-                        loading="lazy"
-                        id={chosenFood === item ? 'selected' : 'unselected'}
-                        style={{
-                          width: `${menuSize.current}px`,
-                          height: `${menuSize.current}px`,
-                        }}
-                      />
-                      <ImageListItemBar
-                        title={item['dishname']}
-                        actionIcon={
-                          <IconButton
-                            sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                            aria-label={`info about ${item['dishname']}`}
-                          >
-                            <InfoIcon/>
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  );
-                })}
-            </ImageList>
-          </Item>
+                            <img
+                              src={`${image}w=248&fit=crop&auto=format`}
+                              srcSet={
+                                `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
+                              }
+                              alt={item['dishname']}
+                              loading="lazy"
+                              id={chosenFood === item ?
+                                'selected' : 'unselected'}
+                              style={{
+                                width: `${menuSize.current}px`,
+                                height: `${menuSize.current}px`,
+                              }}
+                            />
+                            <ImageListItemBar
+                              title={item['dishname']}
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                                  aria-label={`info about ${item['dishname']}`}
+                                >
+                                  <InfoIcon/>
+                                </IconButton>
+                              }
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                  </ImageList>
+                </Item>
+              );
+            })
+          }
         </Stack>
         <div className='stretch'/>
         <div id='btnList'>

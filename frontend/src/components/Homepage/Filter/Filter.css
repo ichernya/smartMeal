@@ -7,6 +7,7 @@
 @media (min-width: 600px) {
     .filter {
         display: contents;
+        width: 100%;
     }
 }
 
