@@ -6,9 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import IconButton from '@mui/material/IconButton';
 
 import './Filter.css';
 
@@ -23,7 +20,7 @@ const MenuProps = {
   },
 };
 
-// eslint-disable-next-line require-jsdocZZ
+// eslint-disable-next-line require-jsdoc
 function Filter(props) {
   const {setDrawer, setFilter, filters, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
