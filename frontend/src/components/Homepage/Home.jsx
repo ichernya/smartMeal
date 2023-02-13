@@ -9,18 +9,15 @@ import Tags from './Filter/Tags.jsx';
 import './Home.css';
 
 const HomeContext = React.createContext();
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
+const names = {
+  'tag1': {
+    'Oliver Hansen': 'default',
+    'Van Henry': 'default',
+  },
+  'tag2': {
+    'Kelly Snyder': 'default',
+  },
+};
 
 // eslint-disable-next-line require-jsdoc
 function Homepage(props) {
@@ -44,14 +41,16 @@ function Homepage(props) {
   const [search, setSearch] = React.useState('');
   // Represents whether the tags drawer is open or not
   const [tagsDrawer, setDrawer] = React.useState(false);
-  // Represents whether the filtered tags
-  const [tags, setTags] = React.useState({});
+  // Represents the filtered tags
+  const [filters, setFilter] = React.useState({});
   // Represents the alignments of the tags
   const [alignments, setAlignment] =
-  // TODO query db for tags
-    React.useState(Object.fromEntries(
-      names.map((name) => [name, 'default']),
-    ));
+    // TODO query db for tags
+    // ideally, format will be
+    // { category :
+    //   {name: align}
+    // }
+    React.useState(names);
 
 
   React.useEffect(() => {
@@ -71,7 +70,7 @@ function Homepage(props) {
       value={{
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
-        tags, setTags, alignments, setAlignment,
+        filters, setFilter, alignments, setAlignment,
       }}
     >
       <div

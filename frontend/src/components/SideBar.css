@@ -4,9 +4,15 @@
   width: 100%;
 }
 
+.mobileOpen {
+    left: -11px;
+    top: 28px !important;
+    position: absolute !important;
+    border-radius: 25% !important;
+    height: 36px !important;
+    width: 36px !important;
+}
 
-@media (max-width: 800px) {
-  .SideBar {
-    display: none;
-  }
+.maxWidth {
+    max-width: inherit;
 }

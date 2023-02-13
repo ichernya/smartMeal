@@ -5,10 +5,10 @@ import Divider from '@mui/material/Divider';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
+import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import {useNavigate} from 'react-router-dom';
 
 
@@ -22,11 +22,22 @@ function DrawerContent(prop) {
     history('/login');
   };
 
+  const redirect = (link) => {
+    history(link);
+  };
+
+  const urls = ['/home', '/checklist'];
+
   return (
     <div className='options'>
       <List className='pages'>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{display: 'block'}}>
+        {['Inbox', 'Starred'].map((text, index) => (
+          <ListItem
+            key={text}
+            disablePadding
+            sx={{display: 'block'}}
+            onClick={() => redirect(urls[index])}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -41,7 +52,7 @@ function DrawerContent(prop) {
                   justifyContent: 'center',
                 }}
               >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {index % 2 === 0 ? <HomeIcon /> : <FormatListNumberedIcon />}
               </ListItemIcon>
               <ListItemText primary={text} sx={{opacity: prop.open ? 1 : 0}} />
             </ListItemButton>
