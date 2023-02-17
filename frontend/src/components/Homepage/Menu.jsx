@@ -11,6 +11,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InfoIcon from '@mui/icons-material/Info';
 import Stack from '@mui/material/Stack';
 import {styled} from '@mui/material/styles';
+import {useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 
 import Tools from './Tools.jsx';
@@ -70,13 +71,14 @@ const searchRecipes = (query, setMenu) => {
 
 // eslint-disable-next-line require-jsdoc
 function Menu(props) {
-  // number of rows for the menu display
-  const ROWS = 2;
+  const history = useNavigate();
   const {width, cardSize, selectedFood, setSelected, search} =
     React.useContext(props['HomeContext']);
 
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
+  // number of rows for the menu display
+  const ROWS = 2;
 
   React.useEffect(() => {
     getRecipes(setMenu);
@@ -201,10 +203,14 @@ function Menu(props) {
           </Button>
           <IconButton
             color="secondary"
+            onClick={() => history('')}
           >
             <ShoppingCartIcon className='btn'/>
           </IconButton>
-          <IconButton color="secondary">
+          <IconButton
+            color="secondary"
+            onClick={() => history('/checklist')}
+          >
             <FormatListBulletedIcon className='btn'/>
           </IconButton>
         </div>

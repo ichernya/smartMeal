@@ -56,6 +56,18 @@ const testIngredientList = {
       },
     },
   },
+  'Dairy': {
+    'amount': 1,
+    'amountChecked': 1,
+    'hidden': false,
+    'ingredients': {
+      'Whole milk': {
+        'checked': true,
+        'quantity': '15 liters',
+        'pricePerUnitWeight': '$20',
+      },
+    },
+  },
 };
 
 export const MealsProvider = ({children}) => {

@@ -12,8 +12,8 @@ import {useMeals} from '../MealContextProvider';
 import './Checkbox.css';
 
 /**
- * @return {object} Which represents the list of categories
- *                  and thier sublist of ingredients
+ * Which represents the list of categories and thier sublist of ingredients
+ * @return {object}
  */
 const IndeterminateCheckbox = () => {
   const {ingredientState, setIngredientState,

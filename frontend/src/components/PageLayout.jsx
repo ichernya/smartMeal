@@ -23,10 +23,10 @@ const page = () => {
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0}>
-        <Grid item xs={false} sm={1}>
+        <Grid item xs={false} sm={1} md={0.7}>
           <SideBar className='SideBar'/>
         </Grid>
-        <Grid item xs={12} sm={11}>
+        <Grid item xs={12} sm={11} md={11.3}>
           <Homepage/>
         </Grid>
       </Grid>

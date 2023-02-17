@@ -2,8 +2,8 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import defaultImage from '../../assets/qqq.png';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import Input from '@mui/material/Input';
 import FilledInput from '@mui/material/FilledInput';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,23 +16,36 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {useMeals} from '../MealContextProvider';
 
+// Queries the database for alternatives for the ingredient
+const getMeal = (ingredient, setAlteratives) => {
+  fetch(`http://localhost:3010/v0/switchOut?ingredient=${ingredient}`, {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setAlteratives(json[0]);
+    });
+};
+
 /**
- *
  * @return {object}
  */
 const DisplayElement = () => {
   const {ingredientState, setIngredientState,
     isChoosenIngredient, setChoosenIngredient} = useMeals();
-
+  const [alteratives, setAlteratives] = useState({});
+  const [isAlterative, setAlterative] = useState(false);
   useEffect(() => {
-    console.log(isChoosenIngredient.quantity.split(' ')[0]);
+    getMeal(isChoosenIngredient.name, setAlteratives);
   }, [isChoosenIngredient]);
-  const handleUpdateElement = (event) => {
-    const newChoosen = isChoosenIngredient;
-    newChoosen[event.target.id] = event.target.value;
-    console.log(newChoosen[event.target.id]);
-    setChoosenIngredient(newChoosen);
-  };
+  useEffect(() => {
+    setAlterative(false);
+  }, [alteratives]);
   return (
     <Grid
       container
@@ -54,67 +67,51 @@ const DisplayElement = () => {
         />
       </Grid>
       <Grid item>
-        <FormControl fullWidth variant="standard">
-          {isChoosenIngredient.quantity === '' ? isChoosenIngredient.name :
-            <TextField
-              label="Name"
-              required
-              id="name"
-              value={isChoosenIngredient.name}
-              variant="filled"
-              size="small"
-              onChange={handleUpdateElement}
-            />}
-        </FormControl>
-      </Grid>
-      <Grid item>
-        <FormControl fullWidth variant="standard">
-          {isChoosenIngredient.quantity === '' ? isChoosenIngredient
-            .pricePerUnitWeight :
-            <TextField
-              label={`Price per ${isChoosenIngredient.quantity.split(' ')[1]}`}
-              required
-              id="price"
-              value={isChoosenIngredient.pricePerUnitWeight}
-              variant="filled"
-              size="small"
-            />}
-        </FormControl>
-      </Grid>
-      <Grid item>
-        <FormControl fullWidth variant="standard">
-          {isChoosenIngredient.quantity === '' ? isChoosenIngredient
-            .quantity:
-            <TextField
-              label="Quantity"
-              required
-              id="quantity"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {isChoosenIngredient.quantity.split(' ')[1]}
-                  </InputAdornment>
-                ),
-              }}
-              value={isChoosenIngredient.quantity.split(' ')[0]}
-              variant="filled"
-              size="small"
-            />}
-        </FormControl>
-      </Grid>
-      <Grid item>
-        <FormControl fullWidth variant="standard">
-          {isChoosenIngredient.quantity === '' ? isChoosenIngredient
-            .quantity :
-            <TextField
-              label="Price"
-              id="filled-size-small"
-              variant="filled"
-              size="small"
-            />}
+        <FormControl fullWidth variant="standard" width='100%'>
+          {isAlterative ?
+            <div>
+              <TextField
+                label="Ingredient"
+                variant="standard"
+                value={isChoosenIngredient.name}
+                inputProps={{min: 0, style: {textAlign: 'center'}}}
+                sx={{
+                  '& .MuiInputBase-input.Mui-disabled': {
+                    WebkitTextFillColor: '#000000',
+                  },
+                }}
+                fullWidth
+                disabled
+              />
+            </div> :
+            isChoosenIngredient.name
+          }
         </FormControl>
       </Grid>
     </Grid>
   );
 };
+
+/**
+ *       <Grid item>
+        {!isAlterative ? <div>123</div> :
+          Object.keys(alteratives).filter((key) => key !== 'ingredient')
+            .map((a) => (
+              <FormControl fullWidth>
+                <InputLabel> {a} </InputLabel>
+                <Select
+                  id="demo-simple-select"
+                  value={a}
+                  label="Age"
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            ))}
+      </Grid>
+ */
+
+
 export default DisplayElement;
