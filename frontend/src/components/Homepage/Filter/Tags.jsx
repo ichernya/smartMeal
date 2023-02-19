@@ -4,7 +4,6 @@ import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import SentimentDissatisfiedOutlinedIcon
   from '@mui/icons-material/SentimentDissatisfiedOutlined';
 import SentimentSatisfiedAltOutlinedIcon
@@ -28,23 +27,14 @@ function Toggles(props) {
   };
 
   const updateTags = (name, newAlignment) => {
-    if (filters[name] &&
-      (newAlignment === 'default' || newAlignment === value)) {
-      const copy = {...filters};
-      delete copy[name];
-      setFilter(copy);
-    } else if (newAlignment !== value) {
-      setFilter({...filters, [name]: newAlignment});
-    }
-
-    if (value === newAlignment) {
-      setAlignment(
-        {...alignments,
-          [category]: {...alignments[category],
-            [name]: 'default'},
-        },
-      );
-    } else {
+    if (newAlignment !== value) {
+      if (newAlignment === 'yes') {
+        setFilter({...filters, [name]: newAlignment});
+      } else {
+        const copy = {...filters};
+        delete copy[name];
+        setFilter(copy);
+      }
       setAlignment(
         {...alignments,
           [category]: {...alignments[category],
@@ -68,12 +58,6 @@ function Toggles(props) {
         }}
       >
         <SentimentDissatisfiedOutlinedIcon />
-      </ToggleButton>
-      <ToggleButton
-        value="default"
-        onClick={() => updateTags(name, 'default')}
-      >
-        <SentimentNeutralIcon/>
       </ToggleButton>
       <ToggleButton
         value="yes"

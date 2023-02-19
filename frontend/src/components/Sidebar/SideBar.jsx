@@ -7,11 +7,13 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Fab from '@mui/material/Fab';
-import {useDimensions} from './DimensionsProvider.jsx';
+import {useDimensions} from '../DimensionsProvider.jsx';
 
+import Settings from './Settings.jsx';
 import DrawerContent from './DrawerContent.jsx';
 import './SideBar.css';
 const drawerWidth = '240px';
+const SidebarContext = React.createContext();
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -67,6 +69,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 // eslint-disable-next-line require-jsdoc
 export default function TheDrawer() {
   const [open, setOpen] = React.useState(false);
+  const [settingsDialog, setSettings] = React.useState(false);
   const {width} = useDimensions();
 
   const handleDrawer = () => {
@@ -74,30 +77,37 @@ export default function TheDrawer() {
   };
 
   return (
-    <div className='maxWidth'>
-      <Fab className='mobileOpen' onClick={handleDrawer} color={'primary'}>
-        <ChevronRightIcon/>
-      </Fab>
-      <Box className="SideBar">
-        <React.Fragment>
-          <Drawer
-            sx={{display: (!open && width < 800) ? 'none' : 'flex'}}
-            variant='permanent'
-            anchor={'left'}
-            open={open}
-          >
-            <DrawerHeader>
-              <IconButton onClick={handleDrawer}>
-                {open ? <ChevronLeftIcon /> :
-                  <ChevronRightIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <DrawerContent open={open}/>
-          </Drawer>
-        </React.Fragment>
-      </Box>
-    </div>
+    <SidebarContext.Provider
+      value={{settingsDialog, setSettings, open}}
+    >
+      <div className='maxWidth'>
+        <Settings
+          context={SidebarContext}
+        />
+        <Fab className='mobileOpen' onClick={handleDrawer} color={'primary'}>
+          <ChevronRightIcon/>
+        </Fab>
+        <Box className="SideBar">
+          <React.Fragment>
+            <Drawer
+              sx={{display: (!open && width < 800) ? 'none' : 'flex'}}
+              variant='permanent'
+              anchor={'left'}
+              open={open}
+            >
+              <DrawerHeader>
+                <IconButton onClick={handleDrawer}>
+                  {open ? <ChevronLeftIcon /> :
+                    <ChevronRightIcon />}
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              <DrawerContent context={SidebarContext}/>
+            </Drawer>
+          </React.Fragment>
+        </Box>
+      </div>
+    </SidebarContext.Provider>
   );
 }
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import SideBar from '../SideBar.jsx';
+import SideBar from './Sidebar/SideBar.jsx';
 import {Toolbar} from '@mui/material';
+import CheckListElement from './CheckList/CheckListElements.jsx';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 
-import CheckListElement from './CheckListElements.jsx';
-import '../SideBar.css';
+import './Sidebar/SideBar.css';
 
 const theme = createTheme({
   breakpoints: {
@@ -28,10 +28,10 @@ const ChecklistPage = () => {
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0} minHeight={'100vh'}>
-        <Grid item xs={false} sm={1}>
+        <Grid item xs={false} sm={1} md={0.7}>
           <SideBar className='SideBar'/>
         </Grid>
-        <Grid item xs={12} sm={11}>
+        <Grid item xs={12} sm={11} md={11.3}>
           <Toolbar>
           List of List Elements of List Elements Checked
           </Toolbar>
