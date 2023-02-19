@@ -1,11 +1,11 @@
 import React from 'react';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
-import SideBar from './SideBar.jsx';
+import SideBar from './Sidebar/SideBar.jsx';
 
 
 import Homepage from './Homepage/Home';
-import './SideBar.css';
+import './Sidebar/SideBar.css';
 
 const theme = createTheme({
   breakpoints: {
