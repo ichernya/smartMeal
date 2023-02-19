@@ -17,7 +17,7 @@ import './Checkbox.css';
  */
 const IndeterminateCheckbox = () => {
   const {ingredientState, setIngredientState,
-    setChoosenIngredient} = useMeals();
+    setChosenIngredient} = useMeals();
   // When first lanuch \load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
@@ -47,12 +47,13 @@ const IndeterminateCheckbox = () => {
   const handleUpdateElement = (event) => {
     const [parentCategory, myIngredient] = event.target.id.split(': ');
     const info = ingredientState[parentCategory].ingredients[myIngredient];
-    setChoosenIngredient( {
+    setChosenIngredient({
       'name': myIngredient,
       'img': info.img,
       'pricePerUnitWeight': info.pricePerUnitWeight,
       'quantity': info.quantity,
     });
+    console.log(123);
   };
   const handleChildChange = (event) => {
     const newDic = {...ingredientState};
@@ -119,7 +120,7 @@ const IndeterminateCheckbox = () => {
                   }
                 />
                 <div className='listElement' id={`${category}: ${ingredient}`}
-                  onClick={handleUpdateElement}>
+                  onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
                   {ingredientState[category]['ingredients'][ingredient]
                     .quantity}

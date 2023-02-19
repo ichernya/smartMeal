@@ -73,7 +73,7 @@ const testIngredientList = {
 export const MealsProvider = ({children}) => {
   const [meals, setMeals] = useState([]);
   const [ingredientState, setIngredientState] = useState({});
-  const [isChoosenIngredient, setChoosenIngredient] = useState(
+  const [isChosenIngredient, setChosenIngredient] = useState(
     {
       'name': 'Pick an item from the list',
       'img': '',
@@ -87,7 +87,7 @@ export const MealsProvider = ({children}) => {
   }, []);
   return (
     <MealsContext.Provider value={{meals, ingredientState, setIngredientState,
-      isChoosenIngredient, setChoosenIngredient}}>
+      isChosenIngredient, setChosenIngredient}}>
       {children}
     </MealsContext.Provider>
   );

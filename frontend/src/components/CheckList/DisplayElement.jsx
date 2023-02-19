@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {useMeals} from '../MealContextProvider';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 // Queries the database for alternatives for the ingredient
 const getMeal = (ingredient, setAlteratives) => {
@@ -28,7 +29,9 @@ const getMeal = (ingredient, setAlteratives) => {
       return response.json();
     })
     .then((json) => {
-      setAlteratives(json[0]);
+      if (json[0]) {
+        setAlteratives(json[0]);
+      }
     });
 };
 
@@ -37,15 +40,22 @@ const getMeal = (ingredient, setAlteratives) => {
  */
 const DisplayElement = () => {
   const {ingredientState, setIngredientState,
-    isChoosenIngredient, setChoosenIngredient} = useMeals();
-  const [alteratives, setAlteratives] = useState({});
-  const [isAlterative, setAlterative] = useState(false);
+    isChosenIngredient, setChosenIngredient} = useMeals();
+  const [alteratives, setAlteratives] = useState({
+    'ingredient': 'name',
+    'tradeoff': ['1', '2', '3'],
+    'vegan': ['3', '2', '1'],
+  });
+  const defaultState = {
+    'name': 'Pick an item from the list',
+    'img': '',
+    'pricePerUnitWeight': 'by clicking on the name of the item',
+    'quantity': '',
+  };
   useEffect(() => {
-    getMeal(isChoosenIngredient.name, setAlteratives);
-  }, [isChoosenIngredient]);
-  useEffect(() => {
-    setAlterative(false);
-  }, [alteratives]);
+    getMeal(isChosenIngredient.name, setAlteratives);
+  }, [isChosenIngredient]);
+  console.log(alteratives);
   return (
     <Grid
       container
@@ -61,19 +71,19 @@ const DisplayElement = () => {
             paddingTop: '10%',
           }}
           component="img"
-          src={isChoosenIngredient.img ? isChoosenIngredient.img : defaultImage}
-          alt={isChoosenIngredient.name}
+          src={isChosenIngredient.img ? isChosenIngredient.img : defaultImage}
+          alt={isChosenIngredient.name}
           loading="lazy"
         />
       </Grid>
       <Grid item>
         <FormControl fullWidth variant="standard" width='100%'>
-          {isAlterative ?
+          {isChosenIngredient.name !== 'Pick an item from the list' ?
             <div>
               <TextField
                 label="Ingredient"
                 variant="standard"
-                value={isChoosenIngredient.name}
+                value={isChosenIngredient.name}
                 inputProps={{min: 0, style: {textAlign: 'center'}}}
                 sx={{
                   '& .MuiInputBase-input.Mui-disabled': {
@@ -84,34 +94,32 @@ const DisplayElement = () => {
                 disabled
               />
             </div> :
-            isChoosenIngredient.name
+            isChosenIngredient.name
           }
         </FormControl>
       </Grid>
-    </Grid>
-  );
-};
-
-/**
- *       <Grid item>
-        {!isAlterative ? <div>123</div> :
+      <Grid item>
+        {isChosenIngredient.name !== 'Pick an item from the list' ?
           Object.keys(alteratives).filter((key) => key !== 'ingredient')
             .map((a) => (
               <FormControl fullWidth>
-                <InputLabel> {a} </InputLabel>
+                <InputLabel>Text</InputLabel>
                 <Select
-                  id="demo-simple-select"
                   value={a}
-                  label="Age"
+                  indicator={<KeyboardArrowDown />}
+                  fullWidth
                 >
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>
                   <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
               </FormControl>
-            ))}
+            )):
+          <div/>}
       </Grid>
- */
+    </Grid>
+  );
+};
 
 
 export default DisplayElement;

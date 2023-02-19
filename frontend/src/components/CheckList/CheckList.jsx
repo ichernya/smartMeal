@@ -2,9 +2,9 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import SideBar from '../SideBar.jsx';
 import {Toolbar} from '@mui/material';
-import CheckListElement from './CheckListElements.jsx';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 
+import CheckListElement from './CheckListElements.jsx';
 import '../SideBar.css';
 
 const theme = createTheme({
