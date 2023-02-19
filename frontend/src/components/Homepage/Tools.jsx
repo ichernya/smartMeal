@@ -12,7 +12,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import Filter from './Filter/Filter.jsx';
 import './Tools.css';
@@ -122,14 +121,6 @@ function Tools(props) {
       >
         <Filter HomeContext={props['HomeContext']}/>
         <div className='stretch'/>
-
-        <IconButton
-          color="secondary"
-          style={{display: Object.keys(filters).length > 0 ? '' : 'none'}}
-          onClick={handleClear}
-        >
-          <DeleteIcon/>
-        </IconButton>
         <IconButton
           color="secondary"
           onClick={() => setDrawer(true)}

@@ -15,11 +15,17 @@ import {useNavigate} from 'react-router-dom';
 import './DrawerContent.css';
 
 // eslint-disable-next-line require-jsdoc
-function DrawerContent(prop) {
+function DrawerContent(props) {
+  const {settingsDialog, setSettings, open} =
+    React.useContext(props['context']);
   const history = useNavigate();
   const logout = () => {
     localStorage.removeItem('user');
     history('/login');
+  };
+
+  const settingsOnclick = () => {
+    setSettings(!settingsDialog);
   };
 
   const redirect = (link) => {
@@ -41,20 +47,20 @@ function DrawerContent(prop) {
             <ListItemButton
               sx={{
                 minHeight: 48,
-                justifyContent: prop.open ? 'initial' : 'center',
+                justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: prop.open ? 3 : 'auto',
+                  mr: open ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
                 {index % 2 === 0 ? <HomeIcon /> : <FormatListNumberedIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} sx={{opacity: prop.open ? 1 : 0}} />
+              <ListItemText primary={text} sx={{opacity: open ? 1 : 0}} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -67,25 +73,25 @@ function DrawerContent(prop) {
             key={text}
             disablePadding
             sx={{display: 'block'}}
-            onClick={text === 'Logout' ? logout : null}
+            onClick={text === 'Logout' ? logout : settingsOnclick}
           >
             <ListItemButton
               sx={{
                 minHeight: 48,
-                justifyContent: prop.open ? 'initial' : 'center',
+                justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: prop.open ? 3 : 'auto',
+                  mr: open ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
                 {index % 2 === 0 ? <SettingsIcon /> : <LogoutIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} sx={{opacity: prop.open ? 1 : 0}} />
+              <ListItemText primary={text} sx={{opacity: open ? 1 : 0}} />
             </ListItemButton>
           </ListItem>
         ))}
