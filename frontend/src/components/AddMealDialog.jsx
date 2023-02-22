@@ -160,6 +160,12 @@ export default function AddMealDialog() {
     }
   };
 
+  const addRecipe = () => {
+    console.log('Recipe: ' + recipeName);
+    console.log('ImageURL: ' + fileName);
+    console.log(ingredients);
+  };
+
   return (
     <React.Fragment>
       {/* <Button variant="outlined" onClick={handleClickOpen}>
@@ -209,20 +215,19 @@ export default function AddMealDialog() {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={10}>
-              <div>
+            <Grid item xs={11}>
               <Paper className='paper'>
                 <Typography sx={{m: 2, overflow: 'scroll'}}
                   color={typographyColor}>
                   {fileName}
                 </Typography>
               </Paper>
-              </div>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <IconButton
                 component="label"
                 variant="outlined"
+                size='large'
                 sx={{mt: 1}}
               >
                 <AddPhotoAlternateRoundedIcon fontSize='large'/>
@@ -233,7 +238,7 @@ export default function AddMealDialog() {
                 />
               </IconButton>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={7}>
               <TextField
                 fullWidth
                 label="Ingredient"
@@ -246,9 +251,9 @@ export default function AddMealDialog() {
                 onChange={(event) => setInputName(event.target.value)}
               />
             </Grid>
-            <Grid item xs={10} md={4}>
-              <FormControl className='quantity'
-                sx={{m: 2, maxWidth: 80}}
+            <Grid item xs={11} md={4}>
+              <FormControl
+                sx={{mt: 2, mb: 2, mr: 2, maxWidth: 80}}
                 variant="outlined">
                 <OutlinedInput
                   id="outlined-weight"
@@ -265,7 +270,7 @@ export default function AddMealDialog() {
                 </FormHelperText>
               </FormControl>
               <FormControl>
-                <Select sx={{mt: 2}}
+                <Select sx={{mt: 2, maxWidth: '70px'}}
                   aria-describedby="select-text"
                   error={errorU}
                   value={unit}
@@ -278,7 +283,7 @@ export default function AddMealDialog() {
                 <FormHelperText id="select-text">Unit</FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <IconButton
                 variant="outlined"
                 sx={{mt: 2}}
@@ -326,7 +331,7 @@ export default function AddMealDialog() {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button>Add recipe</Button>
+          <Button onClick={addRecipe}>Add recipe</Button>
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
