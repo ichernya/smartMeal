@@ -32,7 +32,7 @@ const ChecklistPage = () => {
           <SideBar className='SideBar'/>
         </Grid>
         <Grid item xs={12} sm={11} md={11.3}>
-          <Toolbar>
+          <Toolbar sx={{marginBottom: '1vh'}}>
           List of List Elements of List Elements Checked
           </Toolbar>
           <CheckListElement/>

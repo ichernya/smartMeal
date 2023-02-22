@@ -11,13 +11,41 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useMeals} from '../MealContextProvider';
 import './Checkbox.css';
 
+// Queries the database for alternatives for the ingredient
+const getMeal = (ingredient, alteratives, setAlteratives) => {
+  fetch(`http://localhost:3010/v0/switchOut?ingredient=${ingredient}`, {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      const alter = {};
+      if (json[0]) {
+        const selectedIngredient = json[0];
+        alter['ingredient'] = selectedIngredient['ingredient'];
+        Object.keys(selectedIngredient).filter((key) => (key !== 'ingredient'))
+          .map((key) => (
+            alter[key] = {
+              'alteratives': selectedIngredient[key],
+              'hidden': false,
+            }
+          ));
+      }
+      setAlteratives(alter);
+    });
+};
+
 /**
  * Which represents the list of categories and thier sublist of ingredients
  * @return {object}
  */
 const IndeterminateCheckbox = () => {
   const {ingredientState, setIngredientState,
-    setChosenIngredient} = useMeals();
+    setChosenIngredient, alteratives, setAlteratives} = useMeals();
   // When first lanuch \load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
@@ -45,7 +73,7 @@ const IndeterminateCheckbox = () => {
     setIngredientState(newDic);
   };
   const handleUpdateElement = (event) => {
-    const [parentCategory, myIngredient] = event.target.id.split(': ');
+    const [parentCategory, myIngredient] = event.target.id.split('-');
     const info = ingredientState[parentCategory].ingredients[myIngredient];
     setChosenIngredient({
       'name': myIngredient,
@@ -53,19 +81,19 @@ const IndeterminateCheckbox = () => {
       'pricePerUnitWeight': info.pricePerUnitWeight,
       'quantity': info.quantity,
     });
-    console.log(123);
+    getMeal(myIngredient, alteratives, setAlteratives);
   };
   const handleChildChange = (event) => {
-    const newDic = {...ingredientState};
+    const alter = {...ingredientState};
     const [parentCategory, myIngredient] = event.target.id.split('-');
-    if (newDic[parentCategory]['ingredients'][myIngredient].checked) {
-      newDic[parentCategory]['ingredients'][myIngredient].checked = false;
-      newDic[parentCategory]['amountChecked'] -= 1;
+    if (alter[parentCategory]['ingredients'][myIngredient].checked) {
+      alter[parentCategory]['ingredients'][myIngredient].checked = false;
+      alter[parentCategory]['amountChecked'] -= 1;
     } else {
-      newDic[parentCategory]['ingredients'][myIngredient].checked = true;
-      newDic[parentCategory]['amountChecked'] += 1;
+      alter[parentCategory]['ingredients'][myIngredient].checked = true;
+      alter[parentCategory]['amountChecked'] += 1;
     }
-    setIngredientState(newDic);
+    setIngredientState(alter);
   };
   const handleHidden = (category) => {
     const newDic = {...ingredientState};
@@ -79,6 +107,7 @@ const IndeterminateCheckbox = () => {
   return (
     <Grid>
       {Object.keys(ingredientState).map((category) => (
+        // All the categories
         <Grid container
           direction="column"
           justifyContent="flex-start"
@@ -105,6 +134,7 @@ const IndeterminateCheckbox = () => {
           </Grid>
           {!loading ? Object.keys(ingredientState[category]['ingredients'])
             .map((ingredient) =>
+            // All the ingredients within the category
               (<Box sx={{display: ingredientState[category].hidden ?
                 'none' : 'inline-block', ml: 3, gap: 1, mt: 1}}
               key={ingredient}>
@@ -119,7 +149,7 @@ const IndeterminateCheckbox = () => {
                     />
                   }
                 />
-                <div className='listElement' id={`${category}: ${ingredient}`}
+                <div className='listElement' id={`${category}-${ingredient}`}
                   onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
                   {ingredientState[category]['ingredients'][ingredient]

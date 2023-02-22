@@ -217,7 +217,7 @@ export default function AddMealDialog() {
               onChange={changeUnit}
             >
               {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                <MenuItem value={unit}>{unit}</MenuItem>
+                <MenuItem value={unit}>{unit} key={unit}</MenuItem>
               ))}
             </Select>
             <FormHelperText id="select-text">Unit</FormHelperText>
@@ -234,7 +234,7 @@ export default function AddMealDialog() {
           <Paper style={{maxHeight: 200, overflow: 'auto'}}>
             <List>
               {ingredients.map((ingredient) => (
-                <ListItem alignItems='center'>
+                <ListItem alignItems='center' key={ingredient}>
                   {/* The Grid is used the components of a sigle list item */}
                   <Grid container spacing={2} component="main" direction="row">
                     <Grid item sm={7} overflow='auto'>

@@ -35,12 +35,12 @@ const testData = [
 ];
 const testIngredientList = {
   'Protein': {
-    'amount': 3,
-    'amountChecked': 2,
+    'amount': 18,
+    'amountChecked': 4,
     'hidden': false,
     'ingredients': {
       'Beef': {
-        'checked': true,
+        'checked': false,
         'quantity': '15 lbs',
         'pricePerUnitWeight': '$20',
       },
@@ -50,6 +50,81 @@ const testIngredientList = {
         'pricePerUnitWeight': '$10',
       },
       'Salmon': {
+        'checked': false,
+        'quantity': '50 fillets',
+        'pricePerUnitWeight': '$25',
+      },
+      'Beef1': {
+        'checked': false,
+        'quantity': '15 lbs',
+        'pricePerUnitWeight': '$20',
+      },
+      'Lentils2': {
+        'checked': false,
+        'quantity': '12 kg',
+        'pricePerUnitWeight': '$10',
+      },
+      'Salmon3': {
+        'checked': false,
+        'quantity': '50 fillets',
+        'pricePerUnitWeight': '$25',
+      },
+      'Beef2': {
+        'checked': false,
+        'quantity': '15 lbs',
+        'pricePerUnitWeight': '$20',
+      },
+      'Lentils1': {
+        'checked': false,
+        'quantity': '12 kg',
+        'pricePerUnitWeight': '$10',
+      },
+      'Salmon1': {
+        'checked': false,
+        'quantity': '50 fillets',
+        'pricePerUnitWeight': '$25',
+      },
+      'Beef4': {
+        'checked': false,
+        'quantity': '15 lbs',
+        'pricePerUnitWeight': '$20',
+      },
+      'Lentils3': {
+        'checked': false,
+        'quantity': '12 kg',
+        'pricePerUnitWeight': '$10',
+      },
+      'Salmon2': {
+        'checked': true,
+        'quantity': '50 fillets',
+        'pricePerUnitWeight': '$25',
+      },
+      'Beef32': {
+        'checked': false,
+        'quantity': '15 lbs',
+        'pricePerUnitWeight': '$20',
+      },
+      'Lentils12': {
+        'checked': false,
+        'quantity': '12 kg',
+        'pricePerUnitWeight': '$10',
+      },
+      'Salmon312': {
+        'checked': true,
+        'quantity': '50 fillets',
+        'pricePerUnitWeight': '$25',
+      },
+      'Beef312321': {
+        'checked': true,
+        'quantity': '15 lbs',
+        'pricePerUnitWeight': '$20',
+      },
+      'Lentils312321': {
+        'checked': false,
+        'quantity': '12 kg',
+        'pricePerUnitWeight': '$10',
+      },
+      'Salmon123213': {
         'checked': true,
         'quantity': '50 fillets',
         'pricePerUnitWeight': '$25',
@@ -73,6 +148,7 @@ const testIngredientList = {
 export const MealsProvider = ({children}) => {
   const [meals, setMeals] = useState([]);
   const [ingredientState, setIngredientState] = useState({});
+  const [alteratives, setAlteratives] = useState({});
   const [isChosenIngredient, setChosenIngredient] = useState(
     {
       'name': 'Pick an item from the list',
@@ -87,7 +163,7 @@ export const MealsProvider = ({children}) => {
   }, []);
   return (
     <MealsContext.Provider value={{meals, ingredientState, setIngredientState,
-      isChosenIngredient, setChosenIngredient}}>
+      isChosenIngredient, setChosenIngredient, alteratives, setAlteratives}}>
       {children}
     </MealsContext.Provider>
   );

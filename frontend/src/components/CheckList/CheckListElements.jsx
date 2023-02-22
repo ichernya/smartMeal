@@ -12,7 +12,8 @@ const Item = styled(Paper)(({theme}) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  minHeight: '90vh',
+  height: '90vh',
+  overflow: 'auto',
 }));
 /**
  * The way the page is formatted for mobile, desktop, and tablet
@@ -25,14 +26,14 @@ const CheckListElement = () => {
       container
       direction="row"
       justifyContent="center"
-      spacing={12}
+      spacing={4}
     >
-      <Grid item xs={false} md={5} lg={5} id="leftCheck">
+      <Grid item xs={false} md={5.7} id="leftCheck">
         <Item>
           <DisplayElement/>
         </Item>
       </Grid>
-      <Grid item xs={12} md={5} lg={5}>
+      <Grid item xs={12} md={5.7}>
         <Item>
           <CheckBox/>
         </Item>

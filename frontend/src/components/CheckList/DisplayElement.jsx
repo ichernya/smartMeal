@@ -2,73 +2,64 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import defaultImage from '../../assets/qqq.png';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Input from '@mui/material/Input';
-import FilledInput from '@mui/material/FilledInput';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import ButtonBase from '@mui/material/ButtonBase';
 import {useMeals} from '../MealContextProvider';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import IconButton from '@mui/material/IconButton';
 
-// Queries the database for alternatives for the ingredient
-const getMeal = (ingredient, setAlteratives) => {
-  fetch(`http://localhost:3010/v0/switchOut?ingredient=${ingredient}`, {
-    method: 'get',
-    headers: new Headers({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      if (json[0]) {
-        setAlteratives(json[0]);
-      }
-    });
-};
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {Typography} from '@mui/material';
 
 /**
  * @return {object}
  */
 const DisplayElement = () => {
   const {ingredientState, setIngredientState,
-    isChosenIngredient, setChosenIngredient} = useMeals();
-  const [alteratives, setAlteratives] = useState({
-    'ingredient': 'name',
-    'tradeoff': ['1', '2', '3'],
-    'vegan': ['3', '2', '1'],
-  });
-  const defaultState = {
-    'name': 'Pick an item from the list',
-    'img': '',
-    'pricePerUnitWeight': 'by clicking on the name of the item',
-    'quantity': '',
+    isChosenIngredient, setChosenIngredient,
+    alteratives, setAlteratives} = useMeals();
+  const [selectedAlterative, setSelectedAlterative] = useState(null);
+  const [modifiedState, setModifiedState] = useState({});
+  const handleHidden = (a) => {
+    const alter = {...modifiedState};
+    alter[a].hidden = !alter[a].hidden;
+    setModifiedState(alter);
+  };
+  const handleSelect = (a) => {
+    setSelectedAlterative(a);
+  };
+  const handleCancel = () => {
+    setChosenIngredient({
+      'name': 'Pick an item from the list',
+      'img': '',
+      'pricePerUnitWeight': 'by clicking on the name of the item',
+      'quantity': '',
+    });
+    setAlteratives({});
+  };
+  const handleUpdate = (a) => {
+  };
+  const handleUpdateAll = (a) => {
   };
   useEffect(() => {
-    getMeal(isChosenIngredient.name, setAlteratives);
-  }, [isChosenIngredient]);
-  console.log(alteratives);
+    setModifiedState(alteratives);
+    setSelectedAlterative(null);
+  }, [alteratives]);
   return (
     <Grid
       container
       direction="column"
       spacing={2}
+      justifyContent="space-between"
     >
-      <Grid item height='30%'>
+      <Grid item>
         <img
           style={{
-            width: '70%',
+            width: '50%',
             height: undefined,
             aspectRatio: 1,
-            paddingTop: '10%',
+            paddingTop: '5%',
           }}
           component="img"
           src={isChosenIngredient.img ? isChosenIngredient.img : defaultImage}
@@ -83,7 +74,7 @@ const DisplayElement = () => {
               <TextField
                 label="Ingredient"
                 variant="standard"
-                value={isChosenIngredient.name}
+                value={selectedAlterative ?? isChosenIngredient.name}
                 inputProps={{min: 0, style: {textAlign: 'center'}}}
                 sx={{
                   '& .MuiInputBase-input.Mui-disabled': {
@@ -97,25 +88,58 @@ const DisplayElement = () => {
             isChosenIngredient.name
           }
         </FormControl>
-      </Grid>
-      <Grid item>
-        {isChosenIngredient.name !== 'Pick an item from the list' ?
-          Object.keys(alteratives).filter((key) => key !== 'ingredient')
-            .map((a) => (
-              <FormControl fullWidth>
-                <InputLabel>Text</InputLabel>
-                <Select
-                  value={a}
-                  indicator={<KeyboardArrowDown />}
-                  fullWidth
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            )):
-          <div/>}
+        <Grid>
+          {isChosenIngredient.name !== 'Pick an item from the list' ?
+            Object.keys(modifiedState).filter((key) => key !== 'ingredient')
+              .map((a) => (
+                <Grid container direction="column"
+                  justifyContent="flex-strt"
+                  alignItems="flex-start" key={a}>
+                  <Grid item>
+                    <Typography>
+                      {a}
+                      <IconButton onClick={() => (handleHidden(a))}>
+                        {modifiedState[a].hidden ?
+                          <ExpandMoreIcon id={a}/> : <ExpandLessIcon id={a}/>}
+                      </IconButton>
+                    </Typography>
+                  </Grid>
+                  {(modifiedState[a].alteratives).map((ingredient) => (
+                    <ButtonBase
+                      sx={{display: modifiedState[a].hidden ? 'none' :
+                        'inline-block', ml: 3, gap: 1, mt: 1}}
+                      key={ingredient}
+                      onClick={() => (handleSelect(ingredient))}
+                    >
+                      {ingredient}
+                    </ButtonBase>
+                  ))}
+                </Grid>
+              )) : <div/>}
+        </Grid>
+        <Grid container
+          direction="row"
+          justifyContent="space-around"
+          marginTop={'5vh'}
+          display={isChosenIngredient.name !== 'Pick an item from the list' ?
+            'inline-flex' : 'none'}
+        >
+          <Grid item>
+            <ButtonBase onClick={handleCancel}>
+              Cancel
+            </ButtonBase>
+          </Grid>
+          <Grid item>
+            <ButtonBase onClick={handleUpdate}>
+              Change All
+            </ButtonBase>
+          </Grid>
+          <Grid item>
+            <ButtonBase onClick={handleUpdateAll}>
+              Change this
+            </ButtonBase>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
