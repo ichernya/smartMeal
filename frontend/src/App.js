@@ -6,7 +6,7 @@ import Login from './components/Login_Registration/Login.jsx';
 import Registration from './components/Login_Registration/Registration.jsx';
 import Error from './components/Page404.jsx';
 import PageLayout from './components/PageLayout.jsx';
-import CheckList from './components/CheckList/CheckList.jsx';
+import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
 import AddMealDialog from './components/AddMealDialog.jsx';
