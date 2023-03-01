@@ -35,11 +35,7 @@ const pullFoodFull = async ( mealsid, dayof) => {
     let last = first + 6; 
     let start = new Date(curr.setDate(first)).toISOString().split('T')[0];
     let end = new Date(curr.setDate(last)).toISOString().split('T')[0] ;
-    const select = `
-    SELECT * 
-    FROM recipes
-    WHERE recipeid (SELECT dinner FROM meals WHERE (mealsid = $3) AND dayof::date BETWEEN $1::date AND $2::date`;
-
+    //{ "id": "1", "2023-02-17": {"breaktfast": "1", "lunch": "2", "dinner": "3"}
     const select_2 = `
     SELECT * 
     FROM recipes

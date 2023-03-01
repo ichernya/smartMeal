@@ -171,14 +171,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/putMealToUser'
+              $ref: '#/components/schemas/putMealToUserNew'
       responses:
         201:
           description: created meal
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/putMealToUser'
+                $ref: '#/components/schemas/putMealToUserNew'
         default:
           description: Unexpected Error
           content:
@@ -287,14 +287,17 @@ components:
       properties:
         mealsid:
           type: integer
-        breakfast:
-          type: integer
-        lunch:
-          type: integer
-        dinner:
-          type: integer
         dayof:
           type: string
+        changes:
+          type: string
+
+    putMealToUserNew:
+      properties:
+        mealWeek:
+          type: string
+      required:
+        - mealWeek
 
     Credentials:
       type: object

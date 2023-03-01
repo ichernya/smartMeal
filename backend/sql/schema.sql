@@ -24,11 +24,8 @@ CREATE TABLE users(
 DROP TABLE IF EXISTS meals;
 
 CREATE TABLE meals(
+    mealWeek jsonb,
     mealsid int,
-    breakfast int,
-    lunch int,
-    dinner int,
-    dayof date NOT NULL,
     FOREIGN KEY (mealsid) REFERENCES users(userid)
 );
 
