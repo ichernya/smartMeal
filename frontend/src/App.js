@@ -9,7 +9,7 @@ import PageLayout from './components/PageLayout.jsx';
 import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
-import AddMealDialog from './components/AddMealDialog.jsx';
+import AddMealDialog from './components/AddRecipe/AddMealDialog.jsx';
 import './App.css';
 
 
