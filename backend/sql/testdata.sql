@@ -12,9 +12,8 @@ INSERT INTO users(username, passwrd) VALUES ('molly@books.com', '$2b$10$Y00XOZD/
 
 
 DELETE FROM meals;
-INSERT INTO meals(mealWeek, mealsid) VALUES ('{ "id": "1", "2023-02-17": {"breakfast": "1", "lunch": "2", "dinner": "3"}, "2023-02-18": {"breakfast": "2", "lunch": "3", "dinner": "1"}}', 1);
-INSERT INTO meals(mealWeek, mealsid) VALUES ('{ "id": "2", "2023-02-27": {"breakfast": "2", "lunch": "3", "dinner": "3"}, "2023-02-27": {"breakfast": "1", "lunch": "2", "dinner": "1"}}', 2);
-
+INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-19', 'Test Meal', 'true', '{ "id": "1", "2023-02-19": {"breakfast": "1", "lunch": "2", "dinner": "3"}, "2023-02-20": {"breakfast": "2", "lunch": "3", "dinner": "1"}, "2023-02-21": {"breakfast": "2", "lunch": "3", "dinner": "4"}, "2023-02-22": {"breakfast": "2", "lunch": "1", "dinner": "4"}, "2023-02-23": {"breakfast": "1", "lunch": "1", "dinner": "1"}}', 1);
+INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-26', 'My Healthy Meal', 'true', '{ "id": "2", "2023-02-26": {"breakfast": "2", "lunch": "3", "dinner": "3"}, "2023-02-27": {"breakfast": "1", "lunch": "2", "dinner": "1"}}', 2);
 
 DELETE FROM substitutions;
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Whole Milk', '{"Skimmed Milk", "Fat Free Milk"}', '{"Almond Milk", "Soy Milk", "Oat Milk"}');

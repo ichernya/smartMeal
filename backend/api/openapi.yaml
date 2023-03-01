@@ -36,6 +36,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /publicMeal:
+    get:
+      description: returns user query
+      parameters:
+        - in: query
+          name: mealName
+          schema:
+            type: string
+          required: true
+          description: what the user gives
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipes'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /userSearch:
     get:
       description: returns user query
@@ -52,7 +76,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/recipes'
+                $ref: '#/components/schemas/returnMeal'
         default:
           description: Unexpected Error
           content:
@@ -298,6 +322,7 @@ components:
           type: string
       required:
         - mealWeek
+      
 
     Credentials:
       type: object
@@ -335,6 +360,20 @@ components:
           items:
             type: string
           example: ["str1", "str2", "str3"]
+
+
+    returnMeal:
+      properties:
+        firstDay:
+          type: string
+        mealName:
+          type: string 
+        public:
+          type: string
+        mealWeek:
+          type: string
+        mealsid:
+          type: integer
 
 
 

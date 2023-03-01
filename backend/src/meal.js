@@ -25,23 +25,38 @@ const pullFood = async ( dayof , mealsid ) => {
     // select query for when day matches and mealid matches
     // ${2}::text ->> 'breakfast' OR recipeid = mealweek ->> ${2}::text ->> 'lunch' OR recipeid = mealweek ->> ${2}::text ->> 'dinner'
     //        JOIN recipes on recipeid = (mealWeek::jsonb ->> '2023-02-17'::text ->> 'dinner'::)
-    const select = `
-    SELECT m.mealweek, ARRAY_AGG(R3) AS recipes
-    FROM meals m
-    RIGHT JOIN recipes R3 
-    ON R3.recipeid = (cast(m.mealweek -> $2 -> 'breakfast' #>> '{}' as integer))
-    OR
-    R3.recipeid = (cast(m.mealweek -> $2 -> 'lunch' #>> '{}' as integer))
-    OR
-    R3.recipeid = (cast(m.mealweek -> $2 -> 'dinner' #>> '{}' as integer))
-    WHERE m.mealweek ->> 'id' = $1 AND m.mealweek ? $2
-    GROUP BY m.mealweek;
-    `
 
+
+    //query to select a week of food and tie the recipes in that week of food given a day in the week and a userid
+
+    //works by importing an array aggregate of recipes to join to a meal where the userid exists along with the date as a key
+
+    //casting ids as integer is important to lookup json data otherwise errors
+
+    const select = `
+    SELECT meals.*, 
+       ARRAY_AGG(DISTINCT recipes) AS recipes
+    FROM meals 
+    LEFT JOIN jsonb_each(meals.mealweek) AS dates(date_key, date_value) 
+        ON true
+    LEFT JOIN recipes 
+        ON recipes.recipeid = cast(date_value ->> 'breakfast' as integer) 
+        OR recipes.recipeid = cast(date_value ->> 'lunch' as integer)
+        OR recipes.recipeid = cast(date_value ->> 'dinner' as integer) 
+    WHERE meals.mealweek->>'id' = $1 AND meals.firstDay = $2
+    GROUP BY 
+        meals.mealsid, 
+        meals.mealname,
+        meals.public,
+        meals.firstday,
+        meals.mealweek;
+    `
     const query = {
         text: select,
         values: [ mealsid, dayof ]
     }
+
+    //deprecated queries of old database
     // const select_2 = `
     // SELECT * 
     // FROM recipes
@@ -72,6 +87,7 @@ const pullFood = async ( dayof , mealsid ) => {
 exports.pullFoodDay = async (req, res) => {
     // function caller, awaits pullFood to return database rows
     const food = await pullFood(req.query.dayof, req.query.mealsid);
+    //replace recipe into id 
     if (food) {res.status(200).json(food);}
     else {res.status(404).send();}
 }
@@ -111,6 +127,7 @@ const updateFood = async ( mealsid, dayof, changes) => {
         //{ "id": "1", "2023-02-17": {"breaktfast": "1", "lunch": "2", "dinner": "3"}
 
     // IMPORTANT FORMAT :::    '{2023-02-20}', '{"breakfast": "2", "lunch": "2", "dinner": "4"}'
+    
     
     const dayofs = '{2023-02-20}'
     const chagne = '{"breakfast": "2", "lunch": "2", "dinner": "4"}'

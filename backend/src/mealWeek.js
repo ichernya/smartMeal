@@ -30,17 +30,24 @@ const pool = new Pool({
 //      if no food, send empty list
 const pullFoodFull = async ( mealsid, dayof) => {
     // calculate the Saturday and Sunday for the week given a date in the week 
-    let curr = new Date(dayof); 
-    let first = curr.getDate() - curr.getDay()-1; 
-    let last = first + 6; 
-    let start = new Date(curr.setDate(first)).toISOString().split('T')[0];
-    let end = new Date(curr.setDate(last)).toISOString().split('T')[0] ;
+    var date = new Date(dayof);
+    date.setDate(date.getDate() + 7);
+    news = new Date(date.toISOString().split('T')[0]);
+    
+
+    return {dayof, news}
     //{ "id": "1", "2023-02-17": {"breaktfast": "1", "lunch": "2", "dinner": "3"}
     const select_2 = `
-    SELECT * 
-    FROM recipes
-       JOIN meals ON recipeid = breakfast OR recipeid = lunch OR recipeid = dinner
-    WHERE (mealsid = $3) AND dayof::date BETWEEN $1::date AND $2::date
+    SELECT m.mealweek, ARRAY_AGG(R3) AS recipes
+    FROM meals m
+    RIGHT JOIN recipes R3 
+    ON R3.recipeid = (cast(m.mealweek -> $2 -> 'breakfast' #>> '{}' as integer))
+    OR
+    R3.recipeid = (cast(m.mealweek -> $2 -> 'lunch' #>> '{}' as integer))
+    OR
+    R3.recipeid = (cast(m.mealweek -> $2 -> 'dinner' #>> '{}' as integer))
+    WHERE m.mealweek ->> 'id' = $1 AND m.mealweek ? $2
+    GROUP BY m.mealweek;
     `
     const query = {
         text: select_2,
