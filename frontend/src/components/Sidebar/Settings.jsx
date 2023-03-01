@@ -59,6 +59,7 @@ function Settings(props) {
               <FormControlLabel
                 control={<Switch checked={allergies[allergy]} />}
                 label={allergy}
+                key={allergy}
                 onChange={() => updateAllergies(allergy)}
               />
             ))}

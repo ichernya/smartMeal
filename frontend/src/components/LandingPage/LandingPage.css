@@ -1,6 +1,10 @@
 .root{
   min-height: 100vh;
+<<<<<<< HEAD
   background-image: url('../../assets/LandingPage_Background.jpg');
+=======
+  background-image: url('../../assets/bg2.png');
+>>>>>>> bce4d60936773b267ad04341969867d9103505cf
   background-repeat: no-repeat;
   background-size: cover;
   resize: both;
