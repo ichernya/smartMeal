@@ -16,7 +16,6 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
-
 /**
  * @return {object}
  */
@@ -134,23 +133,27 @@ const DisplayElement = () => {
         </Grid>
         {isView ?
           <MobileStepper
-            steps={mealsWithIngredient.length ?? 0}
+            steps={mealsWithIngredient.length}
             position="static"
+            variant='dots'
             activeStep={activeStep}
+            sx={{'backgroundColor': 'aliceblue'}}
             nextButton={
               <Button
                 size="small"
                 onClick={handleNext}
                 disabled={activeStep === mealsWithIngredient.length - 1}
               >
-                <KeyboardArrowRight/>
+                <KeyboardArrowRight className={activeStep ===
+                  mealsWithIngredient.length - 1 ? '' : 'brownColor'}/>
               </Button>
             }
             backButton={
               <Button size="small"
                 onClick={handleBack}
                 disabled={activeStep === 0}>
-                <KeyboardArrowLeft />
+                <KeyboardArrowLeft className={activeStep ===
+                  0 ? '' : 'brownColor'}/>
               </Button>
             }
           /> : <div/>}
@@ -224,8 +227,7 @@ const DisplayElement = () => {
           justifyContent="space-around"
           marginTop={'5vh'}
           display={isChosenIngredient.name !== 'Pick an item from the list' ?
-            'inline-flex' : 'none'}
-        >
+            'inline-flex' : 'none'}>
           <Grid item>
             <ButtonBase onClick={handleCancel}>
               Cancel
