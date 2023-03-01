@@ -12,7 +12,7 @@ import {useMeals} from '../MealContextProvider';
 import './Checkbox.css';
 
 // Queries the database for alternatives for the ingredient
-const getMeal = (ingredient, alteratives, setAlteratives) => {
+const getMeal = (ingredient, setAlteratives) => {
   fetch(`http://localhost:3010/v0/switchOut?ingredient=${ingredient}`, {
     method: 'get',
     headers: new Headers({
@@ -39,14 +39,35 @@ const getMeal = (ingredient, alteratives, setAlteratives) => {
     });
 };
 
+const filterMealsForIngredients =
+(meals, setMealsWithIngredient, myIngredient) => {
+  const mealsOfWithIng = [];
+  Object.keys(meals)
+    .filter((key) => key !== 'amount' && key !== 'id')
+    .forEach((date) => {
+      Object.values(meals[date]).filter((obj) => obj &&
+      Object.keys(obj).length !== 0)
+        .forEach((meal) => {
+          Object.keys(meal['ingredients']).filter((key) => key ===
+          myIngredient)
+            .forEach(() => {
+              mealsOfWithIng.push(meal);
+            });
+        });
+    });
+  setMealsWithIngredient(mealsOfWithIng);
+};
+
 /**
  * Which represents the list of categories and thier sublist of ingredients
  * @return {object}
  */
 const IndeterminateCheckbox = () => {
-  const {ingredientState, setIngredientState,
-    setChosenIngredient, alteratives, setAlteratives} = useMeals();
-  // When first lanuch \load meal from database and when the week change
+  const {ingredientList, setIngredientList,
+    setChosenIngredient,
+    setAlteratives, meals,
+    setMealsWithIngredient} = useMeals();
+  // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
     Object.keys(target[location]['ingredients']).forEach((key) => {
@@ -54,13 +75,13 @@ const IndeterminateCheckbox = () => {
     });
   };
   const setAllCategory = (target, location, value) => {
-    Object.keys(target[location]).forEach((key) => {
+    Object.keys(target[location]).forEach(() => {
       target[location].hidden = value;
     });
   };
   // Checking the box
   const handleChange = (event) => {
-    const newDic = {...ingredientState};
+    const newDic = {...ingredientList};
     if (newDic[event.target.id]['amount'] ===
     newDic[event.target.id]['amountChecked']) {
       newDic[event.target.id]['amountChecked'] = 0;
@@ -70,21 +91,26 @@ const IndeterminateCheckbox = () => {
       newDic[event.target.id]['amount'];
       setAll(newDic, event.target.id, true);
     }
-    setIngredientState(newDic);
+    setIngredientList(newDic);
   };
+  // Select an ingredient and search for its alteratives
   const handleUpdateElement = (event) => {
     const [parentCategory, myIngredient] = event.target.id.split('-');
-    const info = ingredientState[parentCategory].ingredients[myIngredient];
+    const info = ingredientList[parentCategory].ingredients[myIngredient];
     setChosenIngredient({
       'name': myIngredient,
       'img': info.img,
       'pricePerUnitWeight': info.pricePerUnitWeight,
       'quantity': info.quantity,
+      'category': parentCategory,
     });
-    getMeal(myIngredient, alteratives, setAlteratives);
+    getMeal(myIngredient, setAlteratives);
+    filterMealsForIngredients(meals, setMealsWithIngredient,
+      myIngredient);
   };
+
   const handleChildChange = (event) => {
-    const alter = {...ingredientState};
+    const alter = {...ingredientList};
     const [parentCategory, myIngredient] = event.target.id.split('-');
     if (alter[parentCategory]['ingredients'][myIngredient].checked) {
       alter[parentCategory]['ingredients'][myIngredient].checked = false;
@@ -93,20 +119,20 @@ const IndeterminateCheckbox = () => {
       alter[parentCategory]['ingredients'][myIngredient].checked = true;
       alter[parentCategory]['amountChecked'] += 1;
     }
-    setIngredientState(alter);
+    setIngredientList(alter);
   };
   const handleHidden = (category) => {
-    const newDic = {...ingredientState};
+    const newDic = {...ingredientList};
     setAllCategory(newDic, category, !newDic[category].hidden);
-    setIngredientState(newDic);
+    setIngredientList(newDic);
   };
   // Fetch from the database
   useEffect(() => {
     setLoading(false);
-  }, [ingredientState]);
+  }, [ingredientList]);
   return (
     <Grid>
-      {Object.keys(ingredientState).map((category) => (
+      {Object.keys(ingredientList).map((category) => (
         // All the categories
         <Grid container
           direction="column"
@@ -118,24 +144,24 @@ const IndeterminateCheckbox = () => {
               control={
                 <Checkbox
                   id={category}
-                  checked={!loading ? ingredientState[category]['amount'] ===
-                ingredientState[category]['amountChecked'] : false}
+                  checked={!loading ? ingredientList[category]['amount'] ===
+                ingredientList[category]['amountChecked'] : false}
                   indeterminate={!loading ?
-                    ingredientState[category]['amountChecked'] > 0 &&
-                  ingredientState[category]['amount'] !==
-                  ingredientState[category]['amountChecked'] : false}
+                    ingredientList[category]['amountChecked'] > 0 &&
+                  ingredientList[category]['amount'] !==
+                  ingredientList[category]['amountChecked'] : false}
                   onChange={handleChange}
                 />}
             />
             <IconButton onClick={() => handleHidden(category)}>
-              {ingredientState[category].hidden ?
+              {ingredientList[category].hidden ?
                 <ExpandMoreIcon/> : <ExpandLessIcon/>}
             </IconButton>
           </Grid>
-          {!loading ? Object.keys(ingredientState[category]['ingredients'])
+          {!loading ? Object.keys(ingredientList[category]['ingredients'])
             .map((ingredient) =>
             // All the ingredients within the category
-              (<Box sx={{display: ingredientState[category].hidden ?
+              (<Box sx={{display: ingredientList[category].hidden ?
                 'none' : 'inline-block', ml: 3, gap: 1, mt: 1}}
               key={ingredient}>
                 <FormControlLabel
@@ -143,7 +169,7 @@ const IndeterminateCheckbox = () => {
                     <Checkbox
                       id={`${category}-${ingredient}`}
                       checked=
-                        {ingredientState[category]['ingredients'][ingredient]
+                        {ingredientList[category]['ingredients'][ingredient]
                           .checked}
                       onChange={handleChildChange}
                     />
@@ -152,8 +178,10 @@ const IndeterminateCheckbox = () => {
                 <div className='listElement' id={`${category}-${ingredient}`}
                   onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
-                  {ingredientState[category]['ingredients'][ingredient]
+                  {ingredientList[category]['ingredients'][ingredient]
                     .quantity}
+                  {' '}
+                  {ingredientList[category]['ingredients'][ingredient].unit}
                 </div>
               </Box>)) : <div/>}
         </Grid>
