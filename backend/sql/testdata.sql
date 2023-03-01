@@ -1,7 +1,7 @@
 DELETE FROM recipes;
 INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, halal, kosher) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}', '3', '/test.png', 'true', 'true');
 INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, healthy, halal, kosher) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}', '4', '/test.png', 'true', 'true', 'true');
-INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, kosher, halal) VALUES ('Cheeseburger', '{"Beef Patty", "Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}', '7', '/test.png', 'true', 'true');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, kosher, halal) VALUES ('Cheeseburger', '{"Beef Patty", "Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}', '7', '/images/cheeseburger.png', 'true', 'true');
 INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}', '3', '/test.png');
 
 DELETE FROM users;
@@ -12,7 +12,8 @@ INSERT INTO users(username, passwrd) VALUES ('molly@books.com', '$2b$10$Y00XOZD/
 
 
 DELETE FROM meals;
-INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES (1, 1, 0, 0, '2023-01-19');
+INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-19', 'Test Meal', 'true', '{ "id": "1", "2023-02-19": {"breakfast": "1", "lunch": "2", "dinner": "3"}, "2023-02-20": {"breakfast": "2", "lunch": "3", "dinner": "1"}, "2023-02-21": {"breakfast": "2", "lunch": "3", "dinner": "4"}, "2023-02-22": {"breakfast": "2", "lunch": "1", "dinner": "4"}, "2023-02-23": {"breakfast": "1", "lunch": "1", "dinner": "1"}}', 1);
+INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-26', 'My Healthy Meal', 'true', '{ "id": "2", "2023-02-26": {"breakfast": "2", "lunch": "3", "dinner": "3"}, "2023-02-27": {"breakfast": "1", "lunch": "2", "dinner": "1"}}', 2);
 
 DELETE FROM substitutions;
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Whole Milk', '{"Skimmed Milk", "Fat Free Milk"}', '{"Almond Milk", "Soy Milk", "Oat Milk"}');
