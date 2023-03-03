@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+/* eslint-disable no-unused-vars */
+import React, {useState} from 'react';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
