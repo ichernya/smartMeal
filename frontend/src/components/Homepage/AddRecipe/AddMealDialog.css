@@ -17,3 +17,7 @@
     max-width: 80px;
   }
 }
+
+.quantity {
+    overflow: scroll;
+}

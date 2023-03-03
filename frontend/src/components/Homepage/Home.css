@@ -3,6 +3,12 @@
   width: 0px;
 }
 
+@media (max-width: 600px) {
+    ::-webkit-scrollbar:horizontal{
+        display: none;
+    }
+}
+
 @media (min-width: 600px) {
 
     ::-webkit-scrollbar:horizontal{
@@ -45,11 +51,16 @@
 }
 
 #titleBar {
-    background-color: red;
+    background-color: #bfd1e3;
     float: right;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 70px;
+}
+
+#homepage {
+    background-color: #f3f1fa;
+    height: 100vh;
 }

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -30,7 +29,11 @@ function Filter(props) {
     delete copy[name];
     setFilter({...copy});
     copy = {...alignments};
-    copy[name] = 'default';
+    for (const category of Object.keys(copy)) {
+      if (copy[category][name]) {
+        copy[category][name] = 'no';
+      }
+    }
     setAlignment({...copy});
   };
 
@@ -39,10 +42,7 @@ function Filter(props) {
       className='filter'
     >
       <FormControl sx={{m: 1, width: '100%'}}>
-        <InputLabel>Filters</InputLabel>
         <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
           multiple
           value={Object.keys(filters)}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}

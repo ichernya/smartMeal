@@ -19,13 +19,12 @@ const theme = createTheme({
   },
   backgroundColor: '#f3f1fa',
 });
-/**
- * @return {object}
- */
-function page() {
+
+// eslint-disable-next-line require-jsdoc
+function HomeLayout(props) {
   return (
     <ThemeProvider theme={theme}>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className='greyBack'>
         <Grid item xs={false} sm={1} md={0.7}>
           <SideBar className='SideBar'/>
         </Grid>
@@ -37,4 +36,4 @@ function page() {
   );
 };
 
-export default page;
+export default HomeLayout;

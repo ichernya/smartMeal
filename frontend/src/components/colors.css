@@ -1,29 +1,33 @@
 .brownColor {
-    color: #b55f1e;
+    color: #b55f1e !important;
 }
 
 .brownBack {
-    background-color: #b55f1e;
+    background-color: #b55f1e !important;
 }
 
 .lightBlueColor {
-    color: #bfd1e3;
+    color: #bfd1e3 !important;
 }
 
 .lightBlueBack {
-    background-color: #bfd1e3;
+    background-color: #bfd1e3 !important;
 }
 
 .greyColor {
-    color: #f3f1fa;
+    color: #f3f1fa !important;
 }
 
 .greyBack {
-    background-color: #f3f1fa;
+    background-color: #f3f1fa !important;
 }
 
 .blackColor {
-    color: #000000;
+    color: #000000 !important;
+}
+
+.aliceBlueBack {
+    background-color: aliceBlue !important;
 }
 
 .aliceBlueBack {

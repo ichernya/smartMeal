@@ -33,6 +33,7 @@ function ChecklistPage() {
   const WEEK = `Week: ${startWeek.getMonth() + 1}` +
     `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0} minHeight={'100vh'} className='greyBack'>

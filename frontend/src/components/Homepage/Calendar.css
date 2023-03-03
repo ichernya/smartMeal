@@ -70,3 +70,7 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
+
+.borderless {
+    border-radius: 0 !important;
+}

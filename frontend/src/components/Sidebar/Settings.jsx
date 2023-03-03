@@ -57,6 +57,7 @@ function Settings(props) {
           <FormGroup>
             {Object.keys(allergies).map((allergy) => (
               <FormControlLabel
+                key={allergy}
                 control={<Switch checked={allergies[allergy]} />}
                 label={allergy}
                 key={allergy}

@@ -16,6 +16,7 @@ const Item = styled(Paper)(({theme}) => ({
   height: '90vh',
   overflow: 'auto',
 }));
+
 /**
  * The way the page is formatted for mobile, desktop, and tablet
  * @return {object}

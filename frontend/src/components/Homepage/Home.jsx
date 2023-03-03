@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 
 import {useDimensions} from '../DimensionsProvider.jsx';
 import Calendar from './Calendar.jsx';
+import AddMealDialog from './AddRecipe/AddMealDialog.jsx';
 import Menu from './Menu.jsx';
 import Tags from './Filter/Tags.jsx';
 import './Home.css';
@@ -54,6 +55,8 @@ function Homepage(props) {
   // Represents the weekly meal plans name
   // TODO query backend
   const [planName, setName] = React.useState(WEEK);
+  // Represents whether to display the add meal dialog
+  const [addMeal, setAddMeal] = React.useState(false);
   const [changeName, setChangeName] = React.useState(false);
   // Represents the alignments of the tags
   const [alignments, setAlignment] =
@@ -101,12 +104,15 @@ function Homepage(props) {
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
         filters, setFilter, alignments, setAlignment,
+        addMeal, setAddMeal,
       }}
     >
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
+        id='homepage'
       >
+        <AddMealDialog HomeContext={HomeContext}/>
         <Tags HomeContext={HomeContext}/>
         <div
           id='titleBar'
