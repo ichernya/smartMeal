@@ -6,11 +6,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {Link} from 'react-router-dom';
-import immagine from '../../assets/bg2.png';
+import immagine from '../../assets/Cacio_E_Pepe.png';
 /**
  * @return {object}
  */
-export default function MediaCard() {
+function MediaCard() {
   return (
     <Card sx={{maxWidth: 345}}>
       <CardMedia
@@ -35,4 +35,6 @@ export default function MediaCard() {
       </CardActions>
     </Card>
   );
-}
+};
+
+export default MediaCard;
