@@ -1,9 +1,11 @@
-/* eslint-disable require-jsdoc */
 import React from 'react';
 import {Box, Button, Container, Typography} from '@mui/material';
 import Grid from '@mui/material/Grid';
-
-const Error = () => {
+/**
+ * 404 Page Not Found
+ * @return {Object}
+ */
+function Error() {
   return (
     <Box
       sx={{

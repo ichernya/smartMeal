@@ -38,16 +38,22 @@ const getMeal = (ingredient, setAlteratives) => {
       setAlteratives(alter);
     });
 };
-
+// Given the meals of the week and an ingredient
+// Return a list of all the meals with the given ingredient
 const filterMealsForIngredients =
 (meals, setMealsWithIngredient, myIngredient) => {
   const mealsOfWithIng = [];
   Object.keys(meals)
+    // ignore the keys 'amount' and 'id'
     .filter((key) => key !== 'amount' && key !== 'id')
+    // Look through the each day of the week that aren't empty
     .forEach((date) => {
       Object.values(meals[date]).filter((obj) => obj &&
       Object.keys(obj).length !== 0)
+        // Look through each meal of the day
         .forEach((meal) => {
+          // If the meal has the ingredient add it to the list of meals with
+          // said ingredient
           Object.keys(meal['ingredients']).filter((key) => key ===
           myIngredient)
             .forEach(() => {
@@ -62,11 +68,13 @@ const filterMealsForIngredients =
  * Which represents the list of categories and thier sublist of ingredients
  * @return {object}
  */
-const IndeterminateCheckbox = () => {
-  const {ingredientList, setIngredientList,
+function IndeterminateCheckbox() {
+  const {
+    ingredientList, setIngredientList,
     setChosenIngredient,
     setAlteratives, meals,
-    setMealsWithIngredient} = useMeals();
+    setMealsWithIngredient,
+  } = useMeals();
   // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {

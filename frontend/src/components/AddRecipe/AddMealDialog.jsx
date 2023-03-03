@@ -22,7 +22,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import {Paper, Typography} from '@mui/material';
+import {Paper} from '@mui/material';
 import {TextField} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -33,7 +33,6 @@ import '../colors.css';
  * @return {object}
  */
 function AddMealDialog() {
-
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -246,7 +245,7 @@ function AddMealDialog() {
                 size='large'
                 sx={{mt: 1}}
               >
-                <AddPhotoAlternateRoundedIcon fontSize='large' 
+                <AddPhotoAlternateRoundedIcon fontSize='large'
                   className='brownColor'/>
                 <input
                   type="file"
@@ -314,12 +313,14 @@ function AddMealDialog() {
               </IconButton>
             </Grid>
             <Grid item xs={12}>
-            {/* The paper show the ingredients list*/}
-              <Paper style={{maxHeight: 200, overflow: 'auto', backgroundColor: '#f3f1fa'}}>
+              {/* The paper show the ingredients list*/}
+              <Paper style= {{maxHeight: 200, overflow: 'auto',
+                backgroundColor: '#f3f1fa'}}>
                 <List>
                   {ingredients.map((ingredient) => (
                     <ListItem alignItems='center'>
-            {/* The Grid is used the components of a sigle list item */}
+                      {/* The Grid is used the components
+                       of a sigle list item */}
                       <Grid container spacing={2} component="main"
                         direction="row">
                         <Grid item xs={7} overflow='auto'>

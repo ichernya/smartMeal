@@ -53,6 +53,7 @@ const testIngredientList = {
 const testMeal = {
   'recipeid': 1,
   'dishname': 'Beef stew',
+  'portion': 1,
   'ingredients': {
     'Beef': {
       'quantity': 15,
@@ -76,6 +77,7 @@ const testMeal = {
 };
 const testMeal1 = {
   'recipeid': 1,
+  'portion': 2,
   'dishname': 'Beef Stick',
   'ingredients': {
     'Beef': {

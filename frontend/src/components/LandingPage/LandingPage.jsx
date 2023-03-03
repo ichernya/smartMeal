@@ -6,8 +6,6 @@ import ScreenshotCard from './ScreenshotCard';
 import ScreenshotCard2 from './ScreenshotCard2';
 import {Typography} from '@mui/material';
 import './LandingPage.css';
-import Paper from '@mui/material/Paper';
-
 
 // eslint-disable-next-line require-jsdoc
 function LandingPage() {
@@ -22,7 +20,8 @@ function LandingPage() {
           <HeaderButtons/>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Typography component="h1" variant="h5" id="infoSection" align='center'>
+          <Typography component="h1" variant="h5"
+            id="infoSection" align='center'>
             You can create and save your own
             meal plan and generate a grocery list from it!
           </Typography>

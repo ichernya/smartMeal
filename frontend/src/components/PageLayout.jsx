@@ -17,9 +17,12 @@ const theme = createTheme({
       xl: 1536,
     },
   },
+  backgroundColor: '#f3f1fa',
 });
-
-const page = () => {
+/**
+ * @return {object}
+ */
+function page() {
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0}>
