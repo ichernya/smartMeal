@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import {styled, alpha} from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -6,11 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import ReorderIcon from '@mui/icons-material/Reorder';
-import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import Toolbar from '@mui/material/Toolbar';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
@@ -60,8 +55,7 @@ export const SearchIconWrapper = styled('div')(({theme}) => ({
 
 // eslint-disable-next-line require-jsdoc
 function Tools(props) {
-  const {width, cardSize, search, setSearch, setDrawer,
-    filters, setFilter, alignments, setAlignment,
+  const {search, setSearch, setDrawer,
   } = React.useContext(props['HomeContext']);
 
   const searchInput = (event) => {
