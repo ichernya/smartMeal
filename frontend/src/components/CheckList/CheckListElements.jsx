@@ -6,13 +6,15 @@ import Paper from '@mui/material/Paper';
 import CheckBox from './Checkbox.jsx';
 import DisplayElement from './DisplayElement.jsx';
 
+import '../colors.css';
+
 const Item = styled(Paper)(({theme}) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
+  backgroundColor: 'aliceblue',
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  minHeight: '90vh',
+  height: '90vh',
+  overflow: 'auto',
 }));
 
 /**
@@ -26,14 +28,14 @@ function CheckListElement() {
       container
       direction="row"
       justifyContent="center"
-      spacing={12}
+      spacing={4}
     >
-      <Grid item xs={false} md={5} lg={5} id="leftCheck">
+      <Grid item xs={false} md={5.7} id="leftCheck">
         <Item>
           <DisplayElement/>
         </Item>
       </Grid>
-      <Grid item xs={12} md={5} lg={5}>
+      <Grid item xs={12} md={5.7}>
         <Item>
           <CheckBox/>
         </Item>

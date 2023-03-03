@@ -6,7 +6,7 @@ import CheckListElement from './CheckList/CheckListElements.jsx';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 
 import './Sidebar/SideBar.css';
-
+import './colors.css';
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -27,13 +27,12 @@ const theme = createTheme({
 function ChecklistPage() {
   return (
     <ThemeProvider theme={theme}>
-      <Grid container spacing={0} minHeight={'100vh'}>
+      <Grid container spacing={0} minHeight={'100vh'} className='greyBack'>
         <Grid item xs={false} sm={1} md={0.7}>
           <SideBar className='SideBar'/>
         </Grid>
         <Grid item xs={12} sm={11} md={11.3}>
-          <Toolbar>
-          List of List Elements of List Elements Checked
+          <Toolbar sx={{marginBottom: '1vh'}} >
           </Toolbar>
           <CheckListElement/>
         </Grid>

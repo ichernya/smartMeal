@@ -9,7 +9,7 @@ import './SubComp.css';
 /**
  * @return {object}
  */
-export default function HeaderButtons() {
+function HeaderButtons() {
   return (
     <Box sx={{
       flexGrow: 10,
@@ -26,7 +26,7 @@ export default function HeaderButtons() {
           </Link>
           <Link to='/signup' className='link'>
             <Button variant="contained"
-              sx={{backgroundColor: `rgba(40,187,183,255)`}}>
+              sx={{backgroundColor: `rgba(40,187,183,255)`, minWidth: 95}}>
               Sign Up
             </Button>
           </Link>
@@ -34,4 +34,6 @@ export default function HeaderButtons() {
       </AppBar>
     </Box>
   );
-}
+};
+
+export default HeaderButtons;

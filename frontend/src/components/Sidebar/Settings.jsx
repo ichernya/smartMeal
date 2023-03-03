@@ -60,6 +60,7 @@ function Settings(props) {
                 key={allergy}
                 control={<Switch checked={allergies[allergy]} />}
                 label={allergy}
+                key={allergy}
                 onChange={() => updateAllergies(allergy)}
               />
             ))}
