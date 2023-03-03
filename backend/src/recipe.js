@@ -27,15 +27,15 @@ const pullAllRecipe = async () => {
 }
 
 exports.getAll = async (req, res) => {
-    // caller function that awaits pullAllRecipe return full week or 404 
+    // caller function that awaits pullAllRecipe return full week or 404
     const recipe = await pullAllRecipe();
     if (recipe) {res.status(200).json(recipe);}
     else {res.status(404).send();}
 }
 
-// function to return one recipe 
+// function to return one recipe
 // from frontend recieve: recipeid
-// send back to frontend recipe 
+// send back to frontend recipe
 const pullOneRecipe = async ( recipeid ) => {
     const select = 'SELECT * FROM recipes WHERE recipeid = $1';
     const query = {
@@ -51,4 +51,32 @@ exports.getOne = async (req, res) => {
     const recipe = await pullOneRecipe(req.query.recipeid);
     if (recipe) {res.status(200).json(recipe);}
     else {res.status(404).send();}
+}
+
+
+const postOneRecipe = async(newRecipe) => {
+    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ($1, $2, $3, $4) RETURNING ingredientAm';
+    const query = {
+        text: insert,
+        values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData],
+    };
+    console.log(insert);
+    const id = await pool.query(query);
+    console.log(id);
+}
+
+exports.postRecipe = async (req, res) => {
+    const newRecipe = {};
+    //add the stuff here
+    //dishname
+    newRecipe.dishname = req.body.dishname;
+    newRecipe.ingredients = req.body.ingredients;
+    //ingredients jsonb
+    //ingredientAm
+    newRecipe.ingredientAm = req.body.ingredientAm;
+    //imageData
+    newRecipe.imageData = req.body.imageData;
+    //halal
+    const id = await postOneRecipe(newRecipe);
+    res.status(201).send(newRecipe);
 }

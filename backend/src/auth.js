@@ -21,13 +21,13 @@ const secrets = require('./secrets');
 
 const selectEmailPassword = async (email) => {
   // const select = 'SELECT email, password FROM member WHERE email= $1';
-  const select = 'SELECT username, passwrd FROM users WHERE username= $1';
+  const select = 'SELECT username, passwrd, userid FROM users WHERE username= $1';
   const query = {
     text: select,
     values: [email],
   };
   const {rows} = await pool.query(query);
-  // console.log(rows);
+  console.log(rows);
   return rows;
 };
 
@@ -36,16 +36,17 @@ exports.login = async (req, res) => {
   const loginInfo = await selectEmailPassword(email);
   let user = {'email': 'placeholder@books.com', 'password': 'placeholder'};
   if (loginInfo.length != 0) {
-    user = {'email': loginInfo[0].username, 'password': loginInfo[0].passwrd};
+    user = {'userid': loginInfo[0].userid, 'email': loginInfo[0].username, 'password': loginInfo[0].passwrd};
   }
   if (user.email === email && bcrypt.compareSync(password, user.password)) {
+    console.log('made it in ');
     const accessToken = jwt.sign(
       {email: user.email},
       secrets.accessToken, {
         expiresIn: '30m',
         algorithm: 'HS256',
       });
-    res.status(200).json({name: user.email, accessToken: accessToken});
+    res.status(200).json({userid: user.userid, name: user.email, accessToken: accessToken});
   } else {
     res.status(401).send('Invalid credentials');
   }
