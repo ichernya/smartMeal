@@ -14,6 +14,7 @@ const mealWeek = require('./mealWeek');
 const userSearch = require('./userSearch');
 const switchOut = require('./switchOut');
 const publicMeal = require('./publicMeal');
+const signup = require('./signup');
 
 // use express to create the app
 const app = express();
@@ -47,6 +48,7 @@ app.get('/v0/userSearch', userSearch.getUserQuery);
 app.get('/v0/switchOut', switchOut.swaps);
 app.get('/v0/publicMeal', publicMeal.pullpublicMeal);
 app.post('/v0/recipes', recipe.postRecipe);
+app.post('/v0/signup', signup.putUser);
 
 // outputting error codes and mesages for debugging
 app.use((err, req, res, next) => {

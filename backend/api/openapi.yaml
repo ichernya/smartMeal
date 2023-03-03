@@ -139,6 +139,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /signup:
+    post:
+      description: signup
+      requestBody:
+        description: Request Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        201:
+          description: created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /recipe:
     get:
       security:
