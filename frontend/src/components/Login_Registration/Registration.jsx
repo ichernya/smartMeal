@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -14,6 +14,11 @@ import './Registration.css';
  * @return {object}
  */
 function SignUp() {
+  const [user, setUser] = useState({
+    first_name: '',
+    last_name: '',
+  });
+
   return (
     <Box>
       <div id="projectName">
