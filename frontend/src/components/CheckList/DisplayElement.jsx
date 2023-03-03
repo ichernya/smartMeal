@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
+import Slider from '@mui/material/Slider';
 import defaultImage from '../../assets/qqq.png';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -17,6 +17,8 @@ import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
 /**
+ * Left side view of the checklist where the user can select an ingredient
+ * and swap it out with another ingredient
  * @return {object}
  */
 function DisplayElement() {
@@ -27,12 +29,15 @@ function DisplayElement() {
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
+  const [portion, setPortion] = useState(0);
   const [isView, setView] = useState(false);
+  // Hide the alterative ingredient list of the selected category
   const handleHidden = (a) => {
     const alter = {...modifiedState};
     alter[a].hidden = !alter[a].hidden;
     setModifiedState(alter);
   };
+  // Selecting an alterative ingredient to be swapped with
   const handleSelect = (a) => {
     setSelectedAlterative(a);
   };
@@ -48,6 +53,7 @@ function DisplayElement() {
   };
   // Change one ingredient for one meal
   const handleChange = () => {
+    // Relavent information need to change on ingredent to another for one meal
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
     const newListElement =
@@ -57,30 +63,38 @@ function DisplayElement() {
     const ingredientElement =
     newChosenMeal['ingredients'][isChosenIngredient.name];
     newListElement['quantity'] -= ingredientElement['quantity'];
+    // If the quantity in the checklist is 0
     if (newListElement['quantity'] === 0) {
       if (oldListElement['checked'] === true) {
         --oldListElement['amountChecked'];
       }
       --oldListElement['amount'];
+      // Remove the old element from the checklist
       delete oldListElement['ingredients'][isChosenIngredient.name];
       setAlteratives({});
     } else {
       ++oldListElement['amount'];
     }
+    // If the intended swap ingredient is already in the checklist
     if (oldListElement['ingredients'][selectedAlterative]) {
-      console.log(oldListElement['ingredients'][selectedAlterative],
-        selectedAlterative);
+      oldListElement['amountChecked'] -= 1;
       oldListElement['ingredients'][selectedAlterative]['quantity'] +=
         ingredientElement['quantity'];
-    } else {
+      oldListElement['ingredients'][selectedAlterative]['checked'] = false;
+    } else { // The intended ingredient is not in the checklist
       const newIngredient = {...ingredientElement};
       newIngredient['checked'] = false;
       oldListElement['ingredients'][selectedAlterative] = newIngredient;
     }
+    // From the list of all the meals with the ingredient
+    // remove the current meal
     oldMealsWithIngredient.splice(activeStep, 1);
+    // If all the meals with the ingredient is changed cancel set the active
+    // ingredient to nothing
     if (oldMealsWithIngredient.length === 0) {
       handleCancel();
     }
+    // Edge case where the active meal is the last meal of the list
     if (activeStep === oldMealsWithIngredient.length) {
       setActiveStep(activeStep - 1);
     }
@@ -90,9 +104,23 @@ function DisplayElement() {
     setMealsWithIngredient(oldMealsWithIngredient);
     // setChosenIngredient({...isChosenIngredient, 'name': selectedAlterative});
   };
+
   // Change one ingredient for all the meals with that ingredient
-  const handleUChangeAll = () => {
+  const handleChangeAll = () => {
+    const newList = {...ingredientList};
+    const oldListElement = newList[isChosenIngredient.category];
+    const newListElement = oldListElement['ingredients'];
+    newListElement[selectedAlterative] =
+      newListElement[isChosenIngredient.name];
+    if (newListElement[selectedAlterative]['checked']) {
+      newListElement[selectedAlterative]['checked'] = false;
+      oldListElement['amountChecked'] -= 1;
+    };
+    delete newListElement[isChosenIngredient['name']];
+    setIngredientList(newList);
+    handleCancel();
   };
+
   // On select alterantive create a copy of the alteratives
   useEffect(() => {
     if (alteratives && Object.keys(alteratives).length !== 0) {
@@ -100,14 +128,21 @@ function DisplayElement() {
       setSelectedAlterative(null);
       setActiveStep(0);
       setView(true);
+    } else {
+      setModifiedState({});
     }
+    setPortion();
   }, [alteratives]);
-
+  // Move to the next meal
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
+  // Move to the previous meal
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  const handleSliderChange = (event, newValue) => {
+    setPortion(newValue);
   };
   return (
     <Grid
@@ -189,6 +224,14 @@ function DisplayElement() {
                 fullWidth
                 disabled
               />
+              {mealsWithIngredient[activeStep] ?
+                <Slider
+                  sx={{width: '75%', paddingTop: '3vh'}}
+                  aria-labelledby="input-slider"
+                  step={1}
+                  value={portion}
+                  onChange={handleSliderChange}
+                />: <div/>}
             </div> :
             isChosenIngredient.name
           }
@@ -235,7 +278,7 @@ function DisplayElement() {
           </Grid>
           {Object.keys(alteratives).length ?
             <Grid item>
-              <ButtonBase onClick={handleUChangeAll}
+              <ButtonBase onClick={handleChangeAll}
                 disabled={selectedAlterative === null}>
               Change All
               </ButtonBase>

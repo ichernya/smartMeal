@@ -15,7 +15,7 @@ import './Registration.css';
  */
 function SignUp() {
   return (
-    <Box className=''>
+    <Box>
       <div id="projectName">
         <a id="project" href="/">
               SmartMeal

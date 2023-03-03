@@ -17,6 +17,7 @@ const theme = createTheme({
       xl: 1536,
     },
   },
+  backgroundColor: '#f3f1fa',
 });
 
 // eslint-disable-next-line require-jsdoc

@@ -163,7 +163,6 @@ function Calendar(props) {
     }
   };
 
-  // className='container'
   return (
     <Grid
       container

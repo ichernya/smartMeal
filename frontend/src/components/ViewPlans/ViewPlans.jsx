@@ -18,6 +18,9 @@ import {styled, alpha} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import InputBase from '@mui/material/InputBase';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+
 
 import './ViewPlans.css';
 
@@ -148,8 +151,12 @@ function TablePaginationActions(props) {
  */
 function ViewMeals(props) {
   const {width} = useDimensions();
+  // Represents what page the user is on
   const [page, setPage] = React.useState(0);
+  // Represents what the user searched for
   const [mealSearch, setMealSearch] = React.useState('');
+  // Represents whether to display user specific meals or all meals
+  const [privateMeals, setPrivate] = React.useState(false);
   // imgs is the list of recipes for the plan
   // data is the meal plan data to send back to calendar
   // TODO should be a db query
@@ -167,6 +174,7 @@ function ViewMeals(props) {
     {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
   ]);
 
+  // Update search bar query
   const searchInput = (event) => {
     const {value} = event.target;
     setMealSearch(value);
@@ -178,6 +186,7 @@ function ViewMeals(props) {
   }
 
   React.useEffect(() => {
+    // Reset the page if the current page cant fit on the screen width
     if (width >= 800 && (Math.ceil(list.length / 2) > page)) {
       setPage(0);
     }
@@ -221,6 +230,16 @@ function ViewMeals(props) {
           >
             numSelected selected
           </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={privateMeals}
+                onChange={() => setPrivate(!privateMeals)}
+                name="User's Meals"
+              />
+            }
+            label="User's Meals"
+          />
         </Toolbar>
         <Toolbar
           id='header'

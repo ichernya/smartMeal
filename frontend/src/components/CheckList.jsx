@@ -21,10 +21,19 @@ const theme = createTheme({
 
 /**
  * The way the page is formatted for mobile, desktop, and tablet
- *
  * @return {object}
  */
 function ChecklistPage() {
+  const currentDay = new Date();
+  const dateOffset = currentDay.getDay();
+  const startWeek = new Date();
+  startWeek.setDate(currentDay.getDate() - dateOffset);
+  const endWeek = new Date();
+  endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
+  const WEEK = `Week: ${startWeek.getMonth() + 1}` +
+    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
+    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0} minHeight={'100vh'} className='greyBack'>
@@ -32,7 +41,8 @@ function ChecklistPage() {
           <SideBar className='SideBar'/>
         </Grid>
         <Grid item xs={12} sm={11} md={11.3}>
-          <Toolbar sx={{marginBottom: '1vh'}} >
+          <Toolbar sx={{marginBottom: '1vh', justifyContent: 'center'}}>
+            {WEEK}
           </Toolbar>
           <CheckListElement/>
         </Grid>

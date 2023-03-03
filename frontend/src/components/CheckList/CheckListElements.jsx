@@ -19,7 +19,6 @@ const Item = styled(Paper)(({theme}) => ({
 
 /**
  * The way the page is formatted for mobile, desktop, and tablet
- *
  * @return {object}
  */
 function CheckListElement() {

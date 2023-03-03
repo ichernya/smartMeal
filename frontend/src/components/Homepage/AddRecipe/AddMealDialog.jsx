@@ -22,18 +22,20 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import {Paper, Typography} from '@mui/material';
+import {Paper} from '@mui/material';
 import {TextField} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import './AddMealDialog.css';
-import '../colors.css';
+import '../../colors.css';
 
 /**
  * @return {object}
+ * @param {Object} props
+ * @return {JSX} Jsx
  */
-function AddMealDialog() {
-
+function AddMealDialog(props) {
+  const {addMeal, setAddMeal} = React.useContext(props['HomeContext']);
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -43,7 +45,6 @@ function AddMealDialog() {
   ];
 
   // State
-  const [open, setOpen] = React.useState(true);
   const [recipeName, setRecipeName] = React.useState('');
   const [ingredients, setIngredients] = React.useState([]);
   const [inputName, setInputName] = React.useState('');
@@ -73,16 +74,10 @@ function AddMealDialog() {
   function nameArray(value, index, array) {
     return value.name;
   }
-  // Open the dialog
-  /*
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-   */
 
   // Close the dialog
   const handleClose = () => {
-    setOpen(false);
+    setAddMeal(false);
   };
 
   // Adds ingredient to the list shown
@@ -170,9 +165,6 @@ function AddMealDialog() {
 
   return (
     <React.Fragment>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
       <Dialog
         PaperProps={{
           sx: {
@@ -181,7 +173,7 @@ function AddMealDialog() {
         }}
         fullWidth={true}
         maxWidth='sm'
-        open={open}
+        open={addMeal}
         onClose={handleClose}
       >
         <DialogTitle className='aliceBlueBack'>Add your Recipe</DialogTitle>
@@ -219,12 +211,6 @@ function AddMealDialog() {
               </FormControl>
             </Grid>
             <Grid item xs={11}>
-              {/* <div className='paper'>
-                <Typography sx={{m: 2, overflow: 'scroll'}}
-                  color={typographyColor}>
-                  {fileName}
-                </Typography>
-              </div> */}
               <TextField
                 fullWidth
                 variant='outlined'
@@ -246,7 +232,7 @@ function AddMealDialog() {
                 size='large'
                 sx={{mt: 1}}
               >
-                <AddPhotoAlternateRoundedIcon fontSize='large' 
+                <AddPhotoAlternateRoundedIcon fontSize='large'
                   className='brownColor'/>
                 <input
                   type="file"
@@ -314,12 +300,14 @@ function AddMealDialog() {
               </IconButton>
             </Grid>
             <Grid item xs={12}>
-            {/* The paper show the ingredients list*/}
-              <Paper style={{maxHeight: 200, overflow: 'auto', backgroundColor: '#f3f1fa'}}>
+              {/* The paper show the ingredients list*/}
+              <Paper style= {{maxHeight: 200, overflow: 'auto',
+                backgroundColor: '#f3f1fa'}}>
                 <List>
                   {ingredients.map((ingredient) => (
                     <ListItem alignItems='center'>
-            {/* The Grid is used the components of a sigle list item */}
+                      {/* The Grid is used the components
+                       of a sigle list item */}
                       <Grid container spacing={2} component="main"
                         direction="row">
                         <Grid item xs={7} overflow='auto'>
@@ -328,7 +316,7 @@ function AddMealDialog() {
                           </ListItemText>
                         </Grid>
                         <Grid item xs={3}>
-                          <ListItemText>
+                          <ListItemText className='quantity'>
                             {ingredient.quantity}{ingredient.unit}
                           </ListItemText>
                         </Grid>

@@ -10,7 +10,6 @@ import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
 import PlansLayout from './components/PlansLayout.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
-import AddMealDialog from './components/AddRecipe/AddMealDialog.jsx';
 import './App.css';
 
 
@@ -31,7 +30,6 @@ function App() {
               <Route path={'/signup'} exact element={<Registration/>}/>
               <Route path={'/login'} exact element= {<Login/>}/>
               <Route path={'/'} exact element= {<LandingPage/>}/>
-              <Route path={'/dialog'} exact element= {<AddMealDialog/>}/>
               <Route path={'*'} exact element={<Error/>}/>
             </Routes>
           </BrowserRouter>

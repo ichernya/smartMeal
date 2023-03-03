@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InfoIcon from '@mui/icons-material/Info';
@@ -18,6 +17,7 @@ import Tools from './Tools.jsx';
 import './Menu.css';
 import './Home.css';
 
+/*
 const itemData = [
   {
     img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
@@ -91,6 +91,7 @@ const itemData = [
     cols: 2,
   },
 ];
+*/
 
 const Item = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -145,8 +146,10 @@ const searchRecipes = (query, setMenu) => {
 
 // eslint-disable-next-line require-jsdoc
 function Menu(props) {
-  const {width, cardSize, selectedFood, setSelected, search} =
-    React.useContext(props['HomeContext']);
+  const {
+    width, selectedFood, setSelected, search,
+    setAddMeal, addMeal,
+  } = React.useContext(props['HomeContext']);
 
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
@@ -159,7 +162,6 @@ function Menu(props) {
   }, []);
 
   const [chosenFood] = selectedFood || [null, null];
-  const MARGIN = 7 * 16;
   const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
 
   React.useEffect(() => {
@@ -276,11 +278,9 @@ function Menu(props) {
         </Stack>
         <div className='stretch'/>
         <div id='btnList'>
-          <Link to=''>
-            <IconButton>
-              <AddIcon className='btn brownColor'/>
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => setAddMeal(!addMeal)}>
+            <AddIcon className='btn brownColor'/>
+          </IconButton>
           <Link to='/checklist'>
             <IconButton>
               <FormatListBulletedIcon className='btn brownColor'/>
