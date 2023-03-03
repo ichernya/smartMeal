@@ -101,7 +101,7 @@ paths:
           required: true
           description: day
       responses:
-        200: 
+        200:
           description: OK
           content:
             application/json:
@@ -184,6 +184,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+    post:
+      description: creates a recipe
+      requestBody:
+        description: recipe to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/recipesPost'
+      responses:
+        201:
+          description: recipe to create
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipesPost'
+        400:
+          description: invalid recipe
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /meals:
     post:
       security:
@@ -209,7 +234,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    
+
     put:
       security:
         - bearerAuth: []
@@ -306,7 +331,30 @@ components:
           type: boolean
         kosher:
           type: boolean
-        
+
+    recipesPost:
+      properties:
+        recipeid:
+          type: integer
+        dishname:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        ingredientAm:
+          type: integer
+        imageData:
+          type: string
+        vegan:
+          type: boolean
+        halal:
+          type: boolean
+        healthy:
+          type: boolean
+        kosher:
+          type: boolean
+
     putMealToUser:
       properties:
         mealsid:
@@ -322,7 +370,7 @@ components:
           type: string
       required:
         - mealWeek
-      
+
 
     Credentials:
       type: object
@@ -345,7 +393,7 @@ components:
       required:
         - name
         - accessToken
-    
+
     swap:
       properties:
         ingredients:
@@ -367,7 +415,7 @@ components:
         firstDay:
           type: string
         mealName:
-          type: string 
+          type: string
         public:
           type: string
         mealWeek:

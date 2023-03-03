@@ -35,7 +35,7 @@ app.use(
   }),
 );
 
-// calls the functions that will query the database 
+// calls the functions that will query the database
 app.post('/v0/login', auth.login);
 app.get('/v0/recipes', auth.check, recipe.getAll);
 app.get('/v0/recipe', recipe.getOne);
@@ -45,7 +45,8 @@ app.put('/v0/meals', meal.updateFoodUser);
 app.get('/v0/mealWeek', mealWeek.pullFoodWeek);
 app.get('/v0/userSearch', userSearch.getUserQuery);
 app.get('/v0/switchOut', switchOut.swaps);
-app.get('/v0/publicMeal', publicMeal.pullpublicMeal)
+app.get('/v0/publicMeal', publicMeal.pullpublicMeal);
+app.post('/v0/recipes', recipe.postRecipe);
 
 // outputting error codes and mesages for debugging
 app.use((err, req, res, next) => {
