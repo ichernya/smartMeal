@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
-import Slider from '@mui/material/Slider';
 import defaultImage from '../../assets/qqq.png';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -29,7 +28,6 @@ function DisplayElement() {
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
-  const [portion, setPortion] = useState(0);
   const [isView, setView] = useState(false);
   // Hide the alterative ingredient list of the selected category
   const handleHidden = (a) => {
@@ -131,7 +129,6 @@ function DisplayElement() {
     } else {
       setModifiedState({});
     }
-    setPortion();
   }, [alteratives]);
   // Move to the next meal
   const handleNext = () => {
@@ -140,9 +137,6 @@ function DisplayElement() {
   // Move to the previous meal
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-  const handleSliderChange = (event, newValue) => {
-    setPortion(newValue);
   };
   return (
     <Grid
@@ -224,14 +218,6 @@ function DisplayElement() {
                 fullWidth
                 disabled
               />
-              {mealsWithIngredient[activeStep] ?
-                <Slider
-                  sx={{width: '75%', paddingTop: '3vh'}}
-                  aria-labelledby="input-slider"
-                  step={1}
-                  value={portion}
-                  onChange={handleSliderChange}
-                />: <div/>}
             </div> :
             isChosenIngredient.name
           }
