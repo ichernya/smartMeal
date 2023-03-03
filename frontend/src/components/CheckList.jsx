@@ -24,7 +24,7 @@ const theme = createTheme({
  *
  * @return {object}
  */
-const ChecklistPage = () => {
+function ChecklistPage() {
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0} minHeight={'100vh'}>

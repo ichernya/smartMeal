@@ -8,7 +8,10 @@ import SentimentDissatisfiedOutlinedIcon
   from '@mui/icons-material/SentimentDissatisfiedOutlined';
 import SentimentSatisfiedAltOutlinedIcon
   from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon
+  from '@mui/icons-material/SentimentVerySatisfied';
 import CloseIcon from '@mui/icons-material/Close';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -103,6 +106,23 @@ function Tags(props) {
     setDrawer(open);
   };
 
+  const setAllState = (choice) => {
+    const newFilters = {};
+
+    const copyAlign = {...alignments};
+    for (const category of Object.keys(copyAlign)) {
+      for (const key of Object.keys(copyAlign[category])) {
+        if (choice == 'yes') {
+          newFilters[key] = 'yes';
+        }
+        copyAlign[category][key] = choice;
+      }
+    }
+    setFilter(newFilters);
+    setAlignment(copyAlign);
+  };
+
+
   const list = () => (
     <Box
       className='tagsList'
@@ -167,6 +187,18 @@ function Tags(props) {
         <IconButton onClick={toggleDrawer(false)}>
           <CloseIcon/>
         </IconButton>
+        <div className='stretch'/>
+        <IconButton
+          onClick={() => setAllState('no')}
+        >
+          <MoodBadIcon id='red'/>
+        </IconButton>
+        <IconButton
+          onClick={() => setAllState('yes')}
+        >
+          <SentimentVerySatisfiedIcon id='green'/>
+        </IconButton>
+
       </div>
       <Divider/>
       {list()}

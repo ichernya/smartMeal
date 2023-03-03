@@ -106,6 +106,7 @@ function Homepage(props) {
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
+        id='homepage'
       >
         <Tags HomeContext={HomeContext}/>
         <div

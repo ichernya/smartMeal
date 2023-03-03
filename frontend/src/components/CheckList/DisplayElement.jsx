@@ -35,7 +35,7 @@ const getMeal = (ingredient, setAlteratives) => {
 /**
  * @return {object}
  */
-const DisplayElement = () => {
+function DisplayElement() {
   const {ingredientState, setIngredientState,
     isChoosenIngredient, setChoosenIngredient} = useMeals();
   const [alteratives, setAlteratives] = useState({});

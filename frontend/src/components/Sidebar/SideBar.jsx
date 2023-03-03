@@ -12,6 +12,8 @@ import {useDimensions} from '../DimensionsProvider.jsx';
 import Settings from './Settings.jsx';
 import DrawerContent from './DrawerContent.jsx';
 import './SideBar.css';
+import '../colors.css';
+
 const drawerWidth = '240px';
 const SidebarContext = React.createContext();
 
@@ -67,7 +69,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 
 
 // eslint-disable-next-line require-jsdoc
-export default function TheDrawer() {
+function TheDrawer() {
   const [open, setOpen] = React.useState(false);
   const [settingsDialog, setSettings] = React.useState(false);
   const {width} = useDimensions();
@@ -95,7 +97,7 @@ export default function TheDrawer() {
               anchor={'left'}
               open={open}
             >
-              <DrawerHeader>
+              <DrawerHeader className='greyBack'>
                 <IconButton onClick={handleDrawer}>
                   {open ? <ChevronLeftIcon /> :
                     <ChevronRightIcon />}
@@ -111,4 +113,4 @@ export default function TheDrawer() {
   );
 }
 
-
+export default TheDrawer;

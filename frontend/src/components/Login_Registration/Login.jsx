@@ -15,7 +15,7 @@ import './Login.css';
  * Login component
  * @return {object}
  */
-const Login = () => {
+function Login() {
   // User input fields
   const [user, setUser] = React.useState({email: '', password: ''});
   // Represent if logged in

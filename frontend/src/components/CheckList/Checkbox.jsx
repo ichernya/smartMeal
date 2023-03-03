@@ -15,7 +15,7 @@ import './Checkbox.css';
  * Which represents the list of categories and thier sublist of ingredients
  * @return {object}
  */
-const IndeterminateCheckbox = () => {
+function IndeterminateCheckbox() {
   const {ingredientState, setIngredientState,
     setChoosenIngredient} = useMeals();
   // When first lanuch \load meal from database and when the week change

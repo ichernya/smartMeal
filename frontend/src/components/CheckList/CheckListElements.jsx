@@ -14,12 +14,13 @@ const Item = styled(Paper)(({theme}) => ({
   color: theme.palette.text.secondary,
   minHeight: '90vh',
 }));
+
 /**
  * The way the page is formatted for mobile, desktop, and tablet
  *
  * @return {object}
  */
-const CheckListElement = () => {
+function CheckListElement() {
   return (
     <Grid
       container
