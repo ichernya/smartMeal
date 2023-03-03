@@ -4,7 +4,7 @@ CREATE TABLE recipes(
     recipeid SERIAL UNIQUE NOT NULL,
     dishname VARCHAR(32),
     ingredients text[],
-    ingredientAm integer,
+    ingredientAm int,
     imageData text,
     vegan boolean DEFAULT FALSE,
     halal boolean DEFAULT FALSE,
@@ -24,11 +24,11 @@ CREATE TABLE users(
 DROP TABLE IF EXISTS meals;
 
 CREATE TABLE meals(
+    firstDay text,
+    mealName text,
+    public boolean,
+    mealWeek jsonb,
     mealsid int,
-    breakfast int,
-    lunch int,
-    dinner int,
-    dayof date NOT NULL,
     FOREIGN KEY (mealsid) REFERENCES users(userid)
 );
 
