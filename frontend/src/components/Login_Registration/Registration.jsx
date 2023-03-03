@@ -13,9 +13,9 @@ import './Registration.css';
  * Registration component
  * @return {object}
  */
-const SignUp = () => {
+function SignUp() {
   return (
-    <Box className=''>
+    <Box>
       <div id="projectName">
         <a id="project" href="/">
               SmartMeal

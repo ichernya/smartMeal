@@ -18,10 +18,9 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 /**
  * The way the page is formatted for mobile, desktop, and tablet
- *
  * @return {object}
  */
-const CheckListElement = () => {
+function CheckListElement() {
   return (
     <Grid
       container
