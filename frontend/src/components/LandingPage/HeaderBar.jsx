@@ -7,7 +7,7 @@ import './SubComp.css';
 /**
  * @return {object}
  */
-export default function HeaderBar() {
+function HeaderBar() {
   return (
     <Box sx={{
       flexGrow: 1,
@@ -23,5 +23,7 @@ export default function HeaderBar() {
       </AppBar>
     </Box>
   );
-}
+};
+
+export default HeaderBar;
 

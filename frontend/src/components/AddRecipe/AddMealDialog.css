@@ -3,7 +3,8 @@
   justify-content: "center";
   align-items: "center";
   text-align: "center";
-  vertical-align: "middle"
+  vertical-align: "middle";
+  border: 1px;
 }
 
 .unitMenu{

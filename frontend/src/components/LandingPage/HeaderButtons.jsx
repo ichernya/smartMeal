@@ -9,7 +9,7 @@ import './SubComp.css';
 /**
  * @return {object}
  */
-export default function HeaderButtons() {
+function HeaderButtons() {
   return (
     <Box sx={{
       flexGrow: 10,
@@ -34,4 +34,6 @@ export default function HeaderButtons() {
       </AppBar>
     </Box>
   );
-}
+};
+
+export default HeaderButtons;

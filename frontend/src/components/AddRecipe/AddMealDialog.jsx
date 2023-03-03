@@ -27,11 +27,13 @@ import {TextField} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import './AddMealDialog.css';
+import '../colors.css';
 
 /**
  * @return {object}
  */
-export default function AddMealDialog() {
+function AddMealDialog() {
+
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -156,7 +158,7 @@ export default function AddMealDialog() {
       setTypographyColor('black');
     } else {
       setFileName('Format accepted: jpeg | jpg | png');
-      setTypographyColor('red');
+      setTypographyColor('#b55f1e');
     }
   };
 
@@ -182,8 +184,8 @@ export default function AddMealDialog() {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle>Add your Recipe</DialogTitle>
-        <DialogContent>
+        <DialogTitle className='aliceBlueBack'>Add your Recipe</DialogTitle>
+        <DialogContent className='aliceBlueBack'>
           <DialogContentText>
             You can add your own recipe adding a title,
             ingredients and an optional URL image.
@@ -197,6 +199,7 @@ export default function AddMealDialog() {
                 required
                 margin='normal'
                 onChange={changeRecipeName}
+                className='greyBack'
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -216,12 +219,25 @@ export default function AddMealDialog() {
               </FormControl>
             </Grid>
             <Grid item xs={11}>
-              <Paper className='paper'>
+              {/* <div className='paper'>
                 <Typography sx={{m: 2, overflow: 'scroll'}}
                   color={typographyColor}>
                   {fileName}
                 </Typography>
-              </Paper>
+              </div> */}
+              <TextField
+                fullWidth
+                variant='outlined'
+                disabled={true}
+                value={fileName}
+                margin='normal'
+                className='greyBack'
+                sx={{
+                  '& .MuiInputBase-input.Mui-disabled': {
+                    WebkitTextFillColor: typographyColor,
+                  },
+                }}
+              />
             </Grid>
             <Grid item xs={1}>
               <IconButton
@@ -230,7 +246,8 @@ export default function AddMealDialog() {
                 size='large'
                 sx={{mt: 1}}
               >
-                <AddPhotoAlternateRoundedIcon fontSize='large'/>
+                <AddPhotoAlternateRoundedIcon fontSize='large' 
+                  className='brownColor'/>
                 <input
                   type="file"
                   hidden
@@ -249,6 +266,7 @@ export default function AddMealDialog() {
                 helperText={errorSameN ?
                   'You already added this ingredient' : ''}
                 onChange={(event) => setInputName(event.target.value)}
+                className='greyBack'
               />
             </Grid>
             <Grid item xs={11} md={4}>
@@ -264,6 +282,7 @@ export default function AddMealDialog() {
                   }}
                   error={errorW}
                   onChange={(event) => setInputWeight(event.target.value)}
+                  className='greyBack'
                 />
                 <FormHelperText id="outlined-weight-helper-text">
                   Quantitiy
@@ -275,6 +294,7 @@ export default function AddMealDialog() {
                   error={errorU}
                   value={unit}
                   onChange={changeUnit}
+                  className='greyBack'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
                     <MenuItem value={unit}>{unit}</MenuItem>
@@ -290,12 +310,12 @@ export default function AddMealDialog() {
                 size="large"
                 onClick={addIngredient}
               >
-                <AddBoxIcon fontSize='large'/>
+                <AddBoxIcon fontSize='large' className='brownColor'/>
               </IconButton>
             </Grid>
             <Grid item xs={12}>
             {/* The paper show the ingredients list*/}
-              <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+              <Paper style={{maxHeight: 200, overflow: 'auto', backgroundColor: '#f3f1fa'}}>
                 <List>
                   {ingredients.map((ingredient) => (
                     <ListItem alignItems='center'>
@@ -320,7 +340,7 @@ export default function AddMealDialog() {
                             variant="outlined"
                             size="large"
                             onClick={() => removeIngredient(ingredient.name)}
-                          ><DeleteIcon/></ListItemButton>
+                          ><DeleteIcon className='brownColor'/></ListItemButton>
                         </Grid>
                       </Grid>
                     </ListItem>
@@ -330,11 +350,14 @@ export default function AddMealDialog() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className='aliceBlueBack'>
           <Button onClick={addRecipe}>Add recipe</Button>
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
   );
-}
+};
+
+export default AddMealDialog;
+
