@@ -1,0 +1,40 @@
+.link {
+  margin: 1rem;
+  text-decoration: none;
+}
+
+.center{
+  margin: 1rem;
+  text-decoration: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toolbarButtons{
+  float: right;
+  resize: both;
+}
+
+.button{
+  background-color: rgba(40,187,183,255);
+}
+
+.title{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-family: cursive, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  font-style: italic;
+  line-height: 30px;
+  font-variant: normal;
+  font-feature-settings: normal;
+  /*padding is added to center the title (uncentered cause of the logo)*/
+  padding-right: 65px;
+}
+
+.appBar{
+  background-color: rgba(0,0,0,0);
+  resize: both;
+}

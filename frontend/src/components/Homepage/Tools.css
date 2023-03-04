@@ -1,13 +1,24 @@
+@media (max-width: 599px) {
+    .clearBtn {
+        display: none !important;
+    }
+
+    .verticalDiv {
+        display: none !important;
+    }
+}
+
 .tools {
     background-color: red;
     height: 50px;
-    margin-top: 50px;
+    margin-top: 4px;
     padding: 0 !important;
     float: right;
+    width: 100%;
 }
 
 #search {
-    width: 50%;
+    width: 100%;
 }
 
 #cancelSearch {
@@ -18,5 +29,17 @@
 
 .searchInput {
     width: 100%;
+    font-size: 20px;
 }
 
+.verticalDiv {
+    margin-left: 4px !important;
+}
+
+.splitGrid {
+    width: 50% !important;
+}
+
+.filtering {
+    flex-wrap: nowrap !important;
+}

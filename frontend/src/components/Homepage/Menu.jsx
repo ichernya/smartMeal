@@ -9,10 +9,217 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InfoIcon from '@mui/icons-material/Info';
+import Stack from '@mui/material/Stack';
+import {styled} from '@mui/material/styles';
+import {useNavigate} from 'react-router-dom';
+import Paper from '@mui/material/Paper';
 
 import Tools from './Tools.jsx';
 import './Menu.css';
 import './Home.css';
+
+const Item = styled(Paper)(({theme}) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+
+// Grabs the recipes for the menu from the database
+const getRecipes = (setMenu) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  fetch('http://localhost:3010/v0/recipes', {
+  // fetch('http://localhost:3010/v0/mealWeek?mealsid=1&dayof=2023-01-19', {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setMenu([...json]);
+    });
+};
+
+// Query for meals based on a search query
+const searchRecipes = (query, setMenu) => {
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}`, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setMenu(json);
+    });
+};
+
+
+// eslint-disable-next-line require-jsdoc
+function Menu(props) {
+  const history = useNavigate();
+  const {width, cardSize, selectedFood, setSelected, search} =
+    React.useContext(props['HomeContext']);
+
+  // Represents the current recipes displayed on the menu
+  const [recipes, setMenu] = React.useState([]);
+  // number of rows for the menu display
+  const ROWS = 2;
+
+  React.useEffect(() => {
+    getRecipes(setMenu);
+  }, []);
+
+  const [chosenFood] = selectedFood || [null, null];
+  const MARGIN = 7 * 16;
+  const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
+
+  React.useEffect(() => {
+    menuSize.current = width >= 1200 ? (width * .14) : 175;
+  }, [width]);
+
+  React.useEffect(() => {
+    // Update search state
+    if (search) {
+      searchRecipes(search, setMenu);
+    }
+  }, [search]);
+
+  const clickItem = (item) => {
+    // Choose item on click
+    if (chosenFood === item) {
+      setSelected(null);
+    } else {
+      setSelected([item, 0]);
+    }
+  };
+
+  // Use references to move both menu sliders together
+  const topMenu = React.useRef(0);
+  const botMenu = React.useRef(0);
+
+  const handleTopScroll = (scroll) => {
+    botMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
+  const handleBotScroll = (scroll) => {
+    topMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+
+  return (
+    <div>
+      <Tools HomeContext={props['HomeContext']}/>
+      <Grid
+        container
+        spacing={0}
+        id='wrapping'
+      >
+        <Stack className='menu' spacing={0}>
+          {new Array(ROWS)
+            .fill(0)
+            .map((_, index) => {
+              const scroller = index === 0 ? handleTopScroll : handleBotScroll;
+              const scrollRef = index === 0 ? topMenu : botMenu;
+              const menuClass = index === 0 ? 'hiddenScrollbar' : '';
+              return (
+                <Item
+                  style={{height: `${menuSize.current}px`}}
+                  className='menus'
+                  key={index}
+                >
+                  <ImageList
+                    onScroll={scroller}
+                    ref={scrollRef}
+                    className={'menu ' + menuClass}
+                  >
+                    {new Array(Math.ceil(recipes.length / 2))
+                      .fill(0)
+                      .map((_, ind) => {
+                        const item = recipes[(ind * 2) + index];
+                        const image = item['img'] ? item['img'] :
+                          require('../../assets/ass.png');
+                        return (
+                          <ImageListItem
+                            className='margins'
+                            onClick={() => clickItem(item)}
+                            key={item['dishname'] + ind}
+                          >
+                            <img
+                              src={`${image}w=248&fit=crop&auto=format`}
+                              srcSet={
+                                `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
+                              }
+                              alt={item['dishname']}
+                              loading="lazy"
+                              id={chosenFood === item ?
+                                'selected' : 'unselected'}
+                              style={{
+                                width: `${menuSize.current}px`,
+                                height: `${menuSize.current}px`,
+                              }}
+                            />
+                            <ImageListItemBar
+                              title={item['dishname']}
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'rgba(255, 255, 255, 0.54)'}}
+                                  aria-label={`info about ${item['dishname']}`}
+                                >
+                                  <InfoIcon/>
+                                </IconButton>
+                              }
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                  </ImageList>
+                </Item>
+              );
+            })
+          }
+        </Stack>
+        <div className='stretch'/>
+        <div id='btnList'>
+          <Button
+            variant="filled"
+            disabled
+            color="primary"
+          >
+            $MONEY
+          </Button>
+          <IconButton
+            color="secondary"
+            onClick={() => history('')}
+          >
+            <ShoppingCartIcon className='btn'/>
+          </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={() => history('/checklist')}
+          >
+            <FormatListBulletedIcon className='btn'/>
+          </IconButton>
+        </div>
+      </Grid>
+    </div>
+  );
+}
+
+export default Menu;
 
 const itemData = [
   {
@@ -88,94 +295,3 @@ const itemData = [
   },
 ];
 
-
-// eslint-disable-next-line require-jsdoc
-function Menu(props) {
-  const {width, cardSize, selectedFood, setSelected} =
-    React.useContext(props['HomeContext']);
-
-  const [chosenFood] = selectedFood || [null, null];
-  const MARGIN = 7 * 16;
-  const menuSize = React.useRef(width >= 1200 ? (width * .18) : 175);
-
-  React.useEffect(() => {
-    menuSize.current = width >= 1200 ? (width * .18) : 175;
-  }, [width]);
-
-  const clickItem = (item) => {
-    if (chosenFood === item) {
-      setSelected(null);
-    } else {
-      setSelected([item, 0]);
-    }
-  };
-
-  return (
-    <div>
-      <Tools HomeContext={props['HomeContext']}/>
-      <Grid
-        container
-        spacing={0}
-        id='wrapping'
-      >
-        <ImageList className='menu'
-          style={{
-            marginLeft: (width - (cardSize.current * 7) - MARGIN > 0 ?
-              `${width - (cardSize.current * 7) - MARGIN}px` : '15px'),
-          }}
-        >
-          {itemData.map((item, ind) => (
-            <ImageListItem
-              className='margins'
-              onClick={() => clickItem(item)}
-              key={item['dishname'] + ind}
-            >
-              <img
-                src={`${item.img}?w=248&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                alt={item['dishname']}
-                loading="lazy"
-                id={chosenFood === item ? 'selected' : 'unselected'}
-                style={{
-                  width: `${menuSize.current}px`,
-                  height: `${menuSize.current}px`,
-                }}
-              />
-              <ImageListItemBar
-                title={item['dishname']}
-                actionIcon={
-                  <IconButton
-                    sx={{color: 'rgba(255, 255, 255, 0.54)'}}
-                    aria-label={`info about ${item['dishname']}`}
-                  >
-                    <InfoIcon/>
-                  </IconButton>
-                }
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-
-        <div id='btnList'>
-          <Button
-            variant="filled"
-            disabled
-            color="primary"
-          >
-            $MONEY
-          </Button>
-          <IconButton
-            color="secondary"
-          >
-            <ShoppingCartIcon className='btn'/>
-          </IconButton>
-          <IconButton color="secondary">
-            <FormatListBulletedIcon className='btn'/>
-          </IconButton>
-        </div>
-      </Grid>
-    </div>
-  );
-}
-
-export default Menu;

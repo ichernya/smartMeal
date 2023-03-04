@@ -1,8 +1,8 @@
 #grid_Login {
-  margin-top: 4rem;
+  margin-top: 6rem;
   right: 5rem;
   position: absolute;
-  min-height: 750px;
+  min-height: 650px;
 }
 #box_login {
   display: flex;
@@ -50,9 +50,23 @@
     width: 100%;
   }
   #box_login {
-    max-width: 100%;
+    width: 100%;
   }
 } 
+
+@media (max-height: 800px) {
+  #grid_Login {
+    margin-top: 1rem;
+    right: 1rem;
+    position: absolute;
+  }
+}
+@media (max-height: 768px) {
+  #backgroundImage {
+    height: 110vh;
+  }
+}
+
 .projectPad {
   margin-top: 40px;
 }
@@ -71,7 +85,7 @@
   font-weight: 700;
 }
 
-#Fab_SignIn_Others {
+.Fab_SignIn_Others {
   text-transform: none !important;
   font-size: 16px;
 }
@@ -81,4 +95,5 @@
 }
 #extra {
   padding-top: 1rem;
+  padding-bottom: 1rem;
 }

@@ -9,7 +9,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 
 import './Registration.css';
-
+/**
+ * Registration component
+ * @return {object}
+ */
 const SignUp = () => {
   return (
     <Box>
@@ -32,27 +35,33 @@ const SignUp = () => {
                   autoComplete="given-name"
                   name="firstName"
                   required
-                  fullWidth
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  sx={{
+                    width: '100%',
+                  }}
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
                 <TextField
                   required
-                  fullWidth
                   id="lastName"
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  sx={{
+                    width: '100%',
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   margin="normal"
                   required
-                  fullWidth
+                  sx={{
+                    width: '100%',
+                  }}
                   id="email"
                   label="Email Address"
                   name="email"
@@ -62,7 +71,9 @@ const SignUp = () => {
               <Grid item xs={12}>
                 <TextField
                   required
-                  fullWidth
+                  sx={{
+                    width: '100%',
+                  }}
                   id="confirm email"
                   label="Confirm Email Address"
                   name="confirm email"
@@ -72,7 +83,9 @@ const SignUp = () => {
                 <TextField
                   margin="normal"
                   required
-                  fullWidth
+                  sx={{
+                    width: '100%',
+                  }}
                   name="password"
                   label="Password"
                   type="password"
@@ -83,7 +96,9 @@ const SignUp = () => {
               <Grid item xs={12}>
                 <TextField
                   required
-                  fullWidth
+                  sx={{
+                    width: '100%',
+                  }}
                   name="confirm password"
                   label="Confirm Password"
                   type="confirm password"
@@ -93,7 +108,6 @@ const SignUp = () => {
             </Grid>
             <Fab
               variant="extended"
-              fullWidth
               size="medium"
               color='primary'
               sx={{mt: 3, width: '100%'}}

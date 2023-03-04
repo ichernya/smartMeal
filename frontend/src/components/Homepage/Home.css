@@ -25,10 +25,31 @@
 
 .margins {
     margin: 0;
-    margin-bottom: 2px;
 }
 
 #wrapping {
     flex-wrap: nowrap !important;
 }
 
+.stretch {
+    flex: 1;
+}
+
+#planName {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-weight: bold;
+}
+
+#titleBar {
+    background-color: red;
+    float: right;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+}

@@ -1,20 +1,21 @@
-@media (min-width: 1200px) {
-    .container {
-        justify-content: right;
-    }
+.webContainer {
+    justify-content: center;
 }
 
-@media (max-width: 1199px) {
-    .container {
-        display: flex;
-        overflow-x: scroll;
-        width: 100%;
-        flex-wrap: nowrap !important;
-    }
+.mobileContainer {
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    flex-wrap: nowrap !important;
 }
 
 .imgListBar {
-    height: 20px;
+    height: 40px;
+    font-size: 15px;
+}
+
+.MuiImageListItemBar-title {
+    font-size: 12px !important;
 }
 
 .stillImg {
@@ -48,6 +49,14 @@
     border-style: solid;
 }
 
+.sideBorder {
+    border: 0px;
+    border-right: 1px;
+    border-left: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
 .food {
     max-width: fit-content !important;
 }
@@ -61,4 +70,3 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
-

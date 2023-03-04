@@ -1,0 +1,20 @@
+@media (max-width: 599px) {
+    .filter {
+        display: none;
+    }
+}
+
+@media (min-width: 600px) {
+    .filter {
+        display: contents;
+        width: 100%;
+    }
+}
+
+.tags {
+    margin-left: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline;
+    width: 100%;
+}

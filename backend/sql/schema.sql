@@ -3,26 +3,41 @@ DROP TABLE IF EXISTS recipes;
 CREATE TABLE recipes(
     recipeid SERIAL UNIQUE NOT NULL,
     dishname VARCHAR(32),
-    ingredients text[]
+    ingredients text[],
+    ingredientAm int,
+    imageData text,
+    vegan boolean DEFAULT FALSE,
+    halal boolean DEFAULT FALSE,
+    healthy boolean DEFAULT FALSE,
+    kosher boolean DEFAULT FALSE
     );
 
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
     userid SERIAL UNIQUE NOT NULL,
-    username VARCHAR(32) NOT NULL,
-    passwrd VARCHAR(32) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    passwrd VARCHAR(255) NOT NULL,
     PRIMARY KEY (userid)
     );
 
 DROP TABLE IF EXISTS meals;
 
 CREATE TABLE meals(
+    firstDay text,
+    mealName text,
+    public boolean,
+    mealWeek jsonb,
     mealsid int,
-    recipeid int,
-    dayof date NOT NULL,
-    FOREIGN KEY (recipeid) REFERENCES recipes(recipeid),
     FOREIGN KEY (mealsid) REFERENCES users(userid)
+);
+
+DROP TABLE IF EXISTS substitutions;
+
+CREATE TABLE substitutions (
+    ingredient text,
+    tradeFor text [],
+    veganAlternative text []
 );
 
 /*
