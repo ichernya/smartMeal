@@ -40,12 +40,12 @@ app.post('/v0/login', auth.login);
 app.get('/v0/recipes', auth.check, recipe.getAll);
 app.get('/v0/recipe', recipe.getOne);
 app.get('/v0/meals', meal.pullFoodDay);
-app.post('/v0/meals', meal.addFoodUser);
 app.put('/v0/meals', meal.updateFoodUser);
 app.get('/v0/mealWeek', mealWeek.pullFoodWeek);
 app.get('/v0/userSearch', userSearch.getUserQuery);
 app.get('/v0/switchOut', switchOut.swaps);
 app.get('/v0/publicMeal', publicMeal.pullpublicMeal)
+app.post('/v0/meals', meal.addFoodUser)
 
 // outputting error codes and mesages for debugging
 app.use((err, req, res, next) => {
