@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 import {useDimensions} from '../DimensionsProvider.jsx';
 import Calendar from './Calendar.jsx';
+import AddMealDialog from './AddRecipe/AddMealDialog.jsx';
 import Menu from './Menu.jsx';
 import Tags from './Filter/Tags.jsx';
 import './Home.css';
@@ -43,10 +43,19 @@ function Homepage(props) {
   // Represents whether the tags drawer is open or not
   const [tagsDrawer, setDrawer] = React.useState(false);
   // Represents the filtered tags
-  const [filters, setFilter] = React.useState({});
+  // TODO query db for tags
+  // ideally, format will be
+  // { category :
+  //   {name: align}
+  // }
+  const [filters, setFilter] = React.useState(
+    {'Oliver Hansen': 'yes', 'Van Henry': 'yes', 'Kelly Snyder': 'yes'},
+  );
   // Represents the weekly meal plans name
   // TODO query backend
   const [planName, setName] = React.useState(WEEK);
+  // Represents whether to display the add meal dialog
+  const [addMeal, setAddMeal] = React.useState(false);
   const [changeName, setChangeName] = React.useState(false);
   // Represents the alignments of the tags
   const [alignments, setAlignment] =
@@ -94,12 +103,15 @@ function Homepage(props) {
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
         filters, setFilter, alignments, setAlignment,
+        addMeal, setAddMeal,
       }}
     >
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
+        id='homepage'
       >
+        <AddMealDialog HomeContext={HomeContext}/>
         <Tags HomeContext={HomeContext}/>
         <div
           id='titleBar'

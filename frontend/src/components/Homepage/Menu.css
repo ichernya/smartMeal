@@ -4,9 +4,9 @@
     flex-wrap: nowrap;
     height: 100%;
     padding: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: 15px;
+    padding-left: 5px;
+    padding-top: 5px;
+    margin: 0;
 }
 
 #btnList {
@@ -25,7 +25,7 @@
 }
 
 #unselected {
-    opacity: 100%;
+    opacity: 101%;
 }
 
 .hiddenScrollbar::-webkit-scrollbar:horizontal{
@@ -37,4 +37,3 @@
 .menus {
     padding: 0 !important;
 }
-

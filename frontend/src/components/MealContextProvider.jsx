@@ -2,92 +2,169 @@ import React, {createContext, useContext, useState, useEffect} from 'react';
 
 const MealsContext = createContext();
 
-const testData = [
-  {
-    'recipeid': 1,
-    'dishname': 'Mushroom Poppers',
-    'ingredients': {
-      'Vegetable': ['Baby Bella Mushrooms', 'Jalepeno'],
-      'Dairy': ['Cheese'],
-    },
-    'ingredientam': 3,
-    'imagedata': '/test.png',
-    'vegan': false,
-    'halal': true,
-    'healthy': false,
-    'kosher': true,
-  },
-  {
-    'recipeid': 2,
-    'dishname': 'Chicken Parmesan',
-    'ingredients': {
-      'Protein': 'Chicken Breast',
-      'Dairy': ['Parmesan', 'Butter'],
-      'Breads | Pasta | Grains': ['Pasta'],
-    },
-    'ingredientam': 4,
-    'imagedata': '/test.png',
-    'vegan': false,
-    'halal': true,
-    'healthy': true,
-    'kosher': true,
-  },
-];
 const testIngredientList = {
   'Protein': {
-    'amount': 3,
-    'amountChecked': 2,
+    'amount': 1,
+    'amountChecked': 0,
     'hidden': false,
     'ingredients': {
       'Beef': {
-        'checked': true,
-        'quantity': '15 lbs',
-        'pricePerUnitWeight': '$20',
-      },
-      'Lentils': {
         'checked': false,
-        'quantity': '12 kg',
-        'pricePerUnitWeight': '$10',
-      },
-      'Salmon': {
-        'checked': true,
-        'quantity': '50 fillets',
-        'pricePerUnitWeight': '$25',
+        'quantity': 80,
+        'unit': 'Ton',
+        'pricePerUnitWeight': '$20',
       },
     },
   },
   'Dairy': {
-    'amount': 1,
+    'amount': 2,
     'amountChecked': 1,
     'hidden': false,
     'ingredients': {
       'Whole milk': {
         'checked': true,
-        'quantity': '15 liters',
+        'quantity': 44,
+        'unit': 'liters',
+        'pricePerUnitWeight': '$20',
+      },
+      'Cheese': {
+        'checked': false,
+        'quantity': 22,
+        'unit': 'Ton',
+        'pricePerUnitWeight': '$20',
+      },
+    },
+  },
+  'Vegetables': {
+    'amount': 1,
+    'amountChecked': 0,
+    'hidden': false,
+    'ingredients': {
+      'Jalepeno': {
+        'checked': false,
+        'quantity': 48,
+        'unit': 'Ton',
         'pricePerUnitWeight': '$20',
       },
     },
   },
 };
 
+const testMeal = {
+  'recipeid': 1,
+  'dishname': 'Beef stew',
+  'portion': 1,
+  'ingredients': {
+    'Beef': {
+      'quantity': 15,
+      'unit': 'Ton',
+    },
+    'Whole milk': {
+      'quantity': 11,
+      'unit': 'litter',
+    },
+    'Jalepeno': {
+      'quantity': 12,
+      'unit': 'Ton',
+    },
+  },
+  'ingredientam': 3,
+  'imagedata': '',
+  'vegan': false,
+  'halal': true,
+  'healthy': false,
+  'kosher': true,
+};
+const testMeal1 = {
+  'recipeid': 1,
+  'portion': 2,
+  'dishname': 'Beef Stick',
+  'ingredients': {
+    'Beef': {
+      'quantity': 10,
+      'unit': 'Ton',
+    },
+    'Cheese': {
+      'quantity': 11,
+      'unit': 'Ton',
+    },
+  },
+  'ingredientam': 2,
+  'imagedata': '',
+  'vegan': false,
+  'halal': true,
+  'healthy': false,
+  'kosher': true,
+};
+
+const weekMealData = {
+  'id': '1',
+  'amount': 6,
+  '2023-02-19': {
+    'breakfast': {...testMeal, 'id': 1},
+    'lunch': {...testMeal, 'id': 2},
+    'dinner': {...testMeal1, 'id': 3},
+  },
+  '2023-02-20': {
+    'breakfast': {},
+    'lunch': {},
+    'dinner': {},
+  },
+  '2023-02-21': {
+    'breakfast': {},
+    'lunch': {},
+    'dinner': {},
+  },
+  '2023-02-22': {
+    'breakfast': {},
+    'lunch': {},
+    'dinner': {},
+  },
+  '2023-02-23': {
+    'breakfast': {...testMeal, 'id': 13},
+    'lunch': {...testMeal, 'id': 14},
+    'dinner': {},
+  },
+  '2023-02-25': {
+    'breakfast': {...testMeal1, 'id': 17},
+    'lunch': {},
+    'dinner': {},
+  },
+  '2023-02-26': {
+    'breakfast': {},
+    'lunch': {},
+    'dinner': {},
+  },
+};
+
 export const MealsProvider = ({children}) => {
-  const [meals, setMeals] = useState([]);
-  const [ingredientState, setIngredientState] = useState({});
-  const [isChoosenIngredient, setChoosenIngredient] = useState(
+  const [ingredientList, setIngredientList] = useState({});
+  const [meals, setMeals] = useState({});
+  const [mealsWithIngredient, setMealsWithIngredient] = useState([]);
+  const [alteratives, setAlteratives] = useState({});
+  const [isChosenIngredient, setChosenIngredient] = useState(
     {
       'name': 'Pick an item from the list',
       'img': '',
       'pricePerUnitWeight': 'by clicking on the name of the item',
       'quantity': '',
+      'category': '',
     },
   );
   useEffect(() => {
-    setMeals(testData);
-    setIngredientState(testIngredientList);
+    setIngredientList(testIngredientList);
+  }, []);
+  useEffect(() => {
+    setMeals(weekMealData);
   }, []);
   return (
-    <MealsContext.Provider value={{meals, ingredientState, setIngredientState,
-      isChoosenIngredient, setChoosenIngredient}}>
+    <MealsContext.Provider value={{
+      ingredientList, setIngredientList,
+      isChosenIngredient, setChosenIngredient,
+      alteratives, setAlteratives,
+      meals, setMeals,
+      mealsWithIngredient, setMealsWithIngredient,
+    }}>
       {children}
     </MealsContext.Provider>
   );

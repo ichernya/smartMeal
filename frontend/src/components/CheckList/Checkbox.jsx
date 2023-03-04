@@ -11,14 +11,71 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useMeals} from '../MealContextProvider';
 import './Checkbox.css';
 
+// Queries the database for alternatives for the ingredient
+const getMeal = (ingredient, setAlteratives) => {
+  fetch(`http://localhost:3010/v0/switchOut?ingredient=${ingredient}`, {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      const alter = {};
+      if (json[0]) {
+        const selectedIngredient = json[0];
+        alter['ingredient'] = selectedIngredient['ingredient'];
+        Object.keys(selectedIngredient).filter((key) => (key !== 'ingredient'))
+          .map((key) => (
+            alter[key] = {
+              'alteratives': selectedIngredient[key],
+              'hidden': false,
+            }
+          ));
+      }
+      setAlteratives(alter);
+    });
+};
+// Given the meals of the week and an ingredient
+// Return a list of all the meals with the given ingredient
+const filterMealsForIngredients =
+(meals, setMealsWithIngredient, myIngredient) => {
+  const mealsOfWithIng = [];
+  Object.keys(meals)
+    // ignore the keys 'amount' and 'id'
+    .filter((key) => key !== 'amount' && key !== 'id')
+    // Look through the each day of the week that aren't empty
+    .forEach((date) => {
+      Object.values(meals[date]).filter((obj) => obj &&
+      Object.keys(obj).length !== 0)
+        // Look through each meal of the day
+        .forEach((meal) => {
+          // If the meal has the ingredient add it to the list of meals with
+          // said ingredient
+          Object.keys(meal['ingredients']).filter((key) => key ===
+          myIngredient)
+            .forEach(() => {
+              mealsOfWithIng.push(meal);
+            });
+        });
+    });
+  setMealsWithIngredient(mealsOfWithIng);
+};
+
 /**
  * Which represents the list of categories and thier sublist of ingredients
  * @return {object}
  */
-const IndeterminateCheckbox = () => {
-  const {ingredientState, setIngredientState,
-    setChoosenIngredient} = useMeals();
-  // When first lanuch \load meal from database and when the week change
+function IndeterminateCheckbox() {
+  const {
+    ingredientList, setIngredientList,
+    setChosenIngredient,
+    setAlteratives, meals,
+    setMealsWithIngredient,
+  } = useMeals();
+  // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
     Object.keys(target[location]['ingredients']).forEach((key) => {
@@ -26,13 +83,13 @@ const IndeterminateCheckbox = () => {
     });
   };
   const setAllCategory = (target, location, value) => {
-    Object.keys(target[location]).forEach((key) => {
+    Object.keys(target[location]).forEach(() => {
       target[location].hidden = value;
     });
   };
   // Checking the box
   const handleChange = (event) => {
-    const newDic = {...ingredientState};
+    const newDic = {...ingredientList};
     if (newDic[event.target.id]['amount'] ===
     newDic[event.target.id]['amountChecked']) {
       newDic[event.target.id]['amountChecked'] = 0;
@@ -42,42 +99,49 @@ const IndeterminateCheckbox = () => {
       newDic[event.target.id]['amount'];
       setAll(newDic, event.target.id, true);
     }
-    setIngredientState(newDic);
+    setIngredientList(newDic);
   };
+  // Select an ingredient and search for its alteratives
   const handleUpdateElement = (event) => {
-    const [parentCategory, myIngredient] = event.target.id.split(': ');
-    const info = ingredientState[parentCategory].ingredients[myIngredient];
-    setChoosenIngredient( {
+    const [parentCategory, myIngredient] = event.target.id.split('-');
+    const info = ingredientList[parentCategory].ingredients[myIngredient];
+    setChosenIngredient({
       'name': myIngredient,
       'img': info.img,
       'pricePerUnitWeight': info.pricePerUnitWeight,
       'quantity': info.quantity,
+      'category': parentCategory,
     });
+    getMeal(myIngredient, setAlteratives);
+    filterMealsForIngredients(meals, setMealsWithIngredient,
+      myIngredient);
   };
+
   const handleChildChange = (event) => {
-    const newDic = {...ingredientState};
+    const alter = {...ingredientList};
     const [parentCategory, myIngredient] = event.target.id.split('-');
-    if (newDic[parentCategory]['ingredients'][myIngredient].checked) {
-      newDic[parentCategory]['ingredients'][myIngredient].checked = false;
-      newDic[parentCategory]['amountChecked'] -= 1;
+    if (alter[parentCategory]['ingredients'][myIngredient].checked) {
+      alter[parentCategory]['ingredients'][myIngredient].checked = false;
+      alter[parentCategory]['amountChecked'] -= 1;
     } else {
-      newDic[parentCategory]['ingredients'][myIngredient].checked = true;
-      newDic[parentCategory]['amountChecked'] += 1;
+      alter[parentCategory]['ingredients'][myIngredient].checked = true;
+      alter[parentCategory]['amountChecked'] += 1;
     }
-    setIngredientState(newDic);
+    setIngredientList(alter);
   };
   const handleHidden = (category) => {
-    const newDic = {...ingredientState};
+    const newDic = {...ingredientList};
     setAllCategory(newDic, category, !newDic[category].hidden);
-    setIngredientState(newDic);
+    setIngredientList(newDic);
   };
   // Fetch from the database
   useEffect(() => {
     setLoading(false);
-  }, [ingredientState]);
+  }, [ingredientList]);
   return (
     <Grid>
-      {Object.keys(ingredientState).map((category) => (
+      {Object.keys(ingredientList).map((category) => (
+        // All the categories
         <Grid container
           direction="column"
           justifyContent="flex-start"
@@ -88,23 +152,24 @@ const IndeterminateCheckbox = () => {
               control={
                 <Checkbox
                   id={category}
-                  checked={!loading ? ingredientState[category]['amount'] ===
-                ingredientState[category]['amountChecked'] : false}
+                  checked={!loading ? ingredientList[category]['amount'] ===
+                ingredientList[category]['amountChecked'] : false}
                   indeterminate={!loading ?
-                    ingredientState[category]['amountChecked'] > 0 &&
-                  ingredientState[category]['amount'] !==
-                  ingredientState[category]['amountChecked'] : false}
+                    ingredientList[category]['amountChecked'] > 0 &&
+                  ingredientList[category]['amount'] !==
+                  ingredientList[category]['amountChecked'] : false}
                   onChange={handleChange}
                 />}
             />
             <IconButton onClick={() => handleHidden(category)}>
-              {ingredientState[category].hidden ?
+              {ingredientList[category].hidden ?
                 <ExpandMoreIcon/> : <ExpandLessIcon/>}
             </IconButton>
           </Grid>
-          {!loading ? Object.keys(ingredientState[category]['ingredients'])
+          {!loading ? Object.keys(ingredientList[category]['ingredients'])
             .map((ingredient) =>
-              (<Box sx={{display: ingredientState[category].hidden ?
+            // All the ingredients within the category
+              (<Box sx={{display: ingredientList[category].hidden ?
                 'none' : 'inline-block', ml: 3, gap: 1, mt: 1}}
               key={ingredient}>
                 <FormControlLabel
@@ -112,17 +177,19 @@ const IndeterminateCheckbox = () => {
                     <Checkbox
                       id={`${category}-${ingredient}`}
                       checked=
-                        {ingredientState[category]['ingredients'][ingredient]
+                        {ingredientList[category]['ingredients'][ingredient]
                           .checked}
                       onChange={handleChildChange}
                     />
                   }
                 />
-                <div className='listElement' id={`${category}: ${ingredient}`}
-                  onClick={handleUpdateElement}>
+                <div className='listElement' id={`${category}-${ingredient}`}
+                  onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
-                  {ingredientState[category]['ingredients'][ingredient]
+                  {ingredientList[category]['ingredients'][ingredient]
                     .quantity}
+                  {' '}
+                  {ingredientList[category]['ingredients'][ingredient].unit}
                 </div>
               </Box>)) : <div/>}
         </Grid>

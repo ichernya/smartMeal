@@ -1,6 +1,8 @@
 .root{
   min-height: 100vh;
-  background-image: url('../../assets/food_background.jpeg');
+
+  background-image: url('../../assets/LandingPage_Background.jpg');
+
   background-repeat: no-repeat;
   background-size: cover;
   resize: both;
@@ -13,4 +15,5 @@
   /* font-size: 2vw; */
   padding-top: 1%;
   resize: both;
+  color: #b55f1e;
 }

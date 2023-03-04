@@ -1,0 +1,23 @@
+.paper {
+  display: "flex";
+  justify-content: "center";
+  align-items: "center";
+  text-align: "center";
+  vertical-align: "middle";
+  border: 1px;
+}
+
+.unitMenu{
+  overflow: scroll;
+}
+
+@media screen and (min-width:900px) {
+  .quantity {
+    margin: 16px;
+    max-width: 80px;
+  }
+}
+
+.quantity {
+    overflow: scroll;
+}

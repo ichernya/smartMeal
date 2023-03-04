@@ -163,7 +163,6 @@ function Calendar(props) {
     }
   };
 
-  // className='container'
   return (
     <Grid
       container
@@ -172,7 +171,7 @@ function Calendar(props) {
       id='wrapping'
     >
       {daysOfWeek.map((day, weekday) =>
-        <div className='card margins' key={day}>
+        <div className='card margins greyBack' key={day}>
           <Grid
             item
             xs={6}
@@ -181,10 +180,11 @@ function Calendar(props) {
               'food ' + (weekday === 0 ? 'sideBorder' : 'rightBorder')
             }
           >
-            <Item> {day} </Item>
+            <Item className='borderless greyBack'> {day} </Item>
             <div className='bottomBorder'/>
             <Item
-              className={width < 1200 ? 'verticalScroll' : ''}
+              className={'greyBack borderless ' +
+                (width < 1200 ? 'verticalScroll' : '')}
               style={{
                 height: (width < 1200 ? (cardSize.current * 2 + 35) : ''),
               }}

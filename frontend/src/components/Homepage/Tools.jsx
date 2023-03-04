@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import {styled, alpha} from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -6,16 +5,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import ReorderIcon from '@mui/icons-material/Reorder';
 import Toolbar from '@mui/material/Toolbar';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import Filter from './Filter/Filter.jsx';
 import './Tools.css';
+import '../colors.css';
 
 export const Search = styled('div')(({theme}) => ({
   'position': 'relative',
@@ -59,24 +55,12 @@ export const SearchIconWrapper = styled('div')(({theme}) => ({
 
 // eslint-disable-next-line require-jsdoc
 function Tools(props) {
-  const {width, cardSize, search, setSearch, setDrawer,
-    filters, setFilter, alignments, setAlignment,
+  const {search, setSearch, setDrawer,
   } = React.useContext(props['HomeContext']);
 
   const searchInput = (event) => {
     const {value} = event.target;
     setSearch(value);
-  };
-
-  const handleClear = () => {
-    setFilter({});
-    const copy = {...alignments};
-    for (const category of Object.keys(copy)) {
-      for (const name of Object.keys(copy[category])) {
-        copy[category][name] = 'default';
-      }
-    }
-    setAlignment({...copy});
   };
 
 
@@ -122,30 +106,14 @@ function Tools(props) {
       >
         <Filter HomeContext={props['HomeContext']}/>
         <div className='stretch'/>
-
         <IconButton
-          color="secondary"
-          style={{display: Object.keys(filters).length > 0 ? '' : 'none'}}
-          onClick={handleClear}
-        >
-          <DeleteIcon/>
-        </IconButton>
-        <IconButton
-          color="secondary"
           onClick={() => setDrawer(true)}
         >
-          <FilterAltIcon/>
+          <FilterAltIcon className='brownColor'/>
         </IconButton>
 
-        <IconButton
-          color="secondary"
-        >
-          <RefreshIcon/>
-        </IconButton>
-        <IconButton
-          color="secondary"
-        >
-          <ReorderIcon/>
+        <IconButton>
+          <RefreshIcon className='brownColor'/>
         </IconButton>
       </Grid>
     </Toolbar>

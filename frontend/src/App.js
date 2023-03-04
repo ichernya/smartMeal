@@ -5,11 +5,11 @@ import DimensionsProvider from './components/DimensionsProvider.jsx';
 import Login from './components/Login_Registration/Login.jsx';
 import Registration from './components/Login_Registration/Registration.jsx';
 import Error from './components/Page404.jsx';
-import PageLayout from './components/PageLayout.jsx';
-import CheckList from './components/CheckList/CheckList.jsx';
+import HomeLayout from './components/HomeLayout.jsx';
+import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
+import PlansLayout from './components/PlansLayout.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
-import AddMealDialog from './components/AddMealDialog.jsx';
 import './App.css';
 
 
@@ -23,13 +23,13 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<RequireAuth/>}>
-                <Route path={'/home'} exact element={<PageLayout/>}/>
+                <Route path={'/home'} exact element={<HomeLayout/>}/>
                 <Route path={'/checklist'} exact element={<CheckList/>}/>
+                <Route path={'/mealplans'} exact element={<PlansLayout/>}/>
               </Route>
               <Route path={'/signup'} exact element={<Registration/>}/>
               <Route path={'/login'} exact element= {<Login/>}/>
               <Route path={'/'} exact element= {<LandingPage/>}/>
-              <Route path={'/dialog'} exact element= {<AddMealDialog/>}/>
               <Route path={'*'} exact element={<Error/>}/>
             </Routes>
           </BrowserRouter>

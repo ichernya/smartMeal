@@ -1,11 +1,11 @@
 import React from 'react';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
-import SideBar from './SideBar.jsx';
+import SideBar from './Sidebar/SideBar.jsx';
 
 
 import Homepage from './Homepage/Home';
-import './SideBar.css';
+import './Sidebar/SideBar.css';
 
 const theme = createTheme({
   breakpoints: {
@@ -17,12 +17,14 @@ const theme = createTheme({
       xl: 1536,
     },
   },
+  backgroundColor: '#f3f1fa',
 });
 
-const page = () => {
+// eslint-disable-next-line require-jsdoc
+function HomeLayout(props) {
   return (
     <ThemeProvider theme={theme}>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className='greyBack'>
         <Grid item xs={false} sm={1} md={0.7}>
           <SideBar className='SideBar'/>
         </Grid>
@@ -34,4 +36,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default HomeLayout;
