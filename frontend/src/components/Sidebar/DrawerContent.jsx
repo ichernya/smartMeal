@@ -7,55 +7,62 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import SettingsIcon from '@mui/icons-material/Settings';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 
-
+import '../colors.css';
 import './DrawerContent.css';
 
 // eslint-disable-next-line require-jsdoc
-function DrawerContent(prop) {
+function DrawerContent(props) {
+  const {settingsDialog, setSettings, open} =
+    React.useContext(props['context']);
   const history = useNavigate();
   const logout = () => {
     localStorage.removeItem('user');
     history('/login');
   };
 
-  const redirect = (link) => {
-    history(link);
+  const settingsOnclick = () => {
+    setSettings(!settingsDialog);
   };
 
-  const urls = ['/home', '/checklist'];
+  const urls = ['/home', '/checklist', '/mealplans'];
+  const icons = [<HomeIcon/>, <FormatListBulletedIcon/>, <LocalDiningIcon/>];
 
   return (
-    <div className='options'>
+    <div className='options greyBack'>
       <List className='pages'>
-        {['Inbox', 'Starred'].map((text, index) => (
+        {['Home', 'Grocery List', 'Meal Plans'].map((text, index) => (
           <ListItem
             key={text}
             disablePadding
             sx={{display: 'block'}}
-            onClick={() => redirect(urls[index])}
           >
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: prop.open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
+            <Link to={urls[index]} className='sidebarLink'>
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: prop.open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
                 }}
               >
-                {index % 2 === 0 ? <HomeIcon /> : <FormatListNumberedIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} sx={{opacity: prop.open ? 1 : 0}} />
-            </ListItemButton>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {icons[index]}
+                </ListItemIcon>
+                <ListItemText className='blackColor'
+                  primary={text} sx={{opacity: open ? 1 : 0}}
+                />
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
         <Divider />
@@ -67,25 +74,27 @@ function DrawerContent(prop) {
             key={text}
             disablePadding
             sx={{display: 'block'}}
-            onClick={text === 'Logout' ? logout : null}
+            onClick={text === 'Logout' ? logout : settingsOnclick}
           >
             <ListItemButton
               sx={{
                 minHeight: 48,
-                justifyContent: prop.open ? 'initial' : 'center',
+                justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: prop.open ? 3 : 'auto',
+                  mr: open ? 3 : 'auto',
                   justifyContent: 'center',
                 }}
               >
                 {index % 2 === 0 ? <SettingsIcon /> : <LogoutIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} sx={{opacity: prop.open ? 1 : 0}} />
+              <ListItemText className='blackColor'
+                primary={text} sx={{opacity: open ? 1 : 0}}
+              />
             </ListItemButton>
           </ListItem>
         ))}

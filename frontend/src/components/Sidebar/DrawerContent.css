@@ -12,3 +12,7 @@
 .pages {
     height: 50%;
 }
+
+.sidebarLink {
+    text-decoration: none;
+}

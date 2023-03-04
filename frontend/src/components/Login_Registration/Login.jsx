@@ -15,7 +15,7 @@ import './Login.css';
  * Login component
  * @return {object}
  */
-const Login = () => {
+function Login() {
   // User input fields
   const [user, setUser] = React.useState({email: '', password: ''});
   // Represent if logged in
@@ -46,6 +46,7 @@ const Login = () => {
       })
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
+        localStorage.setItem('myKey_expiration', new Date().getTime() + 10000);
         history('/home');
       }).catch((err) => {
         setStatus(true);
@@ -54,6 +55,7 @@ const Login = () => {
   // Store user login access token into local storage
   useEffect(() => {
     if (localStorage.getItem('user')) {
+      console.log(parseInt(localStorage.getItem('user')));
       history('/home');
     }
   }, [history]);
@@ -124,25 +126,6 @@ const Login = () => {
               id="Fab_SignIn"
             >
                 Sign In
-            </Fab>
-            <div id="or">
-              <Divider spacing={1}>or</Divider>
-            </div>
-            <Fab
-              variant="extended"
-              size="medium"
-              sx={{mt: 3, width: '100%'}}
-              className="Fab_SignIn_Others"
-            >
-                Continue with Google
-            </Fab>
-            <Fab
-              variant="extended"
-              size="medium"
-              sx={{mt: 4, mb: 2, width: '100%'}}
-              className="Fab_SignIn_Others"
-            >
-                Continue with Apple
             </Fab>
             <Divider id="padder1"/>
             <Grid id="extra">

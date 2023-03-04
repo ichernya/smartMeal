@@ -4,12 +4,14 @@ import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import SentimentDissatisfiedOutlinedIcon
   from '@mui/icons-material/SentimentDissatisfiedOutlined';
 import SentimentSatisfiedAltOutlinedIcon
   from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon
+  from '@mui/icons-material/SentimentVerySatisfied';
 import CloseIcon from '@mui/icons-material/Close';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -28,23 +30,14 @@ function Toggles(props) {
   };
 
   const updateTags = (name, newAlignment) => {
-    if (filters[name] &&
-      (newAlignment === 'default' || newAlignment === value)) {
-      const copy = {...filters};
-      delete copy[name];
-      setFilter(copy);
-    } else if (newAlignment !== value) {
-      setFilter({...filters, [name]: newAlignment});
-    }
-
-    if (value === newAlignment) {
-      setAlignment(
-        {...alignments,
-          [category]: {...alignments[category],
-            [name]: 'default'},
-        },
-      );
-    } else {
+    if (newAlignment !== value) {
+      if (newAlignment === 'yes') {
+        setFilter({...filters, [name]: newAlignment});
+      } else {
+        const copy = {...filters};
+        delete copy[name];
+        setFilter(copy);
+      }
       setAlignment(
         {...alignments,
           [category]: {...alignments[category],
@@ -68,12 +61,6 @@ function Toggles(props) {
         }}
       >
         <SentimentDissatisfiedOutlinedIcon />
-      </ToggleButton>
-      <ToggleButton
-        value="default"
-        onClick={() => updateTags(name, 'default')}
-      >
-        <SentimentNeutralIcon/>
       </ToggleButton>
       <ToggleButton
         value="yes"
@@ -118,6 +105,23 @@ function Tags(props) {
 
     setDrawer(open);
   };
+
+  const setAllState = (choice) => {
+    const newFilters = {};
+
+    const copyAlign = {...alignments};
+    for (const category of Object.keys(copyAlign)) {
+      for (const key of Object.keys(copyAlign[category])) {
+        if (choice == 'yes') {
+          newFilters[key] = 'yes';
+        }
+        copyAlign[category][key] = choice;
+      }
+    }
+    setFilter(newFilters);
+    setAlignment(copyAlign);
+  };
+
 
   const list = () => (
     <Box
@@ -183,6 +187,18 @@ function Tags(props) {
         <IconButton onClick={toggleDrawer(false)}>
           <CloseIcon/>
         </IconButton>
+        <div className='stretch'/>
+        <IconButton
+          onClick={() => setAllState('no')}
+        >
+          <MoodBadIcon id='red'/>
+        </IconButton>
+        <IconButton
+          onClick={() => setAllState('yes')}
+        >
+          <SentimentVerySatisfiedIcon id='green'/>
+        </IconButton>
+
       </div>
       <Divider/>
       {list()}

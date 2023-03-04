@@ -13,7 +13,7 @@ import './Registration.css';
  * Registration component
  * @return {object}
  */
-const SignUp = () => {
+function SignUp() {
   return (
     <Box>
       <div id="projectName">

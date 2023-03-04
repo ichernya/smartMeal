@@ -1,0 +1,41 @@
+.planView {
+    overflow: scroll;
+    width: 100%;
+    margin: 0;
+}
+
+#header {
+    border: 0;
+    border-bottom: 1px;
+    border-style: solid;
+    text-align: center;
+}
+
+.colDivider {
+    border: 0;
+    border-style: solid;
+    border-right-width: 2px;
+    border-color: grey
+}
+
+#imagesPadding {
+    padding-right: 27px;
+}
+
+.planRow {
+    border: 0;
+    border-style: solid;
+    border-bottom-width: 2px;
+    border-color: grey
+}
+
+.plans {
+    height: 100vh;
+}
+
+.planName {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
