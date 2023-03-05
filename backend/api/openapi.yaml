@@ -244,14 +244,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/putMealToUserNew'
+              $ref: '#/components/schemas/createMeal'
       responses:
         201:
           description: created meal
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/putMealToUserNew'
+                $ref: '#/components/schemas/createMeal'
         default:
           description: Unexpected Error
           content:
@@ -300,6 +300,13 @@ paths:
             type: integer
           required: true
           description: mealsid
+        - in: query
+          name: firstDay
+          schema:
+            type: string
+          required: false
+          description: first day of that week
+
       responses:
         200:
           description: OK
@@ -387,14 +394,23 @@ components:
           type: string
         changes:
           type: string
+        firstDay:
+          type: string
 
     putMealToUserNew:
       properties:
-        mealWeek:
+        dayof:
           type: string
-      required:
-        - mealWeek
+        changes:
+          type: string
 
+    createMeal:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+      
 
     Credentials:
       type: object
