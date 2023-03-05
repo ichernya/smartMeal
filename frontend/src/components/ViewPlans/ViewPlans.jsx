@@ -32,6 +32,7 @@ const mealsthing = [
   require('../../assets/chicken.jpeg'),
   require('../../assets/chicken.jpeg'),
   require('../../assets/chicken.jpeg'),
+  'dasjd',
 ];
 
 const Search = styled('div')(({theme}) => ({
@@ -155,8 +156,10 @@ function ViewMeals(props) {
   const [page, setPage] = React.useState(0);
   // Represents what the user searched for
   const [mealSearch, setMealSearch] = React.useState('');
+  // User's choice for number of meals displayed per page
+  const [mealsPerPage, setMealsPerPage] = React.useState(5);
   // Represents whether to display user specific meals or all meals
-  const [privateMeals, setPrivate] = React.useState(false);
+  const [publicMeals, setPublic] = React.useState(true);
   // imgs is the list of recipes for the plan
   // data is the meal plan data to send back to calendar
   // TODO should be a db query
@@ -181,19 +184,19 @@ function ViewMeals(props) {
   };
 
   // TODO remove
-  if (list != list) {
+  if (list === []) {
     setList(list);
   }
 
   React.useEffect(() => {
     // Reset the page if the current page cant fit on the screen width
-    if (width >= 800 && (Math.ceil(list.length / 2) > page)) {
+    // if the current page is larger than the max page number for
+    // the screen width
+    if (width > 800 &&
+      Math.ceil(list.length / (width < 800 ? 1 : 2) / mealsPerPage) <= (page)) {
       setPage(0);
     }
-  }, [width, setPage]);
-
-  // User's choice for number of meals displayed per page
-  const [mealsPerPage, setMealsPerPage] = React.useState(5);
+  }, [width, setPage, mealsPerPage, page, list.length]);
 
   // Changing the number of meals displayed per page
   const handleChangeMealsPerPage = (event) => {
@@ -230,16 +233,6 @@ function ViewMeals(props) {
           >
             numSelected selected
           </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={privateMeals}
-                onChange={() => setPrivate(!privateMeals)}
-                name="User's Meals"
-              />
-            }
-            label="User's Meals"
-          />
         </Toolbar>
         <Toolbar
           id='header'
@@ -270,6 +263,18 @@ function ViewMeals(props) {
               value={mealSearch}
             />
           </Search>
+          <FormControlLabel
+            id='privateToggle'
+            control={
+              <Switch
+                checked={publicMeals}
+                onChange={() => setPublic(!publicMeals)}
+                name="Public Meals"
+              />
+            }
+            labelPlacement="top"
+            label="Public Meals"
+          />
         </Toolbar>
         <div>
           {list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
@@ -280,7 +285,7 @@ function ViewMeals(props) {
                 meal1 = list[index + (page * mealsPerPage)];
               }
               if (!meal1 && !meal2) {
-                return;
+                return <div key={meal1 + meal2 + index.toString()}/>;
               }
               return (
                 <Grid container
@@ -391,12 +396,14 @@ function ViewMeals(props) {
         <TablePagination
           className='aliceBlueBack'
           rowsPerPageOptions={
-            [5, 10, 25, {label: 'All', value: mealsthing.length}]
+            [5, 10, 25, {label: 'All', value: list.length}]
           }
           component='div'
           count={Math.ceil(list.length / (width < 800 ? 1 : 2))}
           rowsPerPage={mealsPerPage}
-          page={page}
+          page={(width > 800 &&
+            Math.ceil(list.length / (width < 800 ? 1 : 2) / mealsPerPage) <=
+            ((page))) ? 0 : page}
           onPageChange={pageChange}
           onRowsPerPageChange={handleChangeMealsPerPage}
           ActionsComponent={TablePaginationActions}

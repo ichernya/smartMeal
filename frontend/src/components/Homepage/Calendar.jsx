@@ -163,6 +163,8 @@ function Calendar(props) {
     }
   };
 
+  const times = ['Breakfast', 'Lunch', 'Dinner'];
+
   return (
     <Grid
       container
@@ -205,7 +207,7 @@ function Calendar(props) {
                     >
                       <ImageListItem>
                         <ImageListItemBar
-                          title={'TODO temp label?'}
+                          title={times[ind]}
                           position='top'
 
                         />

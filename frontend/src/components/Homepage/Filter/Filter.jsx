@@ -45,7 +45,7 @@ function Filter(props) {
         <Select
           multiple
           value={Object.keys(filters)}
-          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          input={<OutlinedInput id="select-multiple-chip"/>}
           renderValue={(selected) => (
             <Box
               className='tags'
