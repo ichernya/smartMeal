@@ -45,8 +45,17 @@ paths:
           name: mealName
           schema:
             type: string
-          required: true
           description: what the user gives
+        - in: query
+          name: public
+          schema:
+            type: boolean
+          description: public or private
+        - in: query
+          name: mealsid
+          schema:
+            type: string
+          description: mealsid for private
       responses:
         200:
           description: OK
@@ -188,7 +197,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+  /mealName:
+    put:
+      security:
+        - bearerAuth: []
+      description: Update mealPlan Name
+      requestBody:
+        description: userid, mealplanName, firstday
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mealNameUp'
+      responses:
+        201:
+          description: updated mealName
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mealNameUp'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /recipes:
     get:
       security:
@@ -488,6 +521,15 @@ components:
           type: string
         mealsid:
           type: integer
+
+    mealNameUp:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+        mealName:
+          type: string
 
 
 

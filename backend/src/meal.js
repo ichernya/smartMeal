@@ -160,3 +160,25 @@ exports.updateFoodUser = async (req, res) => {
     //else {res.status(404).send();}
     
 }
+
+// function to change the name from a mealplan for a given week, checks mealsid, changes the name, returns nothing 
+const changeMealName = async (firstDay, mealsid, mealName) => {
+
+
+    const insert = `UPDATE meals SET
+    mealName = $3
+    WHERE mealweek ->> 'id' = $2 AND firstDay = $1`;
+    const query = {
+        text: insert,
+        values: [firstDay, mealsid, mealName]
+    }
+    await pool.query(query);
+    
+}
+
+exports.updateMealName = async (req, res) => {
+    // caller function that awaits changemealname and returns a 201 on Success 
+    await changeMealName(req.body.firstDay, req.body.mealsid, req.body.mealName);
+    res.status(200).send();
+    
+}
