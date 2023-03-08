@@ -370,7 +370,7 @@ components:
           type: string
     recipes:
       items:
-        $ref: '#/components/schemas/recipe'
+        $ref: '#/components/schemas/recipesJson'
 
     recipe:
       properties:
