@@ -156,12 +156,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        409:
-          description: User already created
-          content:
-            application:
-              schema:
-                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected Error
           content:
@@ -234,32 +228,6 @@ paths:
           description: invalid recipe
         default:
           description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /ingredients:
-    get:
-      security:
-        - bearerAuth: [ ]
-      description: returns all ingredients
-      parameters:
-        - in: query
-          name: diet
-          schema:
-            type: string
-          required: false
-          description: diet name
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ingredientList'
-        default:
-          description: Unexpected Error
           content:
             application/json:
               schema:
@@ -371,10 +339,6 @@ components:
       items:
         $ref: '#/components/schemas/recipe'
 
-    ingredientList:
-      items:
-        $ref: '#/components/schemas/ingredients'
-
     recipe:
       properties:
         recipeid:
@@ -409,7 +373,6 @@ components:
           type: array
           items:
             type: string
-          example: ["str1", "str2", "str3"]
         ingredientAm:
           type: integer
         imageData:
@@ -499,15 +462,6 @@ components:
           type: string
         mealsid:
           type: integer
-
-    ingredient:
-      properties:
-        name:
-          type: string
-        amount:
-          type: string
-        unit:
-          type: string
 
 
 
