@@ -20,20 +20,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputBase from '@mui/material/InputBase';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 
 
 import './ViewPlans.css';
 
-
-const mealsthing = [
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  'dasjd',
-];
 
 const Search = styled('div')(({theme}) => ({
   'position': 'relative',
@@ -76,8 +67,49 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 }));
 
 
+// Query for meal plans based on a search query
+const searchPlans = (query, setPlans) => {
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+  fetch(`http://localhost:3010/v0/publicMeal?mealName=${query}`, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setPlans(json);
+    });
+};
+
+// Grabs all the images for a day
+function grabImages(data) {
+  console.log(data);
+  const images = [];
+  if (!data['mealweek']) {
+    // Should never happen ideally
+    return;
+  }
+
+  for (const [key, day] of Object.entries(data['mealweek'])) {
+    if (key === 'id') {
+      continue;
+    }
+    for (const meal of Object.values(day)) {
+      images.push(meal['imagedata']);
+    }
+  }
+  return images;
+}
+
+
 /**
- * Represents the page list
+ * Represents the ability to change pages
  * @param {Object} props
  * @return {JSX} Jsx
  */
@@ -146,7 +178,7 @@ function TablePaginationActions(props) {
 }
 
 /**
- * Represents the list pages
+ * Represents meal plans
  * @param {Object} props
  * @return {JSX} Jsx
  */
@@ -163,30 +195,283 @@ function ViewMeals(props) {
   // imgs is the list of recipes for the plan
   // data is the meal plan data to send back to calendar
   // TODO should be a db query
-  const [list, setList] = React.useState([
-    {'name': 'name', 'imgs': mealsthing, 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-    {'name': 'name', 'imgs': mealsthing, 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-  ]);
+  const dd =
+      [
+        {
+          'firstday': '2023-02-19',
+          'mealname': 'Test Meal',
+          'public': true,
+          'mealweek': {
+            'id': '1',
+            '2023-02-19': {
+              'lunch': {
+                'recipeid': 2,
+                'dishname': 'Chicken Parmesan',
+                'ingredients': [
+                  'Chicken Breast',
+                  'Parmesan',
+                  'Pasta',
+                  'Butter',
+                ],
+                'ingredientam': 4,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': true,
+                'kosher': true,
+              },
+              'dinner': {
+                'recipeid': 3,
+                'dishname': 'Cheeseburger',
+                'ingredients': [
+                  'Beef Patty',
+                  'Buns',
+                  'American Cheddar',
+                  'Lettuce',
+                  'Pickels',
+                  'Mayonaise',
+                  'Ketchup',
+                ],
+                'ingredientam': 7,
+                'imagedata': '/backend/images/cheeseburger.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'breakfast': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+            },
+            '2023-02-20': {
+              'lunch': {
+                'recipeid': 3,
+                'dishname': 'Cheeseburger',
+                'ingredients': [
+                  'Beef Patty',
+                  'Buns',
+                  'American Cheddar',
+                  'Lettuce',
+                  'Pickels',
+                  'Mayonaise',
+                  'Ketchup',
+                ],
+                'ingredientam': 7,
+                'imagedata': '/backend/images/cheeseburger.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'dinner': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'breakfast': {
+                'recipeid': 2,
+                'dishname': 'Chicken Parmesan',
+                'ingredients': [
+                  'Chicken Breast',
+                  'Parmesan',
+                  'Pasta',
+                  'Butter',
+                ],
+                'ingredientam': 4,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': true,
+                'kosher': true,
+              },
+            },
+            '2023-02-21': {
+              'lunch': {
+                'recipeid': 3,
+                'dishname': 'Cheeseburger',
+                'ingredients': [
+                  'Beef Patty',
+                  'Buns',
+                  'American Cheddar',
+                  'Lettuce',
+                  'Pickels',
+                  'Mayonaise',
+                  'Ketchup',
+                ],
+                'ingredientam': 7,
+                'imagedata': '/backend/images/cheeseburger.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'dinner': {
+                'recipeid': 4,
+                'dishname': 'Pepperoni Pizza',
+                'ingredients': [
+                  'Pizza Dough',
+                  'Pepperoni',
+                  'Mozzarella Cheese',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': false,
+                'healthy': false,
+                'kosher': false,
+              },
+              'breakfast': {
+                'recipeid': 2,
+                'dishname': 'Chicken Parmesan',
+                'ingredients': [
+                  'Chicken Breast',
+                  'Parmesan',
+                  'Pasta',
+                  'Butter',
+                ],
+                'ingredientam': 4,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': true,
+                'kosher': true,
+              },
+            },
+            '2023-02-22': {
+              'lunch': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'dinner': {
+                'recipeid': 4,
+                'dishname': 'Pepperoni Pizza',
+                'ingredients': [
+                  'Pizza Dough',
+                  'Pepperoni',
+                  'Mozzarella Cheese',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': false,
+                'healthy': false,
+                'kosher': false,
+              },
+              'breakfast': {
+                'recipeid': 2,
+                'dishname': 'Chicken Parmesan',
+                'ingredients': [
+                  'Chicken Breast',
+                  'Parmesan',
+                  'Pasta',
+                  'Butter',
+                ],
+                'ingredientam': 4,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': true,
+                'kosher': true,
+              },
+            },
+            '2023-02-23': {
+              'lunch': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'dinner': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+              'breakfast': {
+                'recipeid': 1,
+                'dishname': 'Mushroom Poppers',
+                'ingredients': [
+                  'Baby Bella Mushrooms',
+                  'Cheese',
+                  'Jalepeno',
+                ],
+                'ingredientam': 3,
+                'imagedata': '/test.png',
+                'vegan': false,
+                'halal': true,
+                'healthy': false,
+                'kosher': true,
+              },
+            },
+          },
+        },
+      ];
+
+
+  const [list, setList] = React.useState(dd ? dd : []);
+
+  React.useEffect(() => {
+    if (mealSearch) {
+      searchPlans(mealSearch, setList);
+    }
+  }, [mealSearch]);
 
   // Update search bar query
   const searchInput = (event) => {
     const {value} = event.target;
     setMealSearch(value);
   };
-
-  // TODO remove
-  if (list === []) {
-    setList(list);
-  }
 
   React.useEffect(() => {
     // Reset the page if the current page cant fit on the screen width
@@ -207,6 +492,19 @@ function ViewMeals(props) {
   // changing page
   const pageChange = (event, newPage) => {
     setPage(newPage);
+  };
+
+  // changes the meal plans in current view to user specific or all plans
+  const changeView = () => {
+    setPublic(!publicMeals);
+    // TODO
+    if (!publicMeals) {
+      // View only user specific meals
+      setList(list);
+    } else {
+      // View all meal plans
+      setList(list);
+    }
   };
 
 
@@ -268,7 +566,7 @@ function ViewMeals(props) {
             control={
               <Switch
                 checked={publicMeals}
-                onChange={() => setPublic(!publicMeals)}
+                onChange={changeView}
                 name="Public Meals"
               />
             }
@@ -277,7 +575,7 @@ function ViewMeals(props) {
           />
         </Toolbar>
         <div>
-          {list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
+          {list && list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
             .map((_, index) => {
               let meal1 = list[(index * 2) + (page * (mealsPerPage * 2))];
               const meal2 = list[(index * 2) + 1 + (page * (mealsPerPage * 2))];
@@ -293,13 +591,23 @@ function ViewMeals(props) {
                   columns={12}
                   key={meal1 + meal2 + index.toString()}
                 >
-                  <Grid item xs={4} sm={2}>
+                  <Grid item xs={2.75} sm={1.25}>
                     <Typography
                       variant='h6'
                       className='planName'
                     >
-                      {meal1['name']}
+                      {meal1['mealname']}
                     </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={1.25}
+                    sm={0.75}
+                    className='copy'
+                  >
+                    <IconButton className='copy'>
+                      <ContentPasteIcon/>
+                    </IconButton>
                   </Grid>
                   <Grid
                     item
@@ -313,7 +621,7 @@ function ViewMeals(props) {
                     <ImageList
                       className='menu planView'
                     >
-                      {meal1['imgs']
+                      {grabImages(meal1)
                         .map((img, ind) => {
                           return (
                             <ImageListItem
@@ -326,7 +634,7 @@ function ViewMeals(props) {
                                   `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
                                 }
                                 loading="lazy"
-                                alt={img + ind.toString()}
+                                alt={`img${ind.toString()}`}
                                 style={{
                                   width: `100px`,
                                   height: `100px`,
@@ -339,7 +647,7 @@ function ViewMeals(props) {
                   </Grid>
                   <Grid
                     item
-                    sm={2}
+                    sm={1.25}
                     style={{
                       display: (width < 800 || !meal2) ? 'none' : '',
                     }}
@@ -348,8 +656,20 @@ function ViewMeals(props) {
                       variant='h6'
                       className='planName'
                     >
-                      {meal2 && meal2['name']}
+                      {meal2 && meal2['mealname']}
                     </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={0.75}
+                    style={{
+                      display: (width < 800 || !meal2) ? 'none' : '',
+                    }}
+                    className='copy'
+                  >
+                    <IconButton className='copy'>
+                      <ContentPasteIcon/>
+                    </IconButton>
                   </Grid>
                   <Grid
                     item
@@ -362,7 +682,7 @@ function ViewMeals(props) {
                     <ImageList
                       className='menu planView'
                     >
-                      {meal2 ? (meal2['imgs']
+                      {meal2 ? (grabImages(meal2)
                         .map((img, ind) => {
                           return (
                             <ImageListItem

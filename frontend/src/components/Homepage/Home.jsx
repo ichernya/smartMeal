@@ -2,7 +2,9 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
+
 import {useDimensions} from '../DimensionsProvider.jsx';
+import {useMeals} from '../MealContextProvider.jsx';
 import Calendar from './Calendar.jsx';
 import AddMealDialog from './AddRecipe/AddMealDialog.jsx';
 import Menu from './Menu.jsx';
@@ -20,19 +22,13 @@ const names = {
   },
 };
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the homepage
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Homepage(props) {
-  // Generate the start and end of the week to display
-  const currentDay = new Date();
-  const dateOffset = currentDay.getDay();
-  const startWeek = new Date();
-  startWeek.setDate(currentDay.getDate() - dateOffset);
-  const endWeek = new Date();
-  endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
-  const WEEK = `Week: ${startWeek.getMonth() + 1}` +
-    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
-    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
-
+  const {WEEK, startWeek, mealPlan, setPlan} = useMeals();
   const {width} = useDimensions();
   // Precalculated card size for the calendar
   const cardSize = React.useRef(width >= 1200 ? (width * .11) : 175);
@@ -52,11 +48,11 @@ function Homepage(props) {
     {'Oliver Hansen': 'yes', 'Van Henry': 'yes', 'Kelly Snyder': 'yes'},
   );
   // Represents the weekly meal plans name
-  // TODO query backend
-  const [planName, setName] = React.useState(WEEK);
+  const [planName, setName] = React.useState((mealPlan && mealPlan['mealname']) || null);
+  // Represents whether the user is currently editing the name
+  const [changeName, setChangeName] = React.useState(false);
   // Represents whether to display the add meal dialog
   const [addMeal, setAddMeal] = React.useState(false);
-  const [changeName, setChangeName] = React.useState(false);
   // Represents the alignments of the tags
   const [alignments, setAlignment] =
     // TODO query db for tags
@@ -66,6 +62,15 @@ function Homepage(props) {
     // }
     React.useState(names);
 
+  React.useEffect(() => {
+    if (mealPlan && planName) {
+      // pass
+    } else if (mealPlan && mealPlan['mealname'] === '' && planName !== WEEK) {
+      setName(WEEK);
+    } else if (mealPlan && mealPlan['mealname'] !== planName) {
+      setName(mealPlan['mealname']);
+    }
+  }, [mealPlan]);
 
   React.useEffect(() => {
     cardSize.current = width >= 1200 ? (width * .11) : 175;
@@ -84,6 +89,7 @@ function Homepage(props) {
     if (event['code'].toLowerCase().includes('enter') &&
       changeName) {
       setChangeName(false);
+      setPlan({...mealPlan, 'mealname': planName});
       if (planName === '') {
         setName(WEEK);
       }
@@ -118,7 +124,7 @@ function Homepage(props) {
         >
           <TextField
             label="Meal Plan Name"
-            value={planName}
+            value={planName || ''}
             onChange={onTypeName}
             onKeyUp={submitNameChange}
             style={{

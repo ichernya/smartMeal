@@ -7,7 +7,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import Divider from '@mui/material/Divider';
 
-
+import {useMeals} from '../MealContextProvider.jsx';
 import './Calendar.css';
 import './Home.css';
 
@@ -20,79 +20,141 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 
-// Queries the database for the recipe associated with an ID
-const getMeal = (setMeal, calendar, id, weekday, time) => {
-  const item = localStorage.getItem('user');
-  const user = JSON.parse(item);
-  const bearerToken = user ? user.accessToken : '';
-  fetch(`http://localhost:3010/v0/recipe?recipeid=${id}`, {
-    method: 'get',
-    headers: new Headers({
-      'Authorization': `Bearer ${bearerToken}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      const meal = [...calendar[weekday]];
-      meal[time] = {
-        'dishname': json[0]['dishname'],
-        'img': json[0]['img'],
-      };
-      setMeal({...calendar, [weekday]: meal});
-    });
-};
-
 // Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (calendar, setMeal, startWeek, user) => {
+const getMealsForWeek = (setMeal, startWeek) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  const date = new Date(startWeek);
-  for (let day = 0; day < 7; ++day) {
-    const ISOdate = date.toISOString().split('T')[0];
-    fetch(`http://localhost:3010/v0/meals?dayof=${ISOdate}&mealsid=${user}`, {
+  const userId = person ? person.userid : '';
+  const start = startWeek.toISOString().split('T')[0];
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+  fetch(
+    `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
       method: 'get',
       headers: new Headers({
         'Authorization': `Bearer ${bearerToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       }),
     })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-        const weekday = daysOfWeek[day].toLowerCase();
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      const data = json[0]['mealweek'];
+      const mealPlan = {'mealname': data['mealname']};
+      const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
+      const TIMES = ['breakfast', 'lunch', 'dinner'];
 
-        for (let time = 0; time < json.length; ++time) {
-          if (json[time]['recipeid']) {
-            getMeal(setMeal, calendar, json[time]['recipeid'], weekday, time);
+      const defaultMeal = {
+        'recipeid': 0,
+        'dishname': '',
+        'ingredients': [
+        ],
+        'ingredientam': 0,
+        'imagedata': '',
+        'vegan': false,
+        'halal': false,
+        'healthy': false,
+        'kosher': false,
+      };
+
+      const defaultDay = [
+        // Breakfast
+        {...defaultMeal},
+        // Lunch
+        {...defaultMeal},
+        // Dinner
+        {...defaultMeal},
+      ];
+
+      // Represents the current day I'm getting the meal data for
+      const startDate = new Date(startWeek);
+
+
+      for (const weekday of daysOfWeek) {
+        const dateIso = startDate.toISOString().split('T')[0];
+
+        const mealsForDay = data[dateIso];
+
+        if (mealsForDay) {
+          // User has data for this day
+          mealPlan[weekday] = [];
+          for (const time of TIMES) {
+            if (mealsForDay[time]) {
+              // User has meal for the specific time of day
+              // breakfast, lunch, dinner
+              mealPlan[weekday].push({...mealsForDay[time]});
+            } else {
+              // User doesnt have a meal for the specific time of day
+              mealPlan[weekday].push({...defaultMeal});
+            }
           }
+        } else {
+          // User does not have a meal plan for the day
+          // they get the default day meal plan
+          mealPlan[weekday] = [...defaultDay];
         }
-      });
 
-    date.setDate(date.getDate() + 1);
-  }
+        // Increment to the next day of the week
+        startDate.setDate(startDate.getDate() + 1);
+      }
+      console.log(mealPlan);
+
+      setMeal(mealPlan);
+    });
 };
 
 // Adds a meal to the week
-const addMeal = (userId, mealId, startWeek, weekday) => {
+const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  const dateCopy = new Date(startWeek);
+  const userId = person ? person.userid : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
 
+  // The first day of the week
+  const startDay = startWeek.toISOString().split('T')[0];
+
+  // The  day of the week that is being updated
+  const dateCopy = new Date(startWeek);
   dateCopy.setDate(dateCopy.getDate() + weekday);
+
+
+  const TIMES = ['breakfast', 'lunch', 'dinner'];
+
+  // updated data in the formatted needed by backend
+  const update = {
+    'breakfast': '0',
+    'lunch': '0',
+    'dinner': '0',
+  };
+
+  for (const [ind, meal] of Object.entries(mealForDay)) {
+    const time = TIMES[ind];
+    update[time] = `${meal['recipeid']}`;
+  }
+
+  // format the changes in the format needed for backend
+  const bodyStringified =
+    `{'breakfast': '${update['breakfast']}', ` +
+    `'lunch': '${update['lunch']}', ` +
+    `'dinner': '${update['dinner']}'}`;
+
   const body = {
     'mealsid': userId,
-    'recipeid': mealId,
-    'dayof': dateCopy.toISOString().split('T')[0],
+    'dayof': `{${dateCopy.toISOString().split('T')[0]}}`,
+    'firstDay': startDay,
+    'changes': bodyStringified,
   };
+
   fetch(`http://localhost:3010/v0/meals`, {
-    method: 'POST',
+    method: 'PUT',
     body: JSON.stringify(body),
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -103,10 +165,15 @@ const addMeal = (userId, mealId, startWeek, weekday) => {
 };
 
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the display for the current weeks meal plan
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Calendar(props) {
   const {width, cardSize, selectedFood, setSelected, startWeek} =
     React.useContext(props['HomeContext']);
+  const {mealPlan, setPlan} = useMeals();
 
   // Represents the food currently selected from the menu as well as the number
   // of times it was added to the calendar
@@ -116,44 +183,16 @@ function Calendar(props) {
   // even if they havent added the selected item before
   const [chosenFood, used] = selectedFood || [null, 0];
 
-  const [TODOtempdate, setPlan] = React.useState({
-    'mon': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'tues': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'wed': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'thurs': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'fri': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'sat': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-    'sun': [{'dishname': 'temp', 'img': ''},
-      {'dishname': 'temp', 'img': ''}, {'dishname': 'temp', 'img': ''}],
-  });
-
-  React.useEffect(() => {
-    // Grab the meals for the week when loading the page
-    getMealsForWeek(TODOtempdate, setPlan, startWeek, 1);
-  // TODO
-  // eslint-disable-next-line
-  }, []);
-
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
   const chooseFood = (event, day, time, weekday) => {
     // Add chosen menu item to the calendar
     if (chosenFood) {
-      const meal = [...TODOtempdate[day]];
-      meal[time] = {
-        'dishname': chosenFood['dishname'],
-        'img': chosenFood['img'],
-      };
-      setPlan({...TODOtempdate, [day]: meal});
-      // Replace 1 with userID in the future TODO
+      const meal = [...mealPlan[day]];
+      meal[time] = {...chosenFood};
+      setPlan({...mealPlan, [day]: meal});
       // Adds the meal to the backend meal plan
-      addMeal(1, chosenFood['mealsid'], startWeek, weekday);
+      addMeal(chosenFood['mealsid'], startWeek, meal, weekday);
       // Holding shift key allows for multi-select
       if (!event['shiftKey']) {
         setSelected(null);
@@ -171,6 +210,7 @@ function Calendar(props) {
       spacing={0}
       className={width < 1200 ? 'mobileContainer' : 'webContainer'}
       id='wrapping'
+      style={{visibility: (mealPlan ? '' : 'hidden')}}
     >
       {daysOfWeek.map((day, weekday) =>
         <div className='card margins greyBack' key={day}>
@@ -191,10 +231,10 @@ function Calendar(props) {
                 height: (width < 1200 ? (cardSize.current * 2 + 35) : ''),
               }}
             >
-              {TODOtempdate[day.toLowerCase()].map((item, ind) => {
+              {mealPlan && mealPlan[day.toLowerCase()].map((item, ind) => {
                 const dayLower = day.toLowerCase();
                 const image = item['img'] ?
-                  item['img'] : require('../../assets/ass.png');
+                  item['img'] : require('../../assets/logo.png');
                 return (
                   <div key={item['dishname'] + dayLower + ind}>
                     <ImageList
@@ -227,6 +267,7 @@ function Calendar(props) {
                         <ImageListItemBar
                           title={item['dishname']}
                           className='imgListBar'
+                          style={{display: item['dishname'] ? '' : 'none'}}
                         />
                       </ImageListItem>
                     </ImageList>

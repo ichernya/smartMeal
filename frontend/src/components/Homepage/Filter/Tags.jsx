@@ -19,7 +19,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import './Tags.css';
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the page to select the filters/tags
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Toggles(props) {
   const {alignments, setAlignment, name, setFilter, filters, category} = props;
 
@@ -112,7 +116,7 @@ function Tags(props) {
     const copyAlign = {...alignments};
     for (const category of Object.keys(copyAlign)) {
       for (const key of Object.keys(copyAlign[category])) {
-        if (choice == 'yes') {
+        if (choice === 'yes') {
           newFilters[key] = 'yes';
         }
         copyAlign[category][key] = choice;

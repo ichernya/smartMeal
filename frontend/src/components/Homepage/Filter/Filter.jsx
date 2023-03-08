@@ -19,7 +19,11 @@ const MenuProps = {
   },
 };
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the display for the currently chosen tags/filters
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Filter(props) {
   const {setDrawer, setFilter, filters, setAlignment, alignments} =
     React.useContext(props['HomeContext']);

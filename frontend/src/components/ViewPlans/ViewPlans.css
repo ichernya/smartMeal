@@ -38,8 +38,15 @@
     height: 100%;
     align-items: center;
     justify-content: center;
+    float: right;
 }
 
 #privateToggle {
     width: 150px;
+}
+
+.copy {
+    display: flex;
+    float: left;
+    background: aliceblue !important;
 }
