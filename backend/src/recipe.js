@@ -55,10 +55,10 @@ exports.getOne = async (req, res) => {
 
 
 const postOneRecipe = async(newRecipe) => {
-    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, vegan, halal, healthy, kosher) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ingredientAm';
+    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ($1, $2, $3, $4) RETURNING ingredientAm';
     const query = {
         text: insert,
-        values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData, newRecipe.vegan, newRecipe.halal, newRecipe.healthy, newRecipe.kosher],
+        values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData],
     };
     console.log(insert);
     const id = await pool.query(query);
@@ -73,14 +73,10 @@ exports.postRecipe = async (req, res) => {
     newRecipe.ingredients = req.body.ingredients;
     //ingredients jsonb
     //ingredientAm
-    newRecipe.ingredientAm = req.body.ingredients.length;
+    newRecipe.ingredientAm = req.body.ingredientAm;
     //imageData
     newRecipe.imageData = req.body.imageData;
     //halal
-    newRecipe.vegan = req.body.vegan;
-    newRecipe.halal = req.body.halal;
-    newRecipe.healthy = req.body.healthy;
-    newRecipe.kosher = req.body.kosher;
     const id = await postOneRecipe(newRecipe);
     res.status(201).send(newRecipe);
 }
