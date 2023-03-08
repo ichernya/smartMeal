@@ -48,7 +48,8 @@ app.get('/v0/switchOut', switchOut.swaps);
 app.get('/v0/publicMeal', publicMeal.pullpublicMeal);
 app.post('/v0/recipes', recipe.postRecipe);
 app.post('/v0/signup', signup.putUser);
-app.post('/v0/meals', meal.addFoodUser)
+app.post('/v0/meals', meal.addFoodUser);
+app.put('/v0/mealName', meal.updateMealName);
 
 // outputting error codes and mesages for debugging
 app.use((err, req, res, next) => {
