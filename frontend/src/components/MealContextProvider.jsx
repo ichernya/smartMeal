@@ -100,41 +100,25 @@ const testMeal1 = {
 const weekMealData = {
   'id': '1',
   'amount': 6,
-  '2023-02-19': {
-    'breakfast': {...testMeal, 'id': 1},
-    'lunch': {...testMeal, 'id': 2},
-    'dinner': {...testMeal1, 'id': 3},
-  },
-  '2023-02-20': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-21': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-22': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-23': {
-    'breakfast': {...testMeal, 'id': 13},
-    'lunch': {...testMeal, 'id': 14},
-    'dinner': {},
-  },
-  '2023-02-25': {
-    'breakfast': {...testMeal1, 'id': 17},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-26': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
+  'sun': [
+    {...testMeal},
+    {...testMeal1},
+  ],
+  'mon': [
+    {...testMeal},
+    {...testMeal},
+  ],
+  'tues': [
+  ],
+  'wed': [
+    {...testMeal1},
+  ],
+  'thrus': [
+  ],
+  'fri': [
+  ],
+  'sat': [
+  ],
 };
 
 export const MealsProvider = ({children}) => {
