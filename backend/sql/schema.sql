@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS recipes;
 CREATE TABLE recipes(
     recipeid SERIAL UNIQUE NOT NULL,
     dishname VARCHAR(32),
-    ingredients text[],
+    ingredients jsonb,
     ingredientAm int,
     imageData text,
     vegan boolean DEFAULT FALSE,

@@ -223,7 +223,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/recipesPost'
+                $ref: '#/components/schemas/recipesJson'
         400:
           description: invalid recipe
         default:
@@ -372,6 +372,32 @@ components:
         ingredients:
           type: array
           items:
+            type: array
+            items:
+              type: string
+          example: [["egg", "1", "N/A"], ["bacon", "1", "g"], ["cheese", "1", "g"]]
+        ingredientAm:
+          type: integer
+        imageData:
+          type: string
+        vegan:
+          type: boolean
+        halal:
+          type: boolean
+        healthy:
+          type: boolean
+        kosher:
+          type: boolean
+
+    recipesJson:
+      properties:
+        recipeid:
+          type: integer
+        dishname:
+          type: string
+        ingredients:
+          type: object
+          items:
             type: string
         ingredientAm:
           type: integer
@@ -410,7 +436,7 @@ components:
           type: string
         mealsid:
           type: integer
-      
+
 
     Credentials:
       type: object
