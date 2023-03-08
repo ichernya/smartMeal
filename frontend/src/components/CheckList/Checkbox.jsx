@@ -35,7 +35,11 @@ const getMeal = (ingredient, setAlteratives) => {
             }
           ));
       }
-      setAlteratives(alter);
+      if (Object.keys(alter).length === 0) {
+        setAlteratives(false);
+      } else {
+        setAlteratives(alter);
+      }
     });
 };
 // Given the meals of the week and an ingredient
@@ -51,13 +55,13 @@ const filterMealsForIngredients =
       Object.values(meals[date]).filter((obj) => obj &&
       Object.keys(obj).length !== 0)
         // Look through each meal of the day
-        .forEach((meal) => {
+        .forEach(function(meal, i) {
           // If the meal has the ingredient add it to the list of meals with
           // said ingredient
           Object.keys(meal['ingredients']).filter((key) => key ===
           myIngredient)
             .forEach(() => {
-              mealsOfWithIng.push(meal);
+              mealsOfWithIng.push({'date': date, 'timeOfDay': i, 'meal': meal});
             });
         });
     });

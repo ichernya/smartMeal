@@ -10,7 +10,7 @@ const testIngredientList = {
     'ingredients': {
       'Beef': {
         'checked': false,
-        'quantity': 80,
+        'quantity': 65,
         'unit': 'Ton',
         'pricePerUnitWeight': '$20',
       },
@@ -23,7 +23,7 @@ const testIngredientList = {
     'ingredients': {
       'Whole milk': {
         'checked': true,
-        'quantity': 44,
+        'quantity': 33,
         'unit': 'liters',
         'pricePerUnitWeight': '$20',
       },
@@ -42,7 +42,7 @@ const testIngredientList = {
     'ingredients': {
       'Jalepeno': {
         'checked': false,
-        'quantity': 48,
+        'quantity': 36,
         'unit': 'Ton',
         'pricePerUnitWeight': '$20',
       },
@@ -99,7 +99,6 @@ const testMeal1 = {
 
 const weekMealData = {
   'id': '1',
-  'amount': 6,
   'sun': [
     {...testMeal},
     {...testMeal1},

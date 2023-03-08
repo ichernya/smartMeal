@@ -24,7 +24,7 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives, meals} = useMeals();
+    alteratives, setAlteratives, meals, setMeals} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
@@ -57,10 +57,12 @@ function DisplayElement() {
     const newListElement =
       oldListElement['ingredients'][isChosenIngredient.name];
     const oldMealsWithIngredient = mealsWithIngredient;
-    const newChosenMeal = oldMealsWithIngredient[activeStep];
+    const specificMealtoChange = oldMealsWithIngredient[activeStep];
+    const newChosenMeal = specificMealtoChange['meal'];
     const ingredientElement =
     newChosenMeal['ingredients'][isChosenIngredient.name];
     newListElement['quantity'] -= ingredientElement['quantity'];
+    // CheckList update
     // If the quantity in the checklist is 0
     if (newListElement['quantity'] === 0) {
       if (oldListElement['checked'] === true) {
@@ -96,15 +98,26 @@ function DisplayElement() {
     if (activeStep === oldMealsWithIngredient.length) {
       setActiveStep(activeStep - 1);
     }
-    console.log(meals);
+    // Recipes Update
+    // Create a deep copy
+    const newMeals = JSON.parse(JSON.stringify(meals));
+    // Update the specific meal step is on
+    const specificMeal =
+      newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
+    // Changing the nmae
+    specificMeal.ingredients[selectedAlterative] =
+      specificMeal.ingredients[isChosenIngredient.name];
+    // Remove the old name
+    delete specificMeal.ingredients[isChosenIngredient.name];
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
-    // setChosenIngredient({...isChosenIngredient, 'name': selectedAlterative});
+    setMeals(newMeals);
   };
 
   // Change one ingredient for all the meals with that ingredient
   const handleChangeAll = () => {
+    // Updating CheckList
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
     const newListElement = oldListElement['ingredients'];
@@ -116,12 +129,25 @@ function DisplayElement() {
     };
     delete newListElement[isChosenIngredient['name']];
     setIngredientList(newList);
+
+    // Updating the recipes
+    // Creating a deep copy
+    const newMeals = JSON.parse(JSON.stringify(meals));
+    // Go over all the meal that has the ingredient
+    // and change the ingredient in it
+    mealsWithIngredient.forEach((e) => {
+      const specificMeal = newMeals[e.date][e.timeOfDay];
+      specificMeal.ingredients[selectedAlterative] =
+        specificMeal.ingredients[isChosenIngredient.name];
+      delete specificMeal.ingredients[isChosenIngredient.name];
+    });
+    setMeals(newMeals);
     handleCancel();
   };
 
   // On select alterantive create a copy of the alteratives
   useEffect(() => {
-    if (alteratives && Object.keys(alteratives).length !== 0) {
+    if (!alteratives || Object.keys(alteratives).length > 0) {
       setModifiedState(alteratives);
       setSelectedAlterative(null);
       setActiveStep(0);
@@ -137,6 +163,20 @@ function DisplayElement() {
   // Move to the previous meal
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  const days = {
+    'mon': 'Monday',
+    'tues': 'Tuesday',
+    'wed': 'Wednesday',
+    'thrus': 'Thrusday',
+    'fri': 'Friday',
+    'sat': 'Saturday',
+    'sun': 'Sunday',
+  };
+  const timeOfTheDay = {
+    0: 'breakfast',
+    1: 'lunch',
+    2: 'dinner',
   };
   return (
     <Grid
@@ -195,7 +235,10 @@ function DisplayElement() {
                 <TextField
                   label="Meal"
                   variant="standard"
-                  value={mealsWithIngredient[activeStep].dishname}
+                  value={`${mealsWithIngredient[activeStep]['meal'].dishname}` +
+                    ` - ${days[mealsWithIngredient[activeStep]['date']]}` +
+              ` ${timeOfTheDay[mealsWithIngredient[activeStep]['timeOfDay']]}`
+                  }
                   inputProps={{min: 0, style: {textAlign: 'center'}}}
                   sx={{
                     '& .MuiInputBase-input.Mui-disabled': {
