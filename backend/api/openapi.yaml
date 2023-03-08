@@ -372,6 +372,7 @@ components:
           type: array
           items:
             type: string
+          example: ["str1", "str2", "str3"]
         ingredientAm:
           type: integer
         imageData:
