@@ -55,10 +55,10 @@ exports.getOne = async (req, res) => {
 
 
 const postOneRecipe = async(newRecipe) => {
-    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ($1, $2, $3, $4) RETURNING ingredientAm';
+    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, vegan, halal, healthy, kosher) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ingredientAm';
     const query = {
         text: insert,
-        values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData],
+        values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData, newRecipe.vegan, newRecipe.halal, newRecipe.healthy, newRecipe.kosher],
     };
     console.log(insert);
     const id = await pool.query(query);
@@ -70,13 +70,33 @@ exports.postRecipe = async (req, res) => {
     //add the stuff here
     //dishname
     newRecipe.dishname = req.body.dishname;
-    newRecipe.ingredients = req.body.ingredients;
+
+    //create dictionary
+    let ingredientsList = {};
+    for (const elem of req.body.ingredients) {
+        // console.log(elem[0], elem[1], elem[2]);
+        ingredientsList[elem[0]] = {'quantity': elem[1], 'unit': elem[2]};
+        // console.log(ingredientsList);
+    };
+    console.log('finished ingredientsList');
+    console.log(ingredientsList);
+
+
+    // newRecipe.ingredients = req.body.ingredients;
+    newRecipe.ingredients = ingredientsList;
+    //idea -> newRecipe.ingredients = new dictionary created from req.body.ingredients
+    // console.log(req.body.ingredients);
+
     //ingredients jsonb
     //ingredientAm
-    newRecipe.ingredientAm = req.body.ingredientAm;
+    newRecipe.ingredientAm = req.body.ingredients.length;
     //imageData
     newRecipe.imageData = req.body.imageData;
     //halal
+    newRecipe.vegan = req.body.vegan;
+    newRecipe.halal = req.body.halal;
+    newRecipe.healthy = req.body.healthy;
+    newRecipe.kosher = req.body.kosher;
     const id = await postOneRecipe(newRecipe);
     res.status(201).send(newRecipe);
 }
