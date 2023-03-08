@@ -19,6 +19,25 @@ const bcrypt = require('bcrypt');
 
 const secrets = require('./secrets');
 
+const checkUser = async(email) => {
+  const select = 'SELECT * FROM users WHERE username = ($1)';
+  const query = {
+    text: select,
+    values: [ email ],
+  }
+  // console.log('dubmode');
+  const {rows} = await pool.query(query);
+  console.log(rows.length);
+  if (rows.length > 0){
+    console.log("false");
+    return false;
+  }
+  else {
+    console.log("true");
+    return true;
+  }
+}
+
 const createUser = async (email, password) => {
   let hashPW = 'placeholder';
   // console.log(email, password, hashPW);
@@ -66,12 +85,16 @@ exports.putUser = async (req, res) => {
   const newUserEmail = req.body.email;
   const newUserPW = req.body.password;
   console.log(newUserEmail, newUserPW);
-  const id = await createUser(newUserEmail, newUserPW);
-  if (id) {
-    res.status(200).send("this is the id " + id);
-  }
-  else {
-    res.status(404).send();
+  const temp = await checkUser(newUserEmail);
+  if(temp === true) {
+    const id = await createUser(newUserEmail, newUserPW);
+    if (id) {
+      res.status(200).send("this is the id " + id);
+    } else {
+      res.status(404).send();
+    }
+  } else {
+      res.status(409).send();
   }
 };
 

@@ -156,6 +156,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        409:
+          description: User already created
+          content:
+            application:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected Error
           content:
