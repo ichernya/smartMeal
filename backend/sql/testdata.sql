@@ -1,8 +1,10 @@
 DELETE FROM recipes;
-INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, halal, kosher) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}', '3', '/test.png', 'true', 'true');
-INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, healthy, halal, kosher) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}', '4', '/test.png', 'true', 'true', 'true');
-INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, kosher, halal) VALUES ('Cheeseburger', '{"Beef Patty", "Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}', '7', '/backend/images/cheeseburger.png', 'true', 'true');
-INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}', '3', '/test.png');
+-- INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, halal, kosher) VALUES ('Mushroom Poppers', '{"Baby Bella Mushrooms", "Cheese", "Jalepeno"}', '3', '/test.png', 'true', 'true');
+-- INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, healthy, halal, kosher) VALUES ('Chicken Parmesan', '{"Chicken Breast", "Parmesan", "Pasta", "Butter"}', '4', '/test.png', 'true', 'true', 'true');
+-- INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, kosher, halal) VALUES ('Cheeseburger', '{"Beef Patty", "Buns", "American Cheddar", "Lettuce", "Pickels", "Mayonaise", "Ketchup"}', '7', '/backend/images/cheeseburger.png', 'true', 'true');
+-- INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData) VALUES ('Pepperoni Pizza', '{"Pizza Dough", "Pepperoni", "Mozzarella Cheese"}', '3', '/test.png');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, halal, kosher)VALUES ('Loco Moco', '{"Burger patty":{"amount": ".25","unit":"pounds"}, "Egg":{"amount":"1", "unit": "N/A"}, "Rice": {"amount": "4", "unit":"g"}}','3', '/test.png', 'true', 'true');
+INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, halal, kosher)VALUES ('Loco Moco','{"protein":{"burger patty":{"amount": ".25", "unit": "lbs"}, "egg":{"amount": "1", "unit": "NA"}},"carb":{"rice":{"amount": "4", "unit": "gram"}}}', '3', '/test.png', 'true', 'true');
 
 DELETE FROM users;
 
