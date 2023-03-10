@@ -411,7 +411,7 @@ function AddMealDialog(props) {
                   className='greyBack'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                    <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+                    <MenuItem value={unit} key={unit}>{unit}</MenuItem>
                   ))}
                 </Select>
                 <FormHelperText id="select-text">Unit</FormHelperText>

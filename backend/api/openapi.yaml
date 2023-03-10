@@ -398,8 +398,8 @@ components:
 
     recipesPost:
       properties:
-        recipeid:
-          type: integer
+#        recipeid:
+#          type: integer
         dishname:
           type: string
         ingredients:

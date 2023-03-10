@@ -68,7 +68,11 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp:
 );
 
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the sidebar itself
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function TheDrawer() {
   const [open, setOpen] = React.useState(false);
   const [settingsDialog, setSettings] = React.useState(false);

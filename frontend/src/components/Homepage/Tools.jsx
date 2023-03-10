@@ -53,7 +53,11 @@ export const SearchIconWrapper = styled('div')(({theme}) => ({
   'justifyContent': 'center',
 }));
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the toolbar on the homepage
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Tools(props) {
   const {search, setSearch, setDrawer,
   } = React.useContext(props['HomeContext']);
