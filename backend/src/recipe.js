@@ -55,21 +55,23 @@ exports.getOne = async (req, res) => {
 
 
 const postOneRecipe = async(newRecipe) => {
-    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, vegan, halal, healthy, kosher) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ingredientAm';
+    const insert = 'INSERT INTO recipes(dishname, ingredients, ingredientAm, imageData, vegan, halal, healthy, kosher) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING recipeid';
     const query = {
         text: insert,
         values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData, newRecipe.vegan, newRecipe.halal, newRecipe.healthy, newRecipe.kosher],
     };
     console.log(insert);
     const id = await pool.query(query);
-    console.log(id);
+    console.log(id.rows[0].recipeid);
+    const recipeid = parseInt(id.rows[0].recipeid);
+    return recipeid;
 }
 
 exports.postRecipe = async (req, res) => {
     const newRecipe = {};
     //add the stuff here
     //dishname
-    newRecipe.dishname = req.body.dishname;
+    newRecipe.dishname = req.body.dishName;
 
     //create dictionary
     let ingredientsList = {};
@@ -98,5 +100,7 @@ exports.postRecipe = async (req, res) => {
     newRecipe.healthy = req.body.healthy;
     newRecipe.kosher = req.body.kosher;
     const id = await postOneRecipe(newRecipe);
+    newRecipe.recipeid = id;
+    console.log(id, newRecipe.recipeid);
     res.status(201).send(newRecipe);
 }
