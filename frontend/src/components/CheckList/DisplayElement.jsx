@@ -15,6 +15,11 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
+const matchNameReplace = (name, keyIngredient, keyReplacementName) => {
+  console.log(name, keyIngredient, keyReplacementName);
+  return name.replace(keyIngredient, keyReplacementName);
+};
+
 /**
  * Left side view of the checklist where the user can select an ingredient
  * and swap it out with another ingredient
@@ -55,35 +60,35 @@ function DisplayElement() {
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
     const newListElement =
-      oldListElement['ingredients'][isChosenIngredient.name];
+      oldListElement.ingredients[isChosenIngredient.name];
     const oldMealsWithIngredient = mealsWithIngredient;
     const specificMealtoChange = oldMealsWithIngredient[activeStep];
-    const newChosenMeal = specificMealtoChange['meal'];
+    const newChosenMeal = specificMealtoChange.meal;
     const ingredientElement =
-    newChosenMeal['ingredients'][isChosenIngredient.name];
-    newListElement['quantity'] -= ingredientElement['quantity'];
+    newChosenMeal.ingredients[isChosenIngredient.name];
+    newListElement.quantity -= ingredientElement.quantity;
     // CheckList update
     // If the quantity in the checklist is 0
-    if (newListElement['quantity'] === 0) {
-      if (oldListElement['checked'] === true) {
-        --oldListElement['amountChecked'];
+    if (newListElement.quantity === 0) {
+      if (oldListElement.checked === true) {
+        --oldListElement.amountChecked;
       }
-      --oldListElement['amount'];
+      --oldListElement.amount;
       // Remove the old element from the checklist
-      delete oldListElement['ingredients'][isChosenIngredient.name];
+      delete oldListElement.ingredients[isChosenIngredient.name];
       setAlteratives({});
     } else {
-      ++oldListElement['amount'];
+      ++oldListElement.amount;
     }
     // If the intended swap ingredient is already in the checklist
-    if (oldListElement['ingredients'][selectedAlterative]) {
-      oldListElement['amountChecked'] -= 1;
-      oldListElement['ingredients'][selectedAlterative]['quantity'] +=
-        ingredientElement['quantity'];
-      oldListElement['ingredients'][selectedAlterative]['checked'] = false;
+    if (oldListElement.ingredients[selectedAlterative]) {
+      oldListElement.amountChecked -= 1;
+      oldListElement.ingredients[selectedAlterative].quantity +=
+        ingredientElement.quantity;
+      oldListElement.ingredients[selectedAlterative].checked = false;
     } else { // The intended ingredient is not in the checklist
       const newIngredient = {...ingredientElement};
-      newIngredient['checked'] = false;
+      newIngredient.checked = false;
       oldListElement['ingredients'][selectedAlterative] = newIngredient;
     }
     // From the list of all the meals with the ingredient
@@ -109,6 +114,9 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
+    specificMeal.dishname =
+    matchNameReplace(mealsWithIngredient[activeStep].meal.dishname,
+      isChosenIngredient.name, selectedAlterative);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -120,16 +128,23 @@ function DisplayElement() {
     // Updating CheckList
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
-    const newListElement = oldListElement['ingredients'];
-    newListElement[selectedAlterative] =
+    const newListElement = oldListElement.ingredients;
+    if (Object.keys(newListElement).includes(selectedAlterative)) {
+      oldListElement.amount -= 1;
+      if (newListElement[isChosenIngredient.name].checked) {
+        oldListElement.amountChecked -= 1;
+      }
+      newListElement[selectedAlterative].quantity +=
+        newListElement[isChosenIngredient.name].quantity;
+    } else {
+      newListElement[selectedAlterative] =
       newListElement[isChosenIngredient.name];
-    if (newListElement[selectedAlterative]['checked']) {
-      newListElement[selectedAlterative]['checked'] = false;
-      oldListElement['amountChecked'] -= 1;
+    }
+    if (newListElement[selectedAlterative].checked) {
+      newListElement[selectedAlterative].checked = false;
+      oldListElement.amountChecked -= 1;
     };
-    delete newListElement[isChosenIngredient['name']];
-    setIngredientList(newList);
-
+    delete newListElement[isChosenIngredient.name];
     // Updating the recipes
     // Creating a deep copy
     const newMeals = JSON.parse(JSON.stringify(meals));
@@ -141,6 +156,7 @@ function DisplayElement() {
         specificMeal.ingredients[isChosenIngredient.name];
       delete specificMeal.ingredients[isChosenIngredient.name];
     });
+    setIngredientList(newList);
     setMeals(newMeals);
     handleCancel();
   };
@@ -235,9 +251,9 @@ function DisplayElement() {
                 <TextField
                   label="Meal"
                   variant="standard"
-                  value={`${mealsWithIngredient[activeStep]['meal'].dishname}` +
-                    ` - ${days[mealsWithIngredient[activeStep]['date']]}` +
-              ` ${timeOfTheDay[mealsWithIngredient[activeStep]['timeOfDay']]}`
+                  value={`${mealsWithIngredient[activeStep].meal.dishname}` +
+                    ` - ${days[mealsWithIngredient[activeStep].date]}` +
+              ` ${timeOfTheDay[mealsWithIngredient[activeStep].timeOfDay]}`
                   }
                   inputProps={{min: 0, style: {textAlign: 'center'}}}
                   sx={{

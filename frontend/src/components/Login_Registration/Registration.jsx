@@ -20,6 +20,10 @@ const validateEmail = (mail) => {
   return false;
 };
 
+const checkPassword = (str) => {
+  const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  return re.test(str);
+};
 
 /**
  * Registration component
@@ -27,8 +31,8 @@ const validateEmail = (mail) => {
  */
 function SignUp() {
   const history = useNavigate();
-
   const [status, setStatus] = useState(true);
+  const [invalid, setInvalid] = useState(false);
   const [user, setUser] = useState({
     first_name: '', last_name: '',
     email: '', password: '', confirmPassword: '',
@@ -38,7 +42,8 @@ function SignUp() {
     const u = user;
     u[name] = value;
     setStatus(!(validateEmail(user['email']) &&
-    user['password'] === user['confirmPassword'] && user['password'] !== ''));
+    user['password'] === user['confirmPassword'] &&
+    checkPassword(user['password'])));
     setUser(u);
   };
   const submitRegistorForm = (event) => {
@@ -58,13 +63,12 @@ function SignUp() {
         if (!res.ok) {
           throw res;
         }
-        return res.json();
+        return res;
       })
-      .then((json) => {
-        console.log(json);
+      .then((res) => {
         history('/home');
       }).catch((err) => {
-        console.log(err);
+        setInvalid(true);
       });
   };
   return (
@@ -87,7 +91,6 @@ function SignUp() {
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
-                  required
                   id="firstName"
                   label="First Name"
                   onChange={handleInputChange}
@@ -99,7 +102,6 @@ function SignUp() {
               </Grid>
               <Grid item xs={6} sm={6}>
                 <TextField
-                  required
                   id="lastName"
                   label="Last Name"
                   name="lastName"
@@ -153,6 +155,9 @@ function SignUp() {
                 />
               </Grid>
             </Grid>
+            {invalid ? <div className='error'>
+              Email already in use
+            </div> : null}
             <Fab
               variant="extended"
               size="medium"
