@@ -10,7 +10,7 @@ import './LandingPage.css';
 // eslint-disable-next-line require-jsdoc
 function LandingPage() {
   return (
-    <div class='root'>
+    <div className='root'>
       <Grid container spacing={3} component="main" direction="row"
         paddingTop={1} paddingLeft={2} paddingRight={2} paddingBottom={1}>
         <Grid item xs={6} md={8}>
