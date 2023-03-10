@@ -5,11 +5,16 @@ import parsePlanData from './parser.jsx';
 const MealsContext = createContext();
 
 // Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (setMeal, startWeek) => {
+const getMealsForWeek = (setMeal) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
+  // calculates the start and end of the week
+  const currentDay = new Date();
+  const dateOffset = currentDay.getDay();
+  const startWeek = new Date();
+  startWeek.setDate(currentDay.getDate() - dateOffset);
   const start = startWeek.toISOString().split('T')[0];
   if (!userId || !bearerToken) {
     // User has not logged in or has timeed out
@@ -93,7 +98,7 @@ export const MealsProvider = ({children}) => {
 
   useEffect(() => {
     // Grab the meals for the week when loading the page
-    getMealsForWeek(setPlan, startWeek);
+    getMealsForWeek(setPlan);
   }, []);
 
   const [ingredientList, setIngredientList] = useState({});

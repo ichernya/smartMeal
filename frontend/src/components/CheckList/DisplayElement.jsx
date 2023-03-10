@@ -15,10 +15,6 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
-const matchNameReplace = (name, keyIngredient, keyReplacementName) => {
-  console.log(name, keyIngredient, keyReplacementName);
-  return name.replace(keyIngredient, keyReplacementName);
-};
 
 /**
  * Left side view of the checklist where the user can select an ingredient
@@ -29,7 +25,7 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives, meals, setMeals} = useMeals();
+    alteratives, setAlteratives, mealPlan, setPlan} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
@@ -49,7 +45,7 @@ function DisplayElement() {
     setChosenIngredient({
       'name': 'Pick an item from the list',
       'img': '',
-      'quantity': '',
+      'amount': '',
     });
     setAlteratives({});
     setView(false);
@@ -66,10 +62,11 @@ function DisplayElement() {
     const newChosenMeal = specificMealtoChange.meal;
     const ingredientElement =
     newChosenMeal.ingredients[isChosenIngredient.name];
-    newListElement.quantity -= ingredientElement.quantity;
+    console.log(newChosenMeal.ingredients);
+    newListElement.amount -= ingredientElement.amount;
     // CheckList update
-    // If the quantity in the checklist is 0
-    if (newListElement.quantity === 0) {
+    // If the amount in the checklist is 0
+    if (newListElement.amount === 0) {
       if (oldListElement.checked === true) {
         --oldListElement.amountChecked;
       }
@@ -83,8 +80,8 @@ function DisplayElement() {
     // If the intended swap ingredient is already in the checklist
     if (oldListElement.ingredients[selectedAlterative]) {
       oldListElement.amountChecked -= 1;
-      oldListElement.ingredients[selectedAlterative].quantity +=
-        ingredientElement.quantity;
+      oldListElement.ingredients[selectedAlterative].amount +=
+        ingredientElement.amount;
       oldListElement.ingredients[selectedAlterative].checked = false;
     } else { // The intended ingredient is not in the checklist
       const newIngredient = {...ingredientElement};
@@ -105,7 +102,7 @@ function DisplayElement() {
     }
     // Recipes Update
     // Create a deep copy
-    const newMeals = JSON.parse(JSON.stringify(meals));
+    const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Update the specific meal step is on
     const specificMeal =
       newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
@@ -114,13 +111,14 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
-    specificMeal.dishname =
-    matchNameReplace(mealsWithIngredient[activeStep].meal.dishname,
+    console.log(mealsWithIngredient[activeStep].meal.dishname,
       isChosenIngredient.name, selectedAlterative);
+    specificMeal.dishname = mealsWithIngredient[activeStep].meal.dishname
+      .replace(isChosenIngredient.name, selectedAlterative);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
-    setMeals(newMeals);
+    setPlan(newMeals);
   };
 
   // Change one ingredient for all the meals with that ingredient
@@ -134,8 +132,8 @@ function DisplayElement() {
       if (newListElement[isChosenIngredient.name].checked) {
         oldListElement.amountChecked -= 1;
       }
-      newListElement[selectedAlterative].quantity +=
-        newListElement[isChosenIngredient.name].quantity;
+      newListElement[selectedAlterative].amount +=
+        newListElement[isChosenIngredient.name].amount;
     } else {
       newListElement[selectedAlterative] =
       newListElement[isChosenIngredient.name];
@@ -147,7 +145,7 @@ function DisplayElement() {
     delete newListElement[isChosenIngredient.name];
     // Updating the recipes
     // Creating a deep copy
-    const newMeals = JSON.parse(JSON.stringify(meals));
+    const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Go over all the meal that has the ingredient
     // and change the ingredient in it
     mealsWithIngredient.forEach((e) => {
@@ -157,7 +155,7 @@ function DisplayElement() {
       delete specificMeal.ingredients[isChosenIngredient.name];
     });
     setIngredientList(newList);
-    setMeals(newMeals);
+    setPlan(newMeals);
     handleCancel();
   };
 

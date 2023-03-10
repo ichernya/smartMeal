@@ -1,6 +1,8 @@
-import React, {createCgetMealsForWeekontext, useContext, useState, useEffect} from 'react';
-
-// Queries the database for the meals the user has chosen for the week
+/**
+ * Queries the database for the meals the user has chosen for the week
+ * @param {object} setMeal
+ * @param {json} json
+ */
 function parsePlanData(setMeal, json) {
   const data = json['mealweek'];
   const mealPlan = {'mealname': json['mealname']};
@@ -31,7 +33,6 @@ function parsePlanData(setMeal, json) {
 
   // Represents the current day I'm getting the meal data for
   const startDate = new Date(json['firstday']);
-
 
   for (const weekday of daysOfWeek) {
     const dateIso = startDate.toISOString().split('T')[0];
