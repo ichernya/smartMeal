@@ -18,6 +18,10 @@ CREATE TABLE users(
     userid SERIAL UNIQUE NOT NULL,
     username VARCHAR(255) NOT NULL,
     passwrd VARCHAR(255) NOT NULL,
+    vegan boolean DEFAULT TRUE,
+    halal boolean DEFAULT TRUE,
+    healthy boolean DEFAULT TRUE,
+    kosher boolean DEFAULT TRUE,
     PRIMARY KEY (userid)
     );
 
@@ -48,5 +52,15 @@ to find what someone has on that day of eating:
 query for userid date and recipeid,
 and you will recieve a meal objects where all 3 are true.
 */
+
+DROP TABLE IF EXISTS ingredients;
+
+CREATE TABLE ingredients (
+    protein text[],
+    dairy text[],
+    vegetables text[],
+    spices text[],
+    grains text[]
+);
 
 

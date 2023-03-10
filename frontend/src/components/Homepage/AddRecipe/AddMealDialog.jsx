@@ -16,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import AddPhotoAlternateRoundedIcon from
   '@mui/icons-material/AddPhotoAlternateRounded';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -26,6 +27,9 @@ import {Paper} from '@mui/material';
 import {TextField} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import InputLabel from '@mui/material/InputLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Typography from '@mui/material/Typography';
 import './AddMealDialog.css';
 import '../../colors.css';
 
@@ -43,15 +47,21 @@ function AddMealDialog(props) {
     'tsp', 'tbs', 'fl oz', 'gill', 'cup', 'pint',
     'quart', 'gal', 'lb', 'oz', 'in', '°F', 'unit',
   ];
+  const diets = [
+    'Vegan', 'Halal', 'Healthy', 'Kosher',
+  ];
 
   // State
   const [recipeName, setRecipeName] = React.useState('');
+  const [dietList, setDietList] = React.useState([]);
   const [ingredients, setIngredients] = React.useState([]);
   const [inputName, setInputName] = React.useState('');
   const [inputWeight, setInputWeight] = React.useState('');
   const [unit, setUnit] = React.useState('');
   const [system, setSystem] = React.useState('metric');
-  const [fileName, setFileName] = React.useState('Select Image');
+  const [fileName, setFileName] =
+    React.useState('Select Image (jpeg | png | jpg)');
+  const [imageData, setImageData] = React.useState('');
   // States to handle input errors
   // Error on blank input name
   const [errorN, setErrorN] = React.useState(false);
@@ -60,8 +70,7 @@ function AddMealDialog(props) {
   // Error on duplicate input name
   const [errorSameN, setErrorSameN] = React.useState(false);
   const [errorU, setErrorU] = React.useState(false); // Error on blank unit
-  // Error on image selection
-  const [typographyColor, setTypographyColor] = React.useState('black');
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   /**
    * Return an array with only the name of ingredients
@@ -143,24 +152,109 @@ function AddMealDialog(props) {
     setIngredients(newIngredients);
   };
 
+  /**
+   * Return the base64 encoding of the uploaded image
+   * @param {Event} e
+   * @return {Promise}
+  **/
+  async function readFileDataAsBase64(e) {
+    const file = e.target.files[0];
+
+    await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            resolve(event.target.result);
+        };
+
+        reader.onerror = (err) => {
+            reject(err);
+        };
+
+        reader.readAsDataURL(file);
+    }).then((file) => (setImageData(file)));
+  }
+
+  // Handle the image upload
   const handleCapture = (event) => {
-    /* setSelectedFile(URL.createObjectURL(event.target.files[0])); */
+    console.log(event.target.files[0]);
     const imageName = event.target.files[0].name;
-    if (imageName.toUpperCase().endsWith('.JPEG') ||
-      imageName.toUpperCase().endsWith('.JPG') ||
-      imageName.toUpperCase().endsWith('.PNG')) {
-      setFileName(imageName);
-      setTypographyColor('black');
-    } else {
-      setFileName('Format accepted: jpeg | jpg | png');
-      setTypographyColor('#b55f1e');
-    }
+    setFileName(imageName);
+    readFileDataAsBase64(event);
   };
 
-  const addRecipe = () => {
-    console.log('Recipe: ' + recipeName);
-    console.log('ImageURL: ' + fileName);
-    console.log(ingredients);
+  const removeImage = () => {
+    setFileName('Select Image (jpeg | png | jpg)');
+    setImageData('');
+  };
+
+  const changeDiet = (event) => {
+    const {
+      target: {value},
+    } = event;
+    setDietList(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  /**
+   * Format the ingredient list as backend require
+   * @param {Array} ingredients
+   * @return {Array}
+  **/
+  function formatIngredients(ingredients) {
+    let resultArray = [];
+    ingredients.forEach(function(ingredient) {
+      const ing = [ingredient.name, ingredient.quantity, ingredient.unit];
+      resultArray = [...resultArray, ing];
+    });
+    return resultArray;
+  }
+
+  /**
+   * Check if user inputted a correct recipe
+   * @param {object} recipe
+   * @return {boolean}
+  **/
+  function recipeIsCorrect(recipe) {
+    return recipe.dishName !== '' && recipe.ingredients.length !== 0;
+  }
+
+  const addRecipe = (event) => {
+    // Initializing the dictionary
+    const recipe ={dishName: recipeName,
+                  ingredients: formatIngredients(ingredients),
+                  imageData: imageData,
+                  vegan: dietList.includes('Vegan') ? true : false,
+                  halal: dietList.includes('Halal') ? true : false,
+                  healthy: dietList.includes('Healthy') ? true : false,
+                  kosher: dietList.includes('Kosher') ? true : false,
+                };
+    console.log(recipe);
+    console.log(JSON.stringify(recipe));
+
+    if (recipeIsCorrect(recipe)) {// call the API
+      // Retrieve the token
+      const item = localStorage.getItem('user');
+      const person = JSON.parse(item);
+      const bearerToken = person ? person.accessToken : '';
+
+      // Call the API
+      fetch(`http://localhost:3010/v0/recipes`, {
+      method: 'POST',
+      body: JSON.stringify(recipe),
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        }),
+      });
+      setAddMeal(false);
+      setErrorMessage('');
+    } else { // Error handling
+      setErrorMessage('! You need to insert a title and at least one ingredient !');
+    }
   };
 
   return (
@@ -180,22 +274,44 @@ function AddMealDialog(props) {
         <DialogContent className='aliceBlueBack'>
           <DialogContentText>
             You can add your own recipe adding a title,
-            ingredients and an optional URL image.
+            ingredients, diets and an optional URL image.<br/>
+            <Typography style={{color: 'red'}}>{errorMessage}</Typography>
           </DialogContentText>
-          <Grid container component="main" direction="row">
-            <Grid item xs={12} md={6}>
+          <Grid container component="main" direction="row" spacing={2}>
+            <Grid item xs={12} md={5}>
               <TextField
                 fullWidth
                 label="Name of Recipe"
                 variant='outlined'
-                required
                 margin='normal'
                 onChange={changeRecipeName}
                 className='greyBack'
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl sx={{mt: 2, ml: 2}}>
+            <Grid item xs={6} md={3}>
+              <FormControl fullWidth sx={{mt: 2}}>
+                <InputLabel>Diets</InputLabel>
+                <Select
+                  label='Diet'
+                  className='greyBack'
+                  multiple
+                  onChange={changeDiet}
+                  value={dietList}
+                  renderValue={(selected) => selected.join(', ')}
+                >
+                  {diets.map((diet) => (
+                    <MenuItem
+                      value={diet}
+                      key={diet}>
+                      <Checkbox checked={dietList.indexOf(diet) > -1}/>
+                      <ListItemText primary={diet} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <FormControl sx={{mt: 2}}>
                 <FormLabel id="radio-label">System</FormLabel>
                 <RadioGroup
                   row
@@ -210,7 +326,7 @@ function AddMealDialog(props) {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={11}>
+            <Grid item xs={9}>
               <TextField
                 fullWidth
                 variant='outlined'
@@ -220,7 +336,7 @@ function AddMealDialog(props) {
                 className='greyBack'
                 sx={{
                   '& .MuiInputBase-input.Mui-disabled': {
-                    WebkitTextFillColor: typographyColor,
+                    WebkitTextFillColor: 'black',
                   },
                 }}
               />
@@ -229,16 +345,28 @@ function AddMealDialog(props) {
               <IconButton
                 component="label"
                 variant="outlined"
-                size='large'
-                sx={{mt: 1}}
+                size="large"
+                sx={{mt: 2}}
               >
                 <AddPhotoAlternateRoundedIcon fontSize='large'
                   className='brownColor'/>
                 <input
                   type="file"
                   hidden
+                  accept='.jpeg, .jpg, .png'
                   onChange={handleCapture}
                 />
+              </IconButton>
+            </Grid>
+            <Grid item xs={2}>
+              <IconButton
+                component="label"
+                variant="outlined"
+                size="large"
+                onClick={removeImage}
+                sx={{mt: 2}}>
+                  <HighlightOffIcon fontSize="large"
+                    className="brownColor"/>
               </IconButton>
             </Grid>
             <Grid item xs={12} md={7}>
@@ -255,7 +383,7 @@ function AddMealDialog(props) {
                 className='greyBack'
               />
             </Grid>
-            <Grid item xs={11} md={4}>
+            <Grid item xs={5} md={3}>
               <FormControl
                 sx={{mt: 2, mb: 2, mr: 2, maxWidth: 80}}
                 variant="outlined">
@@ -275,7 +403,7 @@ function AddMealDialog(props) {
                 </FormHelperText>
               </FormControl>
               <FormControl>
-                <Select sx={{mt: 2, maxWidth: '70px'}}
+                <Select sx={{mt: 2, maxWidth: '80px'}}
                   aria-describedby="select-text"
                   error={errorU}
                   value={unit}
@@ -289,7 +417,7 @@ function AddMealDialog(props) {
                 <FormHelperText id="select-text">Unit</FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={7} md={2}>
               <IconButton
                 variant="outlined"
                 sx={{mt: 2}}
@@ -305,7 +433,7 @@ function AddMealDialog(props) {
                 backgroundColor: '#f3f1fa'}}>
                 <List>
                   {ingredients.map((ingredient) => (
-                    <ListItem alignItems='center' key={ingredient}>
+                    <ListItem alignItems='center' key={ingredient.name}>
                       {/* The Grid is used the components
                        of a sigle list item */}
                       <Grid container spacing={2} component="main"

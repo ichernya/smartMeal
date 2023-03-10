@@ -374,6 +374,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /ingredients:
+    get:
+      description: returns food group
+      parameters:
+        - name: ingredient
+          in: query
+          schema:
+            type: string
+          required: true
+          description: ingredient name
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingredientList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Error:
@@ -416,8 +440,8 @@ components:
 
     recipesPost:
       properties:
-        recipeid:
-          type: integer
+#        recipeid:
+#          type: integer
         dishname:
           type: string
         ingredients:
@@ -444,24 +468,24 @@ components:
       properties:
         recipeid:
           type: integer
-        dishname:
-          type: string
-        ingredients:
-          type: object
-          items:
-            type: string
-        ingredientAm:
-          type: integer
-        imageData:
-          type: string
-        vegan:
-          type: boolean
-        halal:
-          type: boolean
-        healthy:
-          type: boolean
-        kosher:
-          type: boolean
+#        dishname:
+#          type: string
+#        ingredients:
+#          type: object
+#          items:
+#            type: string
+#        ingredientAm:
+#          type: integer
+#        imageData:
+#          type: string
+#        vegan:
+#          type: boolean
+#        halal:
+#          type: boolean
+#        healthy:
+#          type: boolean
+#        kosher:
+#          type: boolean
 
     putMealToUser:
       properties:
@@ -552,6 +576,14 @@ components:
     tags:
       type: object
 
+    ingredientList:
+      items:
+        $ref: '#/components/schemas/ingredients'
+
+    ingredients:
+      properties:
+        name:
+          type: string
 
 
 
