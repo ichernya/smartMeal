@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import {useNavigate} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import {useDimensions} from '../DimensionsProvider.jsx';
 import {styled, alpha} from '@mui/material/styles';
@@ -22,7 +23,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 
-
+import parsePlanData from '../parser.jsx';
+import {useMeals} from '../MealContextProvider.jsx';
 import './ViewPlans.css';
 
 
@@ -68,11 +70,22 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 
 
 // Query for meal plans based on a search query
-const searchPlans = (query, setPlans) => {
+const searchPlans = (query, setPlans, publicMeals) => {
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
-  fetch(`http://localhost:3010/v0/publicMeal?mealName=${query}`, {
+  const userId = user ? user.userid : '';
+
+  let endpoint = `http://localhost:3010/v0/publicMeal?public=${publicMeals}`;
+  if (!publicMeals) {
+    endpoint += `&mealsid=${userId}`;
+  }
+
+  if (query) {
+    endpoint += `&mealName=${query}`;
+  }
+
+  fetch(endpoint, {
     method: 'get',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -88,8 +101,7 @@ const searchPlans = (query, setPlans) => {
 };
 
 // Grabs all the images for a day
-function grabImages(data) {
-  console.log(data);
+const grabImages = (data) => {
   const images = [];
   if (!data['mealweek']) {
     // Should never happen ideally
@@ -105,7 +117,72 @@ function grabImages(data) {
     }
   }
   return images;
-}
+};
+
+// Replaces the user's current plan with the chosen plan
+const updateCurrentPlan = (data, firstDay) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+
+  const startDay = new Date(firstDay);
+  const startIso = startDay.toISOString().split('T')[0];
+
+  // First day of the week of the plan we're copying
+  const firstCopyDay = (new Date(data['firstday'])).getDate();
+
+  for (const [day, meals] of Object.entries(data['mealweek'])) {
+    if (day === 'id') {
+      continue;
+    }
+
+    // day of the week of the plan we're copying
+    const currentCopyDay = (new Date(day)).getDate();
+    const dayOffset = currentCopyDay - firstCopyDay;
+
+    // updated data in the formatted needed by backend
+    const update = {
+      'breakfast': '0',
+      'lunch': '0',
+      'dinner': '0',
+    };
+
+    for (const [time, meal] of Object.entries(meals)) {
+      update[time] = `${meal['recipeid']}`;
+    }
+
+    // format the changes in the format needed for backend
+    const bodyStringified =
+      `{'breakfast': '${update['breakfast']}', ` +
+      `'lunch': '${update['lunch']}', ` +
+      `'dinner': '${update['dinner']}'}`;
+
+    const setDateOffset = new Date(firstDay);
+    setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
+
+    const body = {
+      'mealsid': userId,
+      'dayof': `{${setDateOffset.toISOString().split('T')[0]}}`,
+      'firstDay': startIso,
+      'changes': bodyStringified,
+    };
+
+    fetch(`http://localhost:3010/v0/meals`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }),
+    }).then((json) => console.log(json));
+  }
+};
 
 
 /**
@@ -184,6 +261,8 @@ function TablePaginationActions(props) {
  */
 function ViewMeals(props) {
   const {width} = useDimensions();
+  const {setPlan, startWeek} = useMeals();
+  const history = useNavigate();
   // Represents what page the user is on
   const [page, setPage] = React.useState(0);
   // Represents what the user searched for
@@ -194,283 +273,24 @@ function ViewMeals(props) {
   const [publicMeals, setPublic] = React.useState(true);
   // imgs is the list of recipes for the plan
   // data is the meal plan data to send back to calendar
-  // TODO should be a db query
-  const dd =
-      [
-        {
-          'firstday': '2023-02-19',
-          'mealname': 'Test Meal',
-          'public': true,
-          'mealweek': {
-            'id': '1',
-            '2023-02-19': {
-              'lunch': {
-                'recipeid': 2,
-                'dishname': 'Chicken Parmesan',
-                'ingredients': [
-                  'Chicken Breast',
-                  'Parmesan',
-                  'Pasta',
-                  'Butter',
-                ],
-                'ingredientam': 4,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': true,
-                'kosher': true,
-              },
-              'dinner': {
-                'recipeid': 3,
-                'dishname': 'Cheeseburger',
-                'ingredients': [
-                  'Beef Patty',
-                  'Buns',
-                  'American Cheddar',
-                  'Lettuce',
-                  'Pickels',
-                  'Mayonaise',
-                  'Ketchup',
-                ],
-                'ingredientam': 7,
-                'imagedata': '/backend/images/cheeseburger.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'breakfast': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-            },
-            '2023-02-20': {
-              'lunch': {
-                'recipeid': 3,
-                'dishname': 'Cheeseburger',
-                'ingredients': [
-                  'Beef Patty',
-                  'Buns',
-                  'American Cheddar',
-                  'Lettuce',
-                  'Pickels',
-                  'Mayonaise',
-                  'Ketchup',
-                ],
-                'ingredientam': 7,
-                'imagedata': '/backend/images/cheeseburger.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'dinner': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'breakfast': {
-                'recipeid': 2,
-                'dishname': 'Chicken Parmesan',
-                'ingredients': [
-                  'Chicken Breast',
-                  'Parmesan',
-                  'Pasta',
-                  'Butter',
-                ],
-                'ingredientam': 4,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': true,
-                'kosher': true,
-              },
-            },
-            '2023-02-21': {
-              'lunch': {
-                'recipeid': 3,
-                'dishname': 'Cheeseburger',
-                'ingredients': [
-                  'Beef Patty',
-                  'Buns',
-                  'American Cheddar',
-                  'Lettuce',
-                  'Pickels',
-                  'Mayonaise',
-                  'Ketchup',
-                ],
-                'ingredientam': 7,
-                'imagedata': '/backend/images/cheeseburger.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'dinner': {
-                'recipeid': 4,
-                'dishname': 'Pepperoni Pizza',
-                'ingredients': [
-                  'Pizza Dough',
-                  'Pepperoni',
-                  'Mozzarella Cheese',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': false,
-                'healthy': false,
-                'kosher': false,
-              },
-              'breakfast': {
-                'recipeid': 2,
-                'dishname': 'Chicken Parmesan',
-                'ingredients': [
-                  'Chicken Breast',
-                  'Parmesan',
-                  'Pasta',
-                  'Butter',
-                ],
-                'ingredientam': 4,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': true,
-                'kosher': true,
-              },
-            },
-            '2023-02-22': {
-              'lunch': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'dinner': {
-                'recipeid': 4,
-                'dishname': 'Pepperoni Pizza',
-                'ingredients': [
-                  'Pizza Dough',
-                  'Pepperoni',
-                  'Mozzarella Cheese',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': false,
-                'healthy': false,
-                'kosher': false,
-              },
-              'breakfast': {
-                'recipeid': 2,
-                'dishname': 'Chicken Parmesan',
-                'ingredients': [
-                  'Chicken Breast',
-                  'Parmesan',
-                  'Pasta',
-                  'Butter',
-                ],
-                'ingredientam': 4,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': true,
-                'kosher': true,
-              },
-            },
-            '2023-02-23': {
-              'lunch': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'dinner': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-              'breakfast': {
-                'recipeid': 1,
-                'dishname': 'Mushroom Poppers',
-                'ingredients': [
-                  'Baby Bella Mushrooms',
-                  'Cheese',
-                  'Jalepeno',
-                ],
-                'ingredientam': 3,
-                'imagedata': '/test.png',
-                'vegan': false,
-                'halal': true,
-                'healthy': false,
-                'kosher': true,
-              },
-            },
-          },
-        },
-      ];
-
-
-  const [list, setList] = React.useState(dd ? dd : []);
+  const [list, setList] = React.useState([]);
 
   React.useEffect(() => {
-    if (mealSearch) {
-      searchPlans(mealSearch, setList);
-    }
-  }, [mealSearch]);
+    searchPlans(mealSearch, setList, publicMeals);
+  }, [mealSearch, publicMeals]);
 
   // Update search bar query
   const searchInput = (event) => {
     const {value} = event.target;
     setMealSearch(value);
+    // TODO
+    // searchPlans(value, setList, publicMeals);
+  };
+
+  const clearSearch = () => {
+    setMealSearch('');
+    // TODO
+    // searchPlans('', setList, publicMeals);
   };
 
   React.useEffect(() => {
@@ -498,15 +318,14 @@ function ViewMeals(props) {
   const changeView = () => {
     setPublic(!publicMeals);
     // TODO
-    if (!publicMeals) {
-      // View only user specific meals
-      setList(list);
-    } else {
-      // View all meal plans
-      setList(list);
-    }
+    // searchPlans(mealSearch, setList, !publicMeals);
   };
 
+  const onSelectPlan = (data) => {
+    parsePlanData(setPlan, data);
+    updateCurrentPlan(data, startWeek);
+    history('/home');
+  };
 
   return (
     <Box
@@ -545,7 +364,7 @@ function ViewMeals(props) {
               <SearchIcon />
             </SearchIconWrapper>
             <IconButton
-              onClick={() => setMealSearch('')}
+              onClick={clearSearch}
               id='cancelSearch'
               sx={{
                 visibility: !mealSearch ? 'hidden' : '',
@@ -575,143 +394,145 @@ function ViewMeals(props) {
           />
         </Toolbar>
         <div>
-          {list && list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
-            .map((_, index) => {
-              let meal1 = list[(index * 2) + (page * (mealsPerPage * 2))];
-              const meal2 = list[(index * 2) + 1 + (page * (mealsPerPage * 2))];
-              if (width < 800) {
-                meal1 = list[index + (page * mealsPerPage)];
-              }
-              if (!meal1 && !meal2) {
-                return <div key={meal1 + meal2 + index.toString()}/>;
-              }
-              return (
-                <Grid container
-                  className='planRow aliceBlueBack'
-                  columns={12}
-                  key={meal1 + meal2 + index.toString()}
-                >
-                  <Grid item xs={2.75} sm={1.25}>
-                    <Typography
-                      variant='h6'
-                      className='planName'
+          {list &&
+            list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
+              .map((_, index) => {
+                let meal1 = list[(index * 2) + (page * (mealsPerPage * 2))];
+                const meal2 =
+                  list[(index * 2) + 1 + (page * (mealsPerPage * 2))];
+                if (width < 800) {
+                  meal1 = list[index + (page * mealsPerPage)];
+                }
+                if (!meal1 && !meal2) {
+                  return <div key={meal1 + meal2 + index.toString()}/>;
+                }
+                return (
+                  <Grid container
+                    className='planRow aliceBlueBack'
+                    columns={12}
+                    key={meal1 + meal2 + index.toString()}
+                  >
+                    <Grid item xs={2.75} sm={1.25}>
+                      <div className='planName'>
+                        {meal1['mealname']}
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={1.25}
+                      sm={0.75}
+                      className='copy'
                     >
-                      {meal1['mealname']}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={1.25}
-                    sm={0.75}
-                    className='copy'
-                  >
-                    <IconButton className='copy'>
-                      <ContentPasteIcon/>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={8}
-                    sm={4}
-                    className='colDivider'
-                    style={{
-                      paddingRight: (width < 800 ? '' : '27px'),
-                    }}
-                  >
-                    <ImageList
-                      className='menu planView'
+                      <IconButton
+                        className='copy'
+                        onClick={() => onSelectPlan(meal1)}
+                      >
+                        <ContentPasteIcon/>
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={8}
+                      sm={4}
+                      className='colDivider'
+                      style={{
+                        paddingRight: (width < 800 ? '' : '27px'),
+                      }}
                     >
-                      {grabImages(meal1)
-                        .map((img, ind) => {
-                          return (
-                            <ImageListItem
-                              key={img + ind.toString()}
-                              className='margins'
-                            >
-                              <img
-                                src={`${img}w=248&fit=crop&auto=format`}
-                                srcSet={
-                                  `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                }
-                                loading="lazy"
-                                alt={`img${ind.toString()}`}
-                                style={{
-                                  width: `100px`,
-                                  height: `100px`,
-                                }}
-                              />
-                            </ImageListItem>
-                          );
-                        })}
-                    </ImageList>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={1.25}
-                    style={{
-                      display: (width < 800 || !meal2) ? 'none' : '',
-                    }}
-                  >
-                    <Typography
-                      variant='h6'
-                      className='planName'
+                      <ImageList
+                        className='menu planView'
+                      >
+                        {grabImages(meal1)
+                          .map((img, ind) => {
+                            return (
+                              <ImageListItem
+                                key={img + ind.toString()}
+                                className='margins'
+                              >
+                                <img
+                                  src={`${img}w=248&fit=crop&auto=format`}
+                                  srcSet={
+                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                                  }
+                                  loading="lazy"
+                                  alt={`img${ind.toString()}`}
+                                  style={{
+                                    width: `100px`,
+                                    height: `100px`,
+                                  }}
+                                />
+                              </ImageListItem>
+                            );
+                          })}
+                      </ImageList>
+                    </Grid>
+                    <Grid
+                      item
+                      sm={1.25}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
                     >
-                      {meal2 && meal2['mealname']}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={0.75}
-                    style={{
-                      display: (width < 800 || !meal2) ? 'none' : '',
-                    }}
-                    className='copy'
-                  >
-                    <IconButton className='copy'>
-                      <ContentPasteIcon/>
-                    </IconButton>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={4}
-                    style={{
-                      display: (width < 800 || !meal2) ? 'none' : '',
-                    }}
-                    id='imagesPadding'
-                  >
-                    <ImageList
-                      className='menu planView'
+                      <div className='planName'>
+                        {meal2 && meal2['mealname']}
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={0.75}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
+                      className='copy'
                     >
-                      {meal2 ? (grabImages(meal2)
-                        .map((img, ind) => {
-                          return (
-                            <ImageListItem
-                              key={img + '2' + ind.toString()}
-                              className='margins'
-                            >
-                              <img
-                                src={`${img}w=248&fit=crop&auto=format`}
-                                srcSet={
-                                  `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                }
-                                alt={img + ind.toString()}
-                                loading="lazy"
-                                style={{
-                                  width: `100px`,
-                                  height: `100px`,
-                                }}
-                              />
-                            </ImageListItem>
-                          );
-                        })) :
-                        <div/>
-                      }
+                      <IconButton
+                        className='copy'
+                        onClick={() => onSelectPlan(meal2)}
+                      >
+                        <ContentPasteIcon/>
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item
+                      sm={4}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
+                      id='imagesPadding'
+                    >
+                      <ImageList
+                        className='menu planView'
+                      >
+                        {meal2 ? (grabImages(meal2)
+                          .map((img, ind) => {
+                            return (
+                              <ImageListItem
+                                key={img + '2' + ind.toString()}
+                                className='margins'
+                              >
+                                <img
+                                  src={`${img}w=248&fit=crop&auto=format`}
+                                  srcSet={
+                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                                  }
+                                  alt={`img${ind.toString()}`}
+                                  loading="lazy"
+                                  style={{
+                                    width: `100px`,
+                                    height: `100px`,
+                                  }}
+                                />
+                              </ImageListItem>
+                            );
+                          })) :
+                          <div/>
+                        }
 
-                    </ImageList>
+                      </ImageList>
+                    </Grid>
                   </Grid>
-                </Grid>
-              );
-            })}
+                );
+              })}
         </div>
         <TablePagination
           className='aliceBlueBack'

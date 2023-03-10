@@ -22,6 +22,35 @@ const names = {
   },
 };
 
+// Updates the name of the meal plan in the backend
+const saveUpdatedName = (name, startDay) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+
+  const body = {
+    'firstday': startDay.toISOString().split('T')[0],
+    'mealsid': userId,
+    'mealName': name,
+  };
+
+  fetch(`http://localhost:3010/v0/mealName`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
+
+
 /**
  * Represents the homepage
  * @param {Object} props
@@ -48,7 +77,8 @@ function Homepage(props) {
     {'Oliver Hansen': 'yes', 'Van Henry': 'yes', 'Kelly Snyder': 'yes'},
   );
   // Represents the weekly meal plans name
-  const [planName, setName] = React.useState((mealPlan && mealPlan['mealname']) || null);
+  const [planName, setName] =
+    React.useState((mealPlan && mealPlan['mealname']) || null);
   // Represents whether the user is currently editing the name
   const [changeName, setChangeName] = React.useState(false);
   // Represents whether to display the add meal dialog
@@ -70,7 +100,7 @@ function Homepage(props) {
     } else if (mealPlan && mealPlan['mealname'] !== planName) {
       setName(mealPlan['mealname']);
     }
-  }, [mealPlan]);
+  }, [mealPlan, WEEK, planName]);
 
   React.useEffect(() => {
     cardSize.current = width >= 1200 ? (width * .11) : 175;
@@ -93,7 +123,7 @@ function Homepage(props) {
       if (planName === '') {
         setName(WEEK);
       }
-      // TODO post request with new meal name
+      saveUpdatedName(planName, startWeek);
     }
   };
 

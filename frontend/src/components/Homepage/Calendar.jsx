@@ -19,94 +19,6 @@ const Item = styled(Paper)(({theme}) => ({
   color: theme.palette.text.secondary,
 }));
 
-
-// Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (setMeal, startWeek) => {
-  const item = localStorage.getItem('user');
-  const person = JSON.parse(item);
-  const bearerToken = person ? person.accessToken : '';
-  const userId = person ? person.userid : '';
-  const start = startWeek.toISOString().split('T')[0];
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
-  fetch(
-    `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
-      method: 'get',
-      headers: new Headers({
-        'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      const data = json[0]['mealweek'];
-      const mealPlan = {'mealname': data['mealname']};
-      const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
-      const TIMES = ['breakfast', 'lunch', 'dinner'];
-
-      const defaultMeal = {
-        'recipeid': 0,
-        'dishname': '',
-        'ingredients': [
-        ],
-        'ingredientam': 0,
-        'imagedata': '',
-        'vegan': false,
-        'halal': false,
-        'healthy': false,
-        'kosher': false,
-      };
-
-      const defaultDay = [
-        // Breakfast
-        {...defaultMeal},
-        // Lunch
-        {...defaultMeal},
-        // Dinner
-        {...defaultMeal},
-      ];
-
-      // Represents the current day I'm getting the meal data for
-      const startDate = new Date(startWeek);
-
-
-      for (const weekday of daysOfWeek) {
-        const dateIso = startDate.toISOString().split('T')[0];
-
-        const mealsForDay = data[dateIso];
-
-        if (mealsForDay) {
-          // User has data for this day
-          mealPlan[weekday] = [];
-          for (const time of TIMES) {
-            if (mealsForDay[time]) {
-              // User has meal for the specific time of day
-              // breakfast, lunch, dinner
-              mealPlan[weekday].push({...mealsForDay[time]});
-            } else {
-              // User doesnt have a meal for the specific time of day
-              mealPlan[weekday].push({...defaultMeal});
-            }
-          }
-        } else {
-          // User does not have a meal plan for the day
-          // they get the default day meal plan
-          mealPlan[weekday] = [...defaultDay];
-        }
-
-        // Increment to the next day of the week
-        startDate.setDate(startDate.getDate() + 1);
-      }
-      console.log(mealPlan);
-
-      setMeal(mealPlan);
-    });
-};
-
 // Adds a meal to the week
 const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const item = localStorage.getItem('user');
@@ -213,7 +125,10 @@ function Calendar(props) {
       style={{visibility: (mealPlan ? '' : 'hidden')}}
     >
       {daysOfWeek.map((day, weekday) =>
-        <div className='card margins greyBack' key={day}>
+        <div
+          className='card margins greyBack'
+          key={day}
+        >
           <Grid
             item
             xs={6}
