@@ -5,6 +5,7 @@ import {Toolbar} from '@mui/material';
 import CheckListElement from './CheckList/CheckListElements.jsx';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 
+import {useMeals} from './MealContextProvider.jsx';
 import './Sidebar/SideBar.css';
 import './colors.css';
 const theme = createTheme({
@@ -24,15 +25,7 @@ const theme = createTheme({
  * @return {object}
  */
 function ChecklistPage() {
-  const currentDay = new Date();
-  const dateOffset = currentDay.getDay();
-  const startWeek = new Date();
-  startWeek.setDate(currentDay.getDate() - dateOffset);
-  const endWeek = new Date();
-  endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
-  const WEEK = `Week: ${startWeek.getMonth() + 1}` +
-    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
-    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+  const {WEEK} = useMeals();
 
   return (
     <ThemeProvider theme={theme}>

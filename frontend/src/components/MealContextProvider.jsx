@@ -1,6 +1,36 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 
+import parsePlanData from './parser.jsx';
+
 const MealsContext = createContext();
+
+// Queries the database for the meals the user has chosen for the week
+const getMealsForWeek = (setMeal, startWeek) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+  const start = startWeek.toISOString().split('T')[0];
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+  fetch(
+    `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      parsePlanData(setMeal, json[0]);
+    });
+};
+
 
 const testIngredientList = {
   'Protein': {
@@ -97,49 +127,26 @@ const testMeal1 = {
   'kosher': true,
 };
 
-const weekMealData = {
-  'id': '1',
-  'amount': 6,
-  '2023-02-19': {
-    'breakfast': {...testMeal, 'id': 1},
-    'lunch': {...testMeal, 'id': 2},
-    'dinner': {...testMeal1, 'id': 3},
-  },
-  '2023-02-20': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-21': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-22': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-23': {
-    'breakfast': {...testMeal, 'id': 13},
-    'lunch': {...testMeal, 'id': 14},
-    'dinner': {},
-  },
-  '2023-02-25': {
-    'breakfast': {...testMeal1, 'id': 17},
-    'lunch': {},
-    'dinner': {},
-  },
-  '2023-02-26': {
-    'breakfast': {},
-    'lunch': {},
-    'dinner': {},
-  },
-};
-
 export const MealsProvider = ({children}) => {
+  // calculates the start and end of the week
+  const currentDay = new Date();
+  const dateOffset = currentDay.getDay();
+  const startWeek = new Date();
+  startWeek.setDate(currentDay.getDate() - dateOffset);
+  const endWeek = new Date();
+  endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
+  const WEEK = `Week: ${startWeek.getMonth() + 1}` +
+    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
+    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+
+  const [mealPlan, setPlan] = React.useState(null);
+
+  useEffect(() => {
+    // Grab the meals for the week when loading the page
+    getMealsForWeek(setPlan, startWeek);
+  }, []);
+
   const [ingredientList, setIngredientList] = useState({});
-  const [meals, setMeals] = useState({});
   const [mealsWithIngredient, setMealsWithIngredient] = useState([]);
   const [alteratives, setAlteratives] = useState({});
   const [isChosenIngredient, setChosenIngredient] = useState(
@@ -154,16 +161,15 @@ export const MealsProvider = ({children}) => {
   useEffect(() => {
     setIngredientList(testIngredientList);
   }, []);
-  useEffect(() => {
-    setMeals(weekMealData);
-  }, []);
+
   return (
     <MealsContext.Provider value={{
       ingredientList, setIngredientList,
       isChosenIngredient, setChosenIngredient,
       alteratives, setAlteratives,
-      meals, setMeals,
+      mealPlan, setPlan,
       mealsWithIngredient, setMealsWithIngredient,
+      WEEK, startWeek,
     }}>
       {children}
     </MealsContext.Provider>

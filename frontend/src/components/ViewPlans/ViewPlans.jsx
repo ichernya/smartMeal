@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import {useNavigate} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import {useDimensions} from '../DimensionsProvider.jsx';
 import {styled, alpha} from '@mui/material/styles';
@@ -20,19 +21,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputBase from '@mui/material/InputBase';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 
-
+import parsePlanData from '../parser.jsx';
+import {useMeals} from '../MealContextProvider.jsx';
 import './ViewPlans.css';
 
-
-const mealsthing = [
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-  require('../../assets/chicken.jpeg'),
-];
 
 const Search = styled('div')(({theme}) => ({
   'position': 'relative',
@@ -75,8 +69,124 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 }));
 
 
+// Query for meal plans based on a search query
+const searchPlans = (query, setPlans, publicMeals) => {
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+  const userId = user ? user.userid : '';
+
+  let endpoint = `http://localhost:3010/v0/publicMeal?public=${publicMeals}`;
+  if (!publicMeals) {
+    endpoint += `&mealsid=${userId}`;
+  }
+
+  if (query) {
+    endpoint += `&mealName=${query}`;
+  }
+
+  fetch(endpoint, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setPlans(json);
+    });
+};
+
+// Grabs all the images for a day
+const grabImages = (data) => {
+  const images = [];
+  if (!data['mealweek']) {
+    // Should never happen ideally
+    return;
+  }
+
+  for (const [key, day] of Object.entries(data['mealweek'])) {
+    if (key === 'id') {
+      continue;
+    }
+    for (const meal of Object.values(day)) {
+      images.push(meal['imagedata']);
+    }
+  }
+  return images;
+};
+
+// Replaces the user's current plan with the chosen plan
+const updateCurrentPlan = (data, firstDay) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+
+  const startDay = new Date(firstDay);
+  const startIso = startDay.toISOString().split('T')[0];
+
+  // First day of the week of the plan we're copying
+  const firstCopyDay = (new Date(data['firstday'])).getDate();
+
+  for (const [day, meals] of Object.entries(data['mealweek'])) {
+    if (day === 'id') {
+      continue;
+    }
+
+    // day of the week of the plan we're copying
+    const currentCopyDay = (new Date(day)).getDate();
+    const dayOffset = currentCopyDay - firstCopyDay;
+
+    // updated data in the formatted needed by backend
+    const update = {
+      'breakfast': '0',
+      'lunch': '0',
+      'dinner': '0',
+    };
+
+    for (const [time, meal] of Object.entries(meals)) {
+      update[time] = `${meal['recipeid']}`;
+    }
+
+    // format the changes in the format needed for backend
+    const bodyStringified =
+      `{'breakfast': '${update['breakfast']}', ` +
+      `'lunch': '${update['lunch']}', ` +
+      `'dinner': '${update['dinner']}'}`;
+
+    const setDateOffset = new Date(firstDay);
+    setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
+
+    const body = {
+      'mealsid': userId,
+      'dayof': `{${setDateOffset.toISOString().split('T')[0]}}`,
+      'firstDay': startIso,
+      'changes': bodyStringified,
+    };
+
+    fetch(`http://localhost:3010/v0/meals`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }),
+    }).then((json) => console.log(json));
+  }
+};
+
+
 /**
- * Represents the page list
+ * Represents the ability to change pages
  * @param {Object} props
  * @return {JSX} Jsx
  */
@@ -145,55 +255,53 @@ function TablePaginationActions(props) {
 }
 
 /**
- * Represents the list pages
+ * Represents meal plans
  * @param {Object} props
  * @return {JSX} Jsx
  */
 function ViewMeals(props) {
   const {width} = useDimensions();
+  const {setPlan, startWeek} = useMeals();
+  const history = useNavigate();
   // Represents what page the user is on
   const [page, setPage] = React.useState(0);
   // Represents what the user searched for
   const [mealSearch, setMealSearch] = React.useState('');
+  // User's choice for number of meals displayed per page
+  const [mealsPerPage, setMealsPerPage] = React.useState(5);
   // Represents whether to display user specific meals or all meals
-  const [privateMeals, setPrivate] = React.useState(false);
+  const [publicMeals, setPublic] = React.useState(true);
   // imgs is the list of recipes for the plan
   // data is the meal plan data to send back to calendar
-  // TODO should be a db query
-  const [list, setList] = React.useState([
-    {'name': 'name', 'imgs': mealsthing, 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-    {'name': 'name', 'imgs': mealsthing, 'data': ''},
-    {'name': 'suppper', 'imgs': mealsthing, 'data': ''},
-    {'name': 'thing', 'imgs': mealsthing, 'data': ''},
-    {'name': 'why', 'imgs': mealsthing.slice(0, 3), 'data': ''},
-  ]);
+  const [list, setList] = React.useState([]);
+
+  React.useEffect(() => {
+    searchPlans(mealSearch, setList, publicMeals);
+  }, [mealSearch, publicMeals]);
 
   // Update search bar query
   const searchInput = (event) => {
     const {value} = event.target;
     setMealSearch(value);
+    // TODO
+    // searchPlans(value, setList, publicMeals);
   };
 
-  // TODO remove
-  if (list != list) {
-    setList(list);
-  }
+  const clearSearch = () => {
+    setMealSearch('');
+    // TODO
+    // searchPlans('', setList, publicMeals);
+  };
 
   React.useEffect(() => {
     // Reset the page if the current page cant fit on the screen width
-    if (width >= 800 && (Math.ceil(list.length / 2) > page)) {
+    // if the current page is larger than the max page number for
+    // the screen width
+    if (width > 800 &&
+      Math.ceil(list.length / (width < 800 ? 1 : 2) / mealsPerPage) <= (page)) {
       setPage(0);
     }
-  }, [width, setPage]);
-
-  // User's choice for number of meals displayed per page
-  const [mealsPerPage, setMealsPerPage] = React.useState(5);
+  }, [width, setPage, mealsPerPage, page, list.length]);
 
   // Changing the number of meals displayed per page
   const handleChangeMealsPerPage = (event) => {
@@ -206,6 +314,18 @@ function ViewMeals(props) {
     setPage(newPage);
   };
 
+  // changes the meal plans in current view to user specific or all plans
+  const changeView = () => {
+    setPublic(!publicMeals);
+    // TODO
+    // searchPlans(mealSearch, setList, !publicMeals);
+  };
+
+  const onSelectPlan = (data) => {
+    parsePlanData(setPlan, data);
+    updateCurrentPlan(data, startWeek);
+    history('/home');
+  };
 
   return (
     <Box
@@ -230,16 +350,6 @@ function ViewMeals(props) {
           >
             numSelected selected
           </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={privateMeals}
-                onChange={() => setPrivate(!privateMeals)}
-                name="User's Meals"
-              />
-            }
-            label="User's Meals"
-          />
         </Toolbar>
         <Toolbar
           id='header'
@@ -254,7 +364,7 @@ function ViewMeals(props) {
               <SearchIcon />
             </SearchIconWrapper>
             <IconButton
-              onClick={() => setMealSearch('')}
+              onClick={clearSearch}
               id='cancelSearch'
               sx={{
                 visibility: !mealSearch ? 'hidden' : '',
@@ -270,133 +380,171 @@ function ViewMeals(props) {
               value={mealSearch}
             />
           </Search>
+          <FormControlLabel
+            id='privateToggle'
+            control={
+              <Switch
+                checked={publicMeals}
+                onChange={changeView}
+                name="Public Meals"
+              />
+            }
+            labelPlacement="top"
+            label="Public Meals"
+          />
         </Toolbar>
         <div>
-          {list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
-            .map((_, index) => {
-              let meal1 = list[(index * 2) + (page * (mealsPerPage * 2))];
-              const meal2 = list[(index * 2) + 1 + (page * (mealsPerPage * 2))];
-              if (width < 800) {
-                meal1 = list[index + (page * mealsPerPage)];
-              }
-              if (!meal1 && !meal2) {
-                return;
-              }
-              return (
-                <Grid container
-                  className='planRow aliceBlueBack'
-                  columns={12}
-                  key={meal1 + meal2 + index.toString()}
-                >
-                  <Grid item xs={4} sm={2}>
-                    <Typography
-                      variant='h6'
-                      className='planName'
-                    >
-                      {meal1['name']}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={8}
-                    sm={4}
-                    className='colDivider'
-                    style={{
-                      paddingRight: (width < 800 ? '' : '27px'),
-                    }}
+          {list &&
+            list.slice(page * mealsPerPage, page * mealsPerPage + mealsPerPage)
+              .map((_, index) => {
+                let meal1 = list[(index * 2) + (page * (mealsPerPage * 2))];
+                const meal2 =
+                  list[(index * 2) + 1 + (page * (mealsPerPage * 2))];
+                if (width < 800) {
+                  meal1 = list[index + (page * mealsPerPage)];
+                }
+                if (!meal1 && !meal2) {
+                  return <div key={meal1 + meal2 + index.toString()}/>;
+                }
+                return (
+                  <Grid container
+                    className='planRow aliceBlueBack'
+                    columns={12}
+                    key={meal1 + meal2 + index.toString()}
                   >
-                    <ImageList
-                      className='menu planView'
+                    <Grid item xs={2.75} sm={1.25}>
+                      <div className='planName'>
+                        {meal1['mealname']}
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={1.25}
+                      sm={0.75}
+                      className='copy'
                     >
-                      {meal1['imgs']
-                        .map((img, ind) => {
-                          return (
-                            <ImageListItem
-                              key={img + ind.toString()}
-                              className='margins'
-                            >
-                              <img
-                                src={`${img}w=248&fit=crop&auto=format`}
-                                srcSet={
-                                  `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                }
-                                loading="lazy"
-                                alt={img + ind.toString()}
-                                style={{
-                                  width: `100px`,
-                                  height: `100px`,
-                                }}
-                              />
-                            </ImageListItem>
-                          );
-                        })}
-                    </ImageList>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={2}
-                    style={{
-                      display: (width < 800 || !meal2) ? 'none' : '',
-                    }}
-                  >
-                    <Typography
-                      variant='h6'
-                      className='planName'
+                      <IconButton
+                        className='copy'
+                        onClick={() => onSelectPlan(meal1)}
+                      >
+                        <ContentPasteIcon/>
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={8}
+                      sm={4}
+                      className='colDivider'
+                      style={{
+                        paddingRight: (width < 800 ? '' : '27px'),
+                      }}
                     >
-                      {meal2 && meal2['name']}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={4}
-                    style={{
-                      display: (width < 800 || !meal2) ? 'none' : '',
-                    }}
-                    id='imagesPadding'
-                  >
-                    <ImageList
-                      className='menu planView'
+                      <ImageList
+                        className='menu planView'
+                      >
+                        {grabImages(meal1)
+                          .map((img, ind) => {
+                            return (
+                              <ImageListItem
+                                key={img + ind.toString()}
+                                className='margins'
+                              >
+                                <img
+                                  src={`${img}w=248&fit=crop&auto=format`}
+                                  srcSet={
+                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                                  }
+                                  loading="lazy"
+                                  alt={`img${ind.toString()}`}
+                                  style={{
+                                    width: `100px`,
+                                    height: `100px`,
+                                  }}
+                                />
+                              </ImageListItem>
+                            );
+                          })}
+                      </ImageList>
+                    </Grid>
+                    <Grid
+                      item
+                      sm={1.25}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
                     >
-                      {meal2 ? (meal2['imgs']
-                        .map((img, ind) => {
-                          return (
-                            <ImageListItem
-                              key={img + '2' + ind.toString()}
-                              className='margins'
-                            >
-                              <img
-                                src={`${img}w=248&fit=crop&auto=format`}
-                                srcSet={
-                                  `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                }
-                                alt={img + ind.toString()}
-                                loading="lazy"
-                                style={{
-                                  width: `100px`,
-                                  height: `100px`,
-                                }}
-                              />
-                            </ImageListItem>
-                          );
-                        })) :
-                        <div/>
-                      }
+                      <div className='planName'>
+                        {meal2 && meal2['mealname']}
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={0.75}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
+                      className='copy'
+                    >
+                      <IconButton
+                        className='copy'
+                        onClick={() => onSelectPlan(meal2)}
+                      >
+                        <ContentPasteIcon/>
+                      </IconButton>
+                    </Grid>
+                    <Grid
+                      item
+                      sm={4}
+                      style={{
+                        display: (width < 800 || !meal2) ? 'none' : '',
+                      }}
+                      id='imagesPadding'
+                    >
+                      <ImageList
+                        className='menu planView'
+                      >
+                        {meal2 ? (grabImages(meal2)
+                          .map((img, ind) => {
+                            return (
+                              <ImageListItem
+                                key={img + '2' + ind.toString()}
+                                className='margins'
+                              >
+                                <img
+                                  src={`${img}w=248&fit=crop&auto=format`}
+                                  srcSet={
+                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
+                                  }
+                                  alt={`img${ind.toString()}`}
+                                  loading="lazy"
+                                  style={{
+                                    width: `100px`,
+                                    height: `100px`,
+                                  }}
+                                />
+                              </ImageListItem>
+                            );
+                          })) :
+                          <div/>
+                        }
 
-                    </ImageList>
+                      </ImageList>
+                    </Grid>
                   </Grid>
-                </Grid>
-              );
-            })}
+                );
+              })}
         </div>
         <TablePagination
           className='aliceBlueBack'
           rowsPerPageOptions={
-            [5, 10, 25, {label: 'All', value: mealsthing.length}]
+            [5, 10, 25, {label: 'All', value: list.length}]
           }
           component='div'
           count={Math.ceil(list.length / (width < 800 ? 1 : 2))}
           rowsPerPage={mealsPerPage}
-          page={page}
+          page={(width > 800 &&
+            Math.ceil(list.length / (width < 800 ? 1 : 2) / mealsPerPage) <=
+            ((page))) ? 0 : page}
           onPageChange={pageChange}
           onRowsPerPageChange={handleChangeMealsPerPage}
           ActionsComponent={TablePaginationActions}

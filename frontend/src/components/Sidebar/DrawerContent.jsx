@@ -15,7 +15,11 @@ import {useNavigate, Link} from 'react-router-dom';
 import '../colors.css';
 import './DrawerContent.css';
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents what is in the sidebar component
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function DrawerContent(props) {
   const {settingsDialog, setSettings, open} =
     React.useContext(props['context']);

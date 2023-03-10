@@ -283,7 +283,7 @@ function AddMealDialog(props) {
                   className='greyBack'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                    <MenuItem value={unit}>{unit}</MenuItem>
+                    <MenuItem value={unit} key={unit}>{unit}</MenuItem>
                   ))}
                 </Select>
                 <FormHelperText id="select-text">Unit</FormHelperText>
@@ -305,7 +305,7 @@ function AddMealDialog(props) {
                 backgroundColor: '#f3f1fa'}}>
                 <List>
                   {ingredients.map((ingredient) => (
-                    <ListItem alignItems='center'>
+                    <ListItem alignItems='center' key={ingredient}>
                       {/* The Grid is used the components
                        of a sigle list item */}
                       <Grid container spacing={2} component="main"
