@@ -102,5 +102,5 @@ exports.postRecipe = async (req, res) => {
     const id = await postOneRecipe(newRecipe);
     newRecipe.recipeid = id;
     console.log(id, newRecipe.recipeid);
-    res.status(201).send(newRecipe);
+    res.status(201).json(newRecipe.recipeid);
 }
