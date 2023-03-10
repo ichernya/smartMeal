@@ -4,7 +4,6 @@ import {BrowserRouter, Route, Routes, Navigate, Outlet}
 import DimensionsProvider from './components/DimensionsProvider.jsx';
 import Login from './components/Login_Registration/Login.jsx';
 import Registration from './components/Login_Registration/Registration.jsx';
-import Error from './components/Page404.jsx';
 import HomeLayout from './components/HomeLayout.jsx';
 import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';

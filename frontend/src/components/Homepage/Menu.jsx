@@ -159,7 +159,7 @@ function Menu(props) {
                       .map((_, ind) => {
                         const item = recipes[(ind * 2) + index];
                         if (!item) {
-                          return <div/>;
+                          return <div key={ind + index}/>;
                         }
 
                         const image = item['imageData'] ? item['imageData'] :
@@ -168,7 +168,7 @@ function Menu(props) {
                           <ImageListItem
                             className='margins'
                             onClick={() => clickItem(item)}
-                            key={item['dishname'] + ind}
+                            key={item['dishname'] + ind + index}
                           >
                             <img
                               src={`${image}w=248&fit=crop&auto=format`}
