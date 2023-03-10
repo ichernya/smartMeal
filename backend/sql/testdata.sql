@@ -21,3 +21,6 @@ DELETE FROM substitutions;
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Whole Milk', '{"Skimmed Milk", "Fat Free Milk"}', '{"Almond Milk", "Soy Milk", "Oat Milk"}');
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Cheese', '{"Low Fat Cheese", "Fat Free Cheese"}', '{"Cashew Cheese", "Daiya Cheese"}');
 INSERT INTO substitutions(ingredient, tradeFor, veganAlternative) VALUES ('Beef', '{"Bison", "Lamb"}', '{"Tempeh"}');
+
+-- INSERT INTO ingredients (protein, dairy, vegetables, spices, grains) VALUES ('{"Chicken", "Pepperoni", "Beef"}', '{"Milk", "Cheddar Cheese", "Mozzarella Cheese"}', '{"Broccoli", "Cucumber", "Carrot"}', '{"Pepper", "Salt", "Garlic Powder"}', '{"Rice", "Wheat", "Oats"}');
+insert into ingredients (protein, dairy, vegetables, spices, grains) values ('{"protein", "Chicken", "Pepperoni", "Beef"}', '{"diary", "Milk", "Cheddar Cheese", "Mozzarella Cheese"}', '{"vegetables", "Broccoli", "Cucumber", "Carrot"}', '{"spices", "Pepper", "Salt", "Garlic Powder"}', '{"grains", "Rice", "Wheat", "Oats"}');
