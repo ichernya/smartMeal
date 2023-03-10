@@ -62,8 +62,9 @@ function DisplayElement() {
     const newChosenMeal = specificMealtoChange.meal;
     const ingredientElement =
     newChosenMeal.ingredients[isChosenIngredient.name];
-    console.log(newChosenMeal.ingredients);
+    console.log(newListElement.amount, ingredientElement.amount);
     newListElement.amount -= ingredientElement.amount;
+    console.log(newListElement);
     // CheckList update
     // If the amount in the checklist is 0
     if (newListElement.amount === 0) {
@@ -111,10 +112,6 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
-    console.log(mealsWithIngredient[activeStep].meal.dishname,
-      isChosenIngredient.name, selectedAlterative);
-    specificMeal.dishname = mealsWithIngredient[activeStep].meal.dishname
-      .replace(isChosenIngredient.name, selectedAlterative);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);

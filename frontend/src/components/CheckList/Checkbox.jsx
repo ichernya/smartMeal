@@ -54,7 +54,9 @@ const filterMealsForIngredients =
     // Look through the each day of the week that aren't empty
     .forEach((date) => {
       [0, 1, 2].forEach((timeOfDay) => {
-        if (mealPlan[date][timeOfDay].recipeid !== 0) {
+        if (mealPlan[date][timeOfDay].recipeid !== 0 &&
+          Object.keys(mealPlan[date][timeOfDay].ingredients)
+            .includes(myIngredient)) {
           mealsOfWithIng.push({'date': date, 'timeOfDay': timeOfDay,
             'meal': mealPlan[date][timeOfDay]});
         }
@@ -108,7 +110,7 @@ function IndeterminateCheckbox() {
       'name': myIngredient,
       'img': info.img,
       'pricePerUnitWeight': info.pricePerUnitWeight,
-      'quantity': info.quantity,
+      'amount': info.amount,
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
@@ -186,7 +188,7 @@ function IndeterminateCheckbox() {
                   onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
                   {ingredientList[category]['ingredients'][ingredient]
-                    .quantity}
+                    .amount}
                   {' '}
                   {ingredientList[category]['ingredients'][ingredient].unit}
                 </div>

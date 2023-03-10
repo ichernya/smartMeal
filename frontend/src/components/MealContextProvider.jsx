@@ -45,7 +45,7 @@ const testIngredientList = {
     'ingredients': {
       'Beef': {
         'checked': false,
-        'quantity': 65,
+        'amount': 65,
         'unit': 'Ton',
       },
     },
@@ -57,12 +57,12 @@ const testIngredientList = {
     'ingredients': {
       'Whole milk': {
         'checked': true,
-        'quantity': 33,
+        'amount': 33,
         'unit': 'liters',
       },
       'Cheese': {
         'checked': false,
-        'quantity': 22,
+        'amount': 22,
         'unit': 'Ton',
       },
     },
@@ -74,7 +74,7 @@ const testIngredientList = {
     'ingredients': {
       'Jalepeno': {
         'checked': false,
-        'quantity': 36,
+        'amount': 36,
         'unit': 'Ton',
       },
     },
@@ -109,7 +109,7 @@ export const MealsProvider = ({children}) => {
       'name': 'Pick an item from the list',
       'img': '',
       'pricePerUnitWeight': 'by clicking on the name of the item',
-      'quantity': '',
+      'amount': '',
       'category': '',
     },
   );
