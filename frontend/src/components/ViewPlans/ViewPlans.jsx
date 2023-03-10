@@ -71,6 +71,7 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 
 // Query for meal plans based on a search query
 const searchPlans = (query, setPlans, publicMeals) => {
+  console.log(query, publicMeals);
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
@@ -93,7 +94,12 @@ const searchPlans = (query, setPlans, publicMeals) => {
     }),
   })
     .then((response) => {
-      return response.json();
+      if (response['status'] === 404) {
+        // No meals that match the query
+        return [];
+      } else {
+        return response.json();
+      }
     })
     .then((json) => {
       setPlans(json);

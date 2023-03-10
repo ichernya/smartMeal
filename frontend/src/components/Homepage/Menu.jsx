@@ -159,11 +159,11 @@ function Menu(props) {
                       .map((_, ind) => {
                         const item = recipes[(ind * 2) + index];
                         if (!item) {
-                          return <div/>;
+                          return <div key={ind + index}/>;
                         }
 
                         const image = item['imageData'] ? item['imageData'] :
-                          require('../../assets/ass.png');
+                          require('../../assets/default.png');
                         return (
                           <ImageListItem
                             className='margins'

@@ -13,6 +13,24 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /diets:
+    get:
+      description: returns the available diet filters
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tags'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
   /switchOut:
     get:
       description: returns subsitutions given ingredient
@@ -530,6 +548,10 @@ components:
           type: integer
         mealName:
           type: string
+
+    tags:
+      type: object
+
 
 
 

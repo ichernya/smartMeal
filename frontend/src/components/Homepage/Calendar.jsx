@@ -164,7 +164,6 @@ function Calendar(props) {
                         <ImageListItemBar
                           title={times[ind]}
                           position='top'
-
                         />
                         <img
                           component="img"

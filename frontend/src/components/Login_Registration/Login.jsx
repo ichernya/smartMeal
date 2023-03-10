@@ -9,13 +9,16 @@ import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import BgImg from '../../assets/p1t.jpg';
 import {useNavigate} from 'react-router-dom';
+import {useMeals} from '../MealContextProvider.jsx';
 import './Login.css';
+
 
 /**
  * Login component
  * @return {object}
  */
 function Login() {
+  const {setLogin} = useMeals();
   // User input fields
   const [user, setUser] = React.useState({email: '', password: ''});
   // Represent if logged in
@@ -47,6 +50,7 @@ function Login() {
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
         localStorage.setItem('myKey_expiration', new Date().getTime() + 10000);
+        setLogin(true);
         history('/home');
       }).catch((err) => {
         setStatus(true);

@@ -13,13 +13,9 @@ import './Home.css';
 
 const HomeContext = React.createContext();
 const names = {
-  'tag1': {
-    'Oliver Hansen': 'yes',
-    'Van Henry': 'yes',
-  },
-  'tag2': {
-    'Kelly Snyder': 'yes',
-  },
+  'Oliver Hansen': 'yes',
+  'Van Henry': 'yes',
+  'Kelly Snyder': 'yes',
 };
 
 // Updates the name of the meal plan in the backend
@@ -34,7 +30,7 @@ const saveUpdatedName = (name, startDay) => {
   }
 
   const body = {
-    'firstday': startDay.toISOString().split('T')[0],
+    'firstDay': startDay.toISOString().split('T')[0],
     'mealsid': userId,
     'mealName': name,
   };
@@ -67,15 +63,6 @@ function Homepage(props) {
   const [search, setSearch] = React.useState('');
   // Represents whether the tags drawer is open or not
   const [tagsDrawer, setDrawer] = React.useState(false);
-  // Represents the filtered tags
-  // TODO query db for tags
-  // ideally, format will be
-  // { category :
-  //   {name: align}
-  // }
-  const [filters, setFilter] = React.useState(
-    {'Oliver Hansen': 'yes', 'Van Henry': 'yes', 'Kelly Snyder': 'yes'},
-  );
   // Represents the weekly meal plans name
   const [planName, setName] =
     React.useState((mealPlan && mealPlan['mealname']) || null);
@@ -93,7 +80,7 @@ function Homepage(props) {
     React.useState(names);
 
   React.useEffect(() => {
-    if (mealPlan && planName) {
+    if ((mealPlan && planName) || changeName) {
       // pass
     } else if (mealPlan && mealPlan['mealname'] === '' && planName !== WEEK) {
       setName(WEEK);
@@ -138,8 +125,7 @@ function Homepage(props) {
       value={{
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
-        filters, setFilter, alignments, setAlignment,
-        addMeal, setAddMeal,
+        alignments, setAlignment, addMeal, setAddMeal,
       }}
     >
       <div

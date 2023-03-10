@@ -139,12 +139,17 @@ export const MealsProvider = ({children}) => {
     `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
 
+
+  // Represents whether the user is logged in or not
+  const [loggedIn, setLogin] = React.useState(false);
+
+  // Represents the user's current meal plan
   const [mealPlan, setPlan] = React.useState(null);
 
   useEffect(() => {
     // Grab the meals for the week when loading the page
     getMealsForWeek(setPlan, startWeek);
-  }, []);
+  }, [loggedIn]);
 
   const [ingredientList, setIngredientList] = useState({});
   const [mealsWithIngredient, setMealsWithIngredient] = useState([]);
@@ -169,7 +174,7 @@ export const MealsProvider = ({children}) => {
       alteratives, setAlteratives,
       mealPlan, setPlan,
       mealsWithIngredient, setMealsWithIngredient,
-      WEEK, startWeek,
+      WEEK, startWeek, setLogin,
     }}>
       {children}
     </MealsContext.Provider>

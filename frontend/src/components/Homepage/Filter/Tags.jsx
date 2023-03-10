@@ -25,9 +25,10 @@ import './Tags.css';
  * @return {JSX} Jsx
  */
 function Toggles(props) {
-  const {alignments, setAlignment, name, setFilter, filters, category} = props;
+  const {alignments, setAlignment, name} = props;
 
-  const value = alignments[category][name];
+  // Current alignment
+  const value = alignments[name];
   const control = {
     value: value,
     exclusive: true,
@@ -35,19 +36,7 @@ function Toggles(props) {
 
   const updateTags = (name, newAlignment) => {
     if (newAlignment !== value) {
-      if (newAlignment === 'yes') {
-        setFilter({...filters, [name]: newAlignment});
-      } else {
-        const copy = {...filters};
-        delete copy[name];
-        setFilter(copy);
-      }
-      setAlignment(
-        {...alignments,
-          [category]: {...alignments[category],
-            [name]: newAlignment},
-        },
-      );
+      setAlignment({...alignments, [name]: newAlignment});
     }
   };
 
@@ -86,16 +75,11 @@ function Tags(props) {
   } = React.useContext(props['HomeContext']);
 
 
-  // Represents whether the category is hidden or not
-  // TODO should be a query to db later
-  const [categoryView, setView] = React.useState({
-    'tag1': true,
-    'tag2': true,
-  });
-
   const updateView = (category) => {
     // Swap the view
-    setView({...categoryView, [category]: !categoryView[category]});
+    const copy = [...alignments];
+    copy[category]['opened'] = !copy[category]['opened'];
+    setView(copy);
   };
 
   const toggleDrawer = (open) => (event) => {
@@ -111,18 +95,10 @@ function Tags(props) {
   };
 
   const setAllState = (choice) => {
-    const newFilters = {};
-
     const copyAlign = {...alignments};
-    for (const category of Object.keys(copyAlign)) {
-      for (const key of Object.keys(copyAlign[category])) {
-        if (choice === 'yes') {
-          newFilters[key] = 'yes';
-        }
-        copyAlign[category][key] = choice;
-      }
+    for (const key of Object.keys(copyAlign)) {
+      copyAlign[key] = choice;
     }
-    setFilter(newFilters);
     setAlignment(copyAlign);
   };
 
@@ -133,51 +109,32 @@ function Tags(props) {
       role="presentation"
       onKeyDown={toggleDrawer(false)}
     >
-      {Object.keys(categoryView).map((category) => {
-        const allTags = Object.keys(alignments[category]);
-        return (
-          <Grid container spacing={1} className='tagsRow' key={category}>
-            <Grid item className='category'>
-              {category}
-              <IconButton onClick={() => updateView(category)}>
-                {categoryView[category] ?
-                  <ExpandLessIcon/> :
-                  <ExpandMoreIcon/>
-                }
-              </IconButton>
+      <Grid
+        container
+        spacing={1}
+        className='tagsRow'
+      >
+        {Object.keys(alignments).map((name) => {
+          return (
+            <Grid container item spacing={0} key={name} className='row'>
+              <React.Fragment>
+                <Grid item xs={6}>
+                  {name}
+                </Grid>
+                <Grid item xs={6} className='selections'>
+                  <Toggles
+                    setAlignment={setAlignment}
+                    alignments={alignments}
+                    name={name}
+                    setFilter={setFilter}
+                    filters={filters}
+                  />
+                </Grid>
+              </React.Fragment>
             </Grid>
-            <Grid
-              container
-              spacing={1}
-              style={{
-                display: categoryView[category] ? '' : 'none',
-              }}
-            >
-              {allTags.map((name) => {
-                return (
-                  <Grid container item spacing={0} key={name} className='row'>
-                    <React.Fragment>
-                      <Grid item xs={6}>
-                        {name}
-                      </Grid>
-                      <Grid item xs={6} className='selections'>
-                        <Toggles
-                          setAlignment={setAlignment}
-                          alignments={alignments}
-                          name={name}
-                          setFilter={setFilter}
-                          filters={filters}
-                          category={category}
-                        />
-                      </Grid>
-                    </React.Fragment>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Grid>
-        );
-      })}
+          );
+        })}
+      </Grid>
     </Box>
   );
 

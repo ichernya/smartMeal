@@ -25,20 +25,13 @@ const MenuProps = {
  * @return {JSX} Jsx
  */
 function Filter(props) {
-  const {setDrawer, setFilter, filters, setAlignment, alignments} =
+  const {setDrawer, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
-    let copy = {...filters};
+    const copy = {...filters};
     delete copy[name];
-    setFilter({...copy});
-    copy = {...alignments};
-    for (const category of Object.keys(copy)) {
-      if (copy[category][name]) {
-        copy[category][name] = 'no';
-      }
-    }
-    setAlignment({...copy});
+    setAlignment({...alignments, [name]: 'no'});
   };
 
   return (
@@ -48,7 +41,7 @@ function Filter(props) {
       <FormControl sx={{m: 1, width: '100%'}}>
         <Select
           multiple
-          value={Object.keys(filters)}
+          value={Object.keys(alignments).filter((key) => alignments[key] === 'yes')}
           input={<OutlinedInput id="select-multiple-chip"/>}
           renderValue={(selected) => (
             <Box
@@ -62,15 +55,16 @@ function Filter(props) {
           )}
           MenuProps={MenuProps}
         >
-          {Object.keys(filters).map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              onClick={() => handleChange(name)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          {Object.keys(alignments).filter((key) => alignments[key] === 'yes')
+            .map((name) => (
+              <MenuItem
+                key={name}
+                value={name}
+                onClick={() => handleChange(name)}
+              >
+                {name}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
 
