@@ -18,6 +18,10 @@ CREATE TABLE users(
     userid SERIAL UNIQUE NOT NULL,
     username VARCHAR(255) NOT NULL,
     passwrd VARCHAR(255) NOT NULL,
+    vegan boolean DEFAULT TRUE,
+    halal boolean DEFAULT TRUE,
+    healthy boolean DEFAULT TRUE,
+    kosher boolean DEFAULT TRUE,
     PRIMARY KEY (userid)
     );
 

@@ -12,7 +12,6 @@ INSERT INTO users(username, passwrd) VALUES ('admin', 'password');
 INSERT INTO users(username, passwrd) VALUES ('user', 'drowssap');
 INSERT INTO users(username, passwrd) VALUES ('molly@books.com', '$2b$10$Y00XOZD/f5gBSpDusPUgU.iJufk6Nxx6gAoHRG8t2eHyGgoP2bK4y');
 
-
 DELETE FROM meals;
 INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-19', 'Test Meal', 'true', '{ "id": "1", "2023-02-19": {"breakfast": "1", "lunch": "2", "dinner": "3"}, "2023-02-20": {"breakfast": "2", "lunch": "3", "dinner": "1"}, "2023-02-21": {"breakfast": "2", "lunch": "3", "dinner": "4"}, "2023-02-22": {"breakfast": "2", "lunch": "1", "dinner": "4"}, "2023-02-23": {"breakfast": "1", "lunch": "1", "dinner": "1"}}', 1);
 INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ('2023-02-26', 'My Healthy Meal', 'true', '{ "id": "2", "2023-02-26": {"breakfast": "2", "lunch": "3", "dinner": "3"}, "2023-02-27": {"breakfast": "1", "lunch": "2", "dinner": "1"}}', 2);
