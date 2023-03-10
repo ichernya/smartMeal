@@ -85,7 +85,7 @@ const userQueryPrivateMealPlan = async (mealName, mealsid) => {
                     ON recipes.recipeid = cast(date_value ->> 'breakfast' as integer) 
                     OR recipes.recipeid = cast(date_value ->> 'lunch' as integer)
                     OR recipes.recipeid = cast(date_value ->> 'dinner' as integer) 
-                    WHERE meals.mealweek->>'id' = $1 AND LOWER(mealName) LIKE LOWER($2)
+                    WHERE (meals.mealweek->>'id') = $1 AND (LOWER(mealName) LIKE LOWER($2))
                     GROUP BY 
                     meals.mealsid, 
                     meals.mealname,
@@ -141,19 +141,19 @@ exports.pullpublicMeal = async (req, res) => {
     console.log(pub, meal)
     if ((pub) && (!(meal == null))) {        // if the public is true, and query exists, query public meals by the query
         var mealPlans = await userQueryPublicMealPlan( pub, meal );
-        console.log('True, false')
+        
     }
     else if ((pub) && (meal == null)) {    // if the public is true, and query is empty, return all public meal plans
         var mealPlans = await userNoQueryPublicMealPlan( pub );
-        console.log('true, true')
+        
     }
     else if (!(pub) && !(meal == null)) {   // if the public is false, and query exists, return all users meal plans by query
         var mealPlans = await userQueryPrivateMealPlan( meal, req.query.mealsid );
-        console.log('false, true')
+        
     }
     else {                                           //public mst be false, and no query return all of users meal plans
         var mealPlans = await userNoQueryPrivateMealPlan( req.query.mealsid );
-        console.log('false, false')
+        
     }
     
     //parse the data, replacing the numbers inside the week to be the recipe that matches that number 
@@ -177,6 +177,9 @@ exports.pullpublicMeal = async (req, res) => {
         }
         res.status(200).json(mealPlans)
         
+    }
+    else {
+        res.status(404).send();
     }
 }
 
