@@ -12,18 +12,12 @@ import Tags from './Filter/Tags.jsx';
 import './Home.css';
 
 const HomeContext = React.createContext();
-const names = {
-  'Oliver Hansen': 'yes',
-  'Van Henry': 'yes',
-  'Kelly Snyder': 'yes',
-};
 
 // Updates the name of the meal plan in the backend
-const saveUpdatedName = (name, startDay) => {
+const saveUpdatedName = (name, startDay, userId) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  const userId = person ? person.userid : '';
   if (!userId || !bearerToken) {
     // User has not logged in or has timeed out
     return;
@@ -46,6 +40,32 @@ const saveUpdatedName = (name, startDay) => {
   });
 };
 
+// Queries for the diets tags of the user
+const queryAlignments = (userId, setAlignment) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+
+  fetch(`http://localhost:3010/v0/diets?mealsid=${userId}`, {
+    method: 'GET',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setAlignment(json);
+    });
+};
+
 
 /**
  * Represents the homepage
@@ -53,7 +73,7 @@ const saveUpdatedName = (name, startDay) => {
  * @return {JSX} Jsx
  */
 function Homepage(props) {
-  const {WEEK, startWeek, mealPlan, setPlan} = useMeals();
+  const {userId, WEEK, startWeek, mealPlan, setPlan} = useMeals();
   const {width} = useDimensions();
   // Precalculated card size for the calendar
   const cardSize = React.useRef(width >= 1200 ? (width * .11) : 175);
@@ -71,13 +91,11 @@ function Homepage(props) {
   // Represents whether to display the add meal dialog
   const [addMeal, setAddMeal] = React.useState(false);
   // Represents the alignments of the tags
-  const [alignments, setAlignment] =
-    // TODO query db for tags
-    // ideally, format will be
-    // { category :
-    //   {name: align}
-    // }
-    React.useState(names);
+  const [alignments, setAlignment] = React.useState({});
+
+  React.useEffect(() => {
+    queryAlignments(userId, setAlignment);
+  }, [userId]);
 
   React.useEffect(() => {
     if ((mealPlan && planName) || changeName) {
@@ -110,7 +128,7 @@ function Homepage(props) {
       if (planName === '') {
         setName(WEEK);
       }
-      saveUpdatedName(planName, startWeek);
+      saveUpdatedName(planName, startWeek, userId);
     }
   };
 

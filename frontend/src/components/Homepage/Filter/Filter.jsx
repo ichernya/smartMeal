@@ -29,9 +29,8 @@ function Filter(props) {
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
-    const copy = {...filters};
-    delete copy[name];
-    setAlignment({...alignments, [name]: 'no'});
+    // UPDATED IN DB TODO
+    setAlignment({...alignments, [name]: false});
   };
 
   return (
@@ -41,7 +40,7 @@ function Filter(props) {
       <FormControl sx={{m: 1, width: '100%'}}>
         <Select
           multiple
-          value={Object.keys(alignments).filter((key) => alignments[key] === 'yes')}
+          value={Object.keys(alignments).filter((key) => alignments[key])}
           input={<OutlinedInput id="select-multiple-chip"/>}
           renderValue={(selected) => (
             <Box
@@ -55,7 +54,7 @@ function Filter(props) {
           )}
           MenuProps={MenuProps}
         >
-          {Object.keys(alignments).filter((key) => alignments[key] === 'yes')
+          {Object.keys(alignments).filter((key) => alignments[key])
             .map((name) => (
               <MenuItem
                 key={name}

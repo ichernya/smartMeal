@@ -16,6 +16,13 @@ paths:
   /diets:
     get:
       description: returns the available diet filters
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: string
+          required: true
+          description: the id of the user
       responses:
         200:
           description: OK

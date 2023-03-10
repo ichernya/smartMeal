@@ -26,7 +26,7 @@ const pool = new Pool({
 //      or default error when not possible
 
 const getTags = async (mealsid) => {
-    const select = 'SELECT vegan, halal, healthy, kosher FROM users WHERE username = $1'
+    const select = 'SELECT vegan, halal, healthy, kosher FROM users WHERE userid = $1'
     const query = {
             text: select,
             values: [mealsid],
@@ -38,5 +38,5 @@ const getTags = async (mealsid) => {
 exports.getDiets = async (req, res) => {
     const mid = req.query.mealsid
     const diets = await getTags(mid);
-    res.status(200).json(diets)
+    res.status(200).json(diets[0])
 }

@@ -32,7 +32,6 @@ const getRecipes = (setMenu) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   fetch('http://localhost:3010/v0/recipes', {
-  // fetch('http://localhost:3010/v0/mealWeek?mealsid=1&dayof=2023-01-19', {
     method: 'get',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -86,7 +85,6 @@ function Menu(props) {
 
   React.useEffect(() => {
     getRecipes(setMenu);
-    // TODO setMenu([...itemData]);
   }, []);
 
   const [chosenFood] = selectedFood || [null, null];

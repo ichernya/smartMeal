@@ -18,7 +18,7 @@ import './Login.css';
  * @return {object}
  */
 function Login() {
-  const {setLogin} = useMeals();
+  const {setId} = useMeals();
   // User input fields
   const [user, setUser] = React.useState({email: '', password: ''});
   // Represent if logged in
@@ -50,7 +50,7 @@ function Login() {
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
         localStorage.setItem('myKey_expiration', new Date().getTime() + 10000);
-        setLogin(true);
+        setId(json['userid']);
         history('/home');
       }).catch((err) => {
         setStatus(true);

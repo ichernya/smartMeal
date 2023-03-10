@@ -35,9 +35,8 @@ function Toggles(props) {
   };
 
   const updateTags = (name, newAlignment) => {
-    if (newAlignment !== value) {
-      setAlignment({...alignments, [name]: newAlignment});
-    }
+    setAlignment({...alignments, [name]: newAlignment});
+    // UPDATED IN DB TODO
   };
 
   return (
@@ -47,19 +46,19 @@ function Toggles(props) {
       aria-label="Small sizes"
     >
       <ToggleButton
-        value="no"
-        onClick={() => updateTags(name, 'no')}
+        value={false}
+        onClick={() => updateTags(name, false)}
         style={{
-          color: value === 'no' ? 'red' : '',
+          color: value? '' : 'red',
         }}
       >
         <SentimentDissatisfiedOutlinedIcon />
       </ToggleButton>
       <ToggleButton
-        value="yes"
-        onClick={() => updateTags(name, 'yes')}
+        value={true}
+        onClick={() => updateTags(name, true)}
         style={{
-          color: value === 'yes' ? 'green' : '',
+          color: value ? 'green' : '',
         }}
       >
         <SentimentSatisfiedAltOutlinedIcon />
@@ -74,13 +73,6 @@ function Tags(props) {
     alignments, setAlignment,
   } = React.useContext(props['HomeContext']);
 
-
-  const updateView = (category) => {
-    // Swap the view
-    const copy = [...alignments];
-    copy[category]['opened'] = !copy[category]['opened'];
-    setView(copy);
-  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -150,12 +142,12 @@ function Tags(props) {
         </IconButton>
         <div className='stretch'/>
         <IconButton
-          onClick={() => setAllState('no')}
+          onClick={() => setAllState(false)}
         >
           <MoodBadIcon id='red'/>
         </IconButton>
         <IconButton
-          onClick={() => setAllState('yes')}
+          onClick={() => setAllState(true)}
         >
           <SentimentVerySatisfiedIcon id='green'/>
         </IconButton>

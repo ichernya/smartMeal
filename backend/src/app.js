@@ -15,6 +15,7 @@ const userSearch = require('./userSearch');
 const switchOut = require('./switchOut');
 const publicMeal = require('./publicMeal');
 const signup = require('./signup');
+const tags = require('./tags');
 
 // use express to create the app
 const app = express();
@@ -50,6 +51,7 @@ app.post('/v0/recipes', recipe.postRecipe);
 app.post('/v0/signup', signup.putUser);
 app.post('/v0/meals', meal.addFoodUser);
 app.put('/v0/mealName', meal.updateMealName);
+app.get('/v0/diets', tags.getDiets);
 
 // outputting error codes and mesages for debugging
 app.use((err, req, res, next) => {
