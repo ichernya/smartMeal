@@ -72,7 +72,7 @@ const testIngredientList = {
     'amountChecked': 0,
     'hidden': false,
     'ingredients': {
-      'Jalepeno': {
+      'Baby Bella Mushrooms': {
         'checked': false,
         'amount': 36,
         'unit': 'Ton',
@@ -95,7 +95,6 @@ export const MealsProvider = ({children}) => {
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
 
   const [mealPlan, setPlan] = React.useState(null);
-
   useEffect(() => {
     // Grab the meals for the week when loading the page
     getMealsForWeek(setPlan);

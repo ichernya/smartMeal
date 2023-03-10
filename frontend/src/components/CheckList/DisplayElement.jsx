@@ -15,6 +15,41 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
+// eslint-disable-next-line no-unused-vars
+const postNewRecipe = (userId, newRecipe) => {
+  const parsedRecipe = {...newRecipe};
+  parsedRecipe.ingredients = [];
+  delete parsedRecipe.recipeid;
+  console.log(newRecipe);
+  Object.keys(newRecipe.ingredients).forEach((ingredient) => {
+    const ingredientParam = [];
+    ingredientParam.push(ingredient);
+    ingredientParam.push(newRecipe.ingredients[ingredient].unit);
+    ingredientParam.push(newRecipe.ingredients[ingredient].amount);
+    parsedRecipe.ingredients.push(ingredientParam);
+  });
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  console.log(parsedRecipe);
+  fetch(
+    `http://localhost:3010/v0/recipes`, {
+      method: 'POST',
+      body: JSON.stringify(parsedRecipe),
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => {
+    if (!res.ok) {
+      throw res.json();
+    }
+    return res;
+  }).then((id) => {
+    console.log(id);
+  })
+  ;
+};
 
 /**
  * Left side view of the checklist where the user can select an ingredient
@@ -46,6 +81,7 @@ function DisplayElement() {
       'name': 'Pick an item from the list',
       'img': '',
       'amount': '',
+      'category': '',
     });
     setAlteratives({});
     setView(false);
@@ -62,9 +98,7 @@ function DisplayElement() {
     const newChosenMeal = specificMealtoChange.meal;
     const ingredientElement =
     newChosenMeal.ingredients[isChosenIngredient.name];
-    console.log(newListElement.amount, ingredientElement.amount);
     newListElement.amount -= ingredientElement.amount;
-    console.log(newListElement);
     // CheckList update
     // If the amount in the checklist is 0
     if (newListElement.amount === 0) {
@@ -112,6 +146,7 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
+    console.log(postNewRecipe(null, specificMeal));
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);

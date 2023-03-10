@@ -109,7 +109,6 @@ function IndeterminateCheckbox() {
     setChosenIngredient({
       'name': myIngredient,
       'img': info.img,
-      'pricePerUnitWeight': info.pricePerUnitWeight,
       'amount': info.amount,
       'category': parentCategory,
     });
