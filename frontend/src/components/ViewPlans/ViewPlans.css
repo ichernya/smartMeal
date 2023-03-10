@@ -2,6 +2,7 @@
     overflow: scroll;
     width: 100%;
     margin: 0;
+    height: 75px;
 }
 
 #header {
@@ -34,8 +35,22 @@
 }
 
 .planName {
-    display: flex;
     height: 100%;
+    max-height: 75px;
     align-items: center;
     justify-content: center;
+    float: right;
+    overflow: scroll;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+#privateToggle {
+    width: 150px;
+}
+
+.copy {
+    display: flex;
+    float: left;
+    background: aliceblue !important;
 }

@@ -11,7 +11,11 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the settings popup
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Settings(props) {
   const {setSettings, settingsDialog} = React.useContext(props['context']);
   // Represents whether we need to update the database for the users allergies
@@ -30,7 +34,7 @@ function Settings(props) {
   const handleClose = () => {
     setSettings(false);
     if (needSave) {
-      // db query to update things
+      // db query to update things TODO
     }
   };
 
@@ -60,7 +64,6 @@ function Settings(props) {
                 key={allergy}
                 control={<Switch checked={allergies[allergy]} />}
                 label={allergy}
-                key={allergy}
                 onChange={() => updateAllergies(allergy)}
               />
             ))}
