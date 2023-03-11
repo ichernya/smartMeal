@@ -18,10 +18,6 @@ const saveUpdatedName = (name, startDay, userId) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   const body = {
     'firstDay': startDay.toISOString().split('T')[0],
@@ -45,10 +41,6 @@ const queryAlignments = (userId, setAlignment) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   fetch(`http://localhost:3010/v0/diets?mealsid=${userId}`, {
     method: 'GET',
@@ -105,7 +97,7 @@ function Homepage(props) {
     } else if (mealPlan && mealPlan['mealname'] !== planName) {
       setName(mealPlan['mealname']);
     }
-  }, [mealPlan, WEEK, planName]);
+  }, [mealPlan, WEEK, planName, changeName]);
 
   React.useEffect(() => {
     cardSize.current = width >= 1200 ? (width * .11) : 175;
@@ -185,5 +177,4 @@ function Homepage(props) {
 
 
 export default Homepage;
-
 

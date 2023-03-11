@@ -19,6 +19,35 @@ const MenuProps = {
   },
 };
 
+// Updates a diet filter
+const updateDietFilter = (diet, value) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+  if (!userId || !bearerToken) {
+    // User has not logged in or has timeed out
+    return;
+  }
+
+  const body = {
+    'mealsid': userId,
+    'dietTag': diet,
+    'newValue': value,
+  };
+
+  fetch(`http://localhost:3010/v0/diets`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
+
+
 /**
  * Represents the display for the currently chosen tags/filters
  * @param {Object} props
@@ -29,7 +58,7 @@ function Filter(props) {
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
-    // UPDATED IN DB TODO
+    updateDietFilter(name, false);
     setAlignment({...alignments, [name]: false});
   };
 

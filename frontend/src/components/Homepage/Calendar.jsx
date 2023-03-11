@@ -25,10 +25,6 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   // The first day of the week
   const startDay = startWeek.toISOString().split('T')[0];
@@ -93,7 +89,15 @@ function Calendar(props) {
   // food used multiple times on unshift
   // Without keeping track of the count, the user could unselect with unshift
   // even if they havent added the selected item before
-  const [chosenFood, used] = selectedFood || [null, 0];
+  const [chosenFood, setChosen] = React.useState((selectedFood && selectedFood[0]) || null);
+  const [chosenUsed, setUsed] = React.useState((selectedFood && selectedFood[1]) || 0);
+
+  React.useEffect(() => {
+    if (selectedFood) {
+      setChosen(selectedFood[0]);
+      setUsed(selectedFood[1]);
+    }
+  }, [selectedFood]);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
@@ -109,7 +113,7 @@ function Calendar(props) {
       if (!event['shiftKey']) {
         setSelected(null);
       } else {
-        setSelected([chosenFood, used + 1]);
+        setSelected([chosenFood, chosenUsed + 1]);
       }
     }
   };
@@ -157,6 +161,7 @@ function Calendar(props) {
                       sx={{
                         width: `${cardSize.current}px`,
                       }}
+                      id={`${day} ${times[ind]}`}
                       onClick={(event) =>
                         chooseFood(event, dayLower, ind, weekday)}
                     >
@@ -179,6 +184,7 @@ function Calendar(props) {
                           }}
                         />
                         <ImageListItemBar
+                          id={`${day} ${times[ind]} food`}
                           title={item['dishname']}
                           className='imgListBar'
                           style={{display: item['dishname'] ? '' : 'none'}}

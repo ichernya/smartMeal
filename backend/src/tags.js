@@ -40,3 +40,22 @@ exports.getDiets = async (req, res) => {
     const diets = await getTags(mid);
     res.status(200).json(diets[0])
 }
+
+const updateTag = async (mealsid, tag, value) => {
+    const update = `UPDATE users SET ${tag} = $1 where userid = $2`;
+                    
+    const query = {
+        text: update,
+        values: [value, mealsid],
+    }
+    console.log(query)
+    await pool.query(query);
+}
+
+exports.updateDiet = async (req, res) => {
+    const mid = req.body.mealsid
+    const newVal = req.body.newValue
+    const diet = req.body.dietTag
+    await updateTag(mid, diet, newVal);
+    res.status(200).send()
+}

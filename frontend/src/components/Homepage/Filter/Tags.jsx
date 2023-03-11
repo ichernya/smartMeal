@@ -14,10 +14,32 @@ import CloseIcon from '@mui/icons-material/Close';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import './Tags.css';
+
+// Updates a diet filter
+const updateDietFilter = (diet, value) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+
+  const body = {
+    'mealsid': userId,
+    'dietTag': diet,
+    'newValue': value,
+  };
+
+  fetch(`http://localhost:3010/v0/diets`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
 
 /**
  * Represents the page to select the filters/tags
@@ -36,7 +58,7 @@ function Toggles(props) {
 
   const updateTags = (name, newAlignment) => {
     setAlignment({...alignments, [name]: newAlignment});
-    // UPDATED IN DB TODO
+    updateDietFilter(name, newAlignment);
   };
 
   return (
@@ -67,7 +89,11 @@ function Toggles(props) {
   );
 }
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the tags
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Tags(props) {
   const {tagsDrawer, setDrawer, setFilter, filters,
     alignments, setAlignment,
@@ -90,6 +116,7 @@ function Tags(props) {
     const copyAlign = {...alignments};
     for (const key of Object.keys(copyAlign)) {
       copyAlign[key] = choice;
+      updateDietFilter(key, choice);
     }
     setAlignment(copyAlign);
   };

@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import {styled} from '@mui/material/styles';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 
 import Tools from './Tools.jsx';
@@ -27,7 +27,7 @@ const Item = styled(Paper)(({theme}) => ({
 
 
 // Grabs the recipes for the menu from the database
-const getRecipes = (setMenu) => {
+const getRecipes = (setMenu, history) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
@@ -39,6 +39,16 @@ const getRecipes = (setMenu) => {
     }),
   })
     .then((response) => {
+      // User timed out, so redirect back to login
+      // Unsure if we're keeping this functionality
+      /*
+      if (response['status'] === 403) {
+        alert('You have time out. Please log back in.');
+        localStorage.removeItem('user');
+        history('/login');
+        return [];
+      }
+      */
       return response.json();
     })
     .then((json) => {
@@ -73,6 +83,7 @@ const searchRecipes = (query, setMenu) => {
  * @return {JSX} Jsx
  */
 function Menu(props) {
+  const history = useNavigate();
   const {
     width, selectedFood, setSelected, search,
     setAddMeal, addMeal,
@@ -84,8 +95,8 @@ function Menu(props) {
   const ROWS = 2;
 
   React.useEffect(() => {
-    getRecipes(setMenu);
-  }, []);
+    getRecipes(setMenu, history);
+  }, [history]);
 
   const [chosenFood] = selectedFood || [null, null];
   const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
@@ -166,7 +177,8 @@ function Menu(props) {
                           <ImageListItem
                             className='margins'
                             onClick={() => clickItem(item)}
-                            key={item['dishname'] + ind}
+                            key={item['dishname'] + ind + index}
+                            id={item['dishname']}
                           >
                             <img
                               src={`${image}w=248&fit=crop&auto=format`}

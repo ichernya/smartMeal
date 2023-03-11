@@ -49,7 +49,6 @@ function Login() {
       })
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
-        localStorage.setItem('myKey_expiration', new Date().getTime() + 10000);
         setId(json['userid']);
         history('/home');
       }).catch((err) => {
@@ -59,7 +58,6 @@ function Login() {
   // Store user login access token into local storage
   useEffect(() => {
     if (localStorage.getItem('user')) {
-      console.log(parseInt(localStorage.getItem('user')));
       history('/home');
     }
   }, [history]);
@@ -142,7 +140,7 @@ function Login() {
                   Sign Up
                 </Link>
               </Grid>
-              <Grid item>
+              <Grid item display="none">
                 <Link href="#" id="link_c">
                     Forgot password?
                 </Link>

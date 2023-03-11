@@ -12,7 +12,7 @@ function HeaderBar() {
     <Box sx={{
       flexGrow: 1,
     }}>
-      <AppBar class="appBar" position='static'>
+      <AppBar className='appBar' position='static'>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
             <div className='title'>

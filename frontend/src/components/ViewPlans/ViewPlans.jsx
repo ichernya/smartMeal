@@ -94,12 +94,11 @@ const searchPlans = (query, setPlans, publicMeals) => {
     }),
   })
     .then((response) => {
-      if (response['status'] === 404) {
+      if (!response.ok) {
         // No meals that match the query
         return [];
-      } else {
-        return response.json();
       }
+      return response.json();
     })
     .then((json) => {
       setPlans(json);
