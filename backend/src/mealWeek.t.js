@@ -5,7 +5,7 @@ import mealWeek from 'mealWeek.js';
 const app = new express();
 app.use('/', mealWeek);
 
-describe('mealWekk', function () {
+describe('mealWeak', function () {
 
     test('responds to /', async () => {
       const res = await request(app).get('/');
