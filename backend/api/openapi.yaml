@@ -122,6 +122,12 @@ paths:
             type: string
           required: true
           description: what the user gives
+        - in: query
+          name: userid
+          schema:
+            type: integer
+          required: true
+          description: userid so we can check the tags for query
       responses:
         200:
           description: OK
