@@ -73,7 +73,6 @@ const pullFood = async ( dayof , mealsid, firstDay ) => {
 const addFood = async ( firstDay, mealsid) => {
     //{ "id": "1", "2023-02-17": {"breaktfast": "1", "lunch": "2", "dinner": "3"}
     //var insert = 'INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES ($1, $2, $3, $4, $5)'
-
     const mealWeek = `{ "id": "${mealsid}"}`
     const pub = 't'
     const mealName = 'New Meal'
@@ -83,6 +82,15 @@ const addFood = async ( firstDay, mealsid) => {
             values: [ firstDay, mealName, pub, mealWeek, mealsid ]
         }
     await pool.query(query);
+    var select = `SELECT * FROM meals WHERE mealsid = $1 AND firstDay = $2`
+    const query2 = {
+            text: select,
+            values: [ mealsid, firstDay ]
+        }
+    const {rows} = await pool.query(query2);
+    return rows;
+
+    
 }
 exports.addFoodUser = async (req, res) => {
     first = req.query.firstDay
@@ -95,7 +103,10 @@ exports.pullFoodDay = async (req, res) => {
     first = req.query.firstDay
     mid = req.query.mealsid
     const food = await pullFood(req.query.dayof, mid, first);
+    
     //replace recipe into id 
+    // data cleanup on return
+    // this replaces the recipe ids in the meal plan with the actual recipes
     if (food[0]) {
         
         for (let date in food[0].mealweek) {
@@ -114,13 +125,15 @@ exports.pullFoodDay = async (req, res) => {
             }
         
         }
+        
         res.status(200).json(food)
         
+        
     }
-    // otherwise meal for this week does not exist so create 
+    // otherwise meal for this week does not exist so create
     else {
-        await addFood(first, mid);
-        res.status(201).send()
+        meal = await addFood(first, mid);
+        res.status(201).json(meal)
         
     }
 }
@@ -177,7 +190,7 @@ const changeMealName = async (firstDay, mealsid, mealName) => {
 }
 
 exports.updateMealName = async (req, res) => {
-    // caller function that awaits changemealname and returns a 201 on Success 
+    // caller function that awaits changemealname and returns a 200 on Success 
     await changeMealName(req.body.firstDay, req.body.mealsid, req.body.mealName);
     res.status(200).send();
     
