@@ -429,6 +429,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /allIngredients:
+    get:
+      description: returns all ingredients
+      parameters:
+        - in: query
+          name: diet
+          schema:
+            type: string
+          required: false
+          description: diet name
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingredientList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Error:
