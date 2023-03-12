@@ -60,6 +60,7 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
     'firstDay': startDay,
     'changes': bodyStringified,
   };
+  console.log(body);
 
   fetch(`http://localhost:3010/v0/meals`, {
     method: 'PUT',

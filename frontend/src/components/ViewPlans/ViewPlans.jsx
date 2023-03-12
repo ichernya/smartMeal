@@ -71,7 +71,6 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 
 // Query for meal plans based on a search query
 const searchPlans = (query, setPlans, publicMeals) => {
-  console.log(query, publicMeals);
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
@@ -130,16 +129,13 @@ const updateCurrentPlan = (data, firstDay) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   const startDay = new Date(firstDay);
   const startIso = startDay.toISOString().split('T')[0];
 
   // First day of the week of the plan we're copying
-  const firstCopyDay = (new Date(data['firstday'])).getDate();
+  const [year, month, day] = json['firstday'].split('-');
+  const firstCopyDay = (new Date(year, month - 1, day)).getDate();
 
   for (const [day, meals] of Object.entries(data['mealweek'])) {
     if (day === 'id') {
@@ -225,6 +221,7 @@ function TablePaginationActions(props) {
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label='first page'
+        id='first'
         sx={{display: {xs: 'none', md: 'inline-flex'}}}
       >
         {theme.direction === 'rtl' ?
@@ -233,6 +230,7 @@ function TablePaginationActions(props) {
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
+        id='prev'
         aria-label='previous page'
       >
         {theme.direction === 'rtl' ?
@@ -241,6 +239,7 @@ function TablePaginationActions(props) {
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        id='next'
         aria-label='next page'
       >
         {theme.direction === 'rtl' ?
@@ -250,6 +249,7 @@ function TablePaginationActions(props) {
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label='last page'
+        id='last'
         sx={{display: {xs: 'none', md: 'inline-flex'}}}
       >
         {theme.direction === 'rtl' ?
@@ -374,6 +374,7 @@ function ViewMeals(props) {
             <StyledInputBase
               className='searchInput'
               placeholder="Search…"
+              id='planSearch'
               inputProps={{'aria-label': 'search', 'width': 'inherit'}}
               onChange={searchInput}
               value={mealSearch}
@@ -383,6 +384,7 @@ function ViewMeals(props) {
             id='privateToggle'
             control={
               <Switch
+                id='privated'
                 checked={publicMeals}
                 onChange={changeView}
                 name="Public Meals"
@@ -424,6 +426,7 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
+                        id={(meal1 && `copy${meal1['mealname']}${(index * 2) + (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal1)}
                       >
                         <ContentPasteIcon/>
@@ -486,6 +489,7 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
+                        id={(meal2 && `copy${meal2['mealname']}${(index * 2) + 1 + (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal2)}
                       >
                         <ContentPasteIcon/>

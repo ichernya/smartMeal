@@ -45,7 +45,7 @@ function DrawerContent(props) {
             disablePadding
             sx={{display: 'block'}}
           >
-            <Link to={urls[index]} className='sidebarLink'>
+            <Link to={urls[index]} className='sidebarLink' id={text}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -78,6 +78,7 @@ function DrawerContent(props) {
             key={text}
             disablePadding
             sx={{display: 'block'}}
+            id={text}
             onClick={text === 'Logout' ? logout : settingsOnclick}
           >
             <ListItemButton
