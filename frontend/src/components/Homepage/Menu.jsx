@@ -175,7 +175,7 @@ function Menu(props) {
                           return <div key={ind + index}/>;
                         }
 
-                        const image = item['imageData'] ? item['imageData'] :
+                        const image = item['imagedata'] ? item['imagedata'] :
                           require('../../assets/default.png');
                         return (
                           <ImageListItem
@@ -185,10 +185,11 @@ function Menu(props) {
                             id={item['dishname']}
                           >
                             <img
-                              src={`${image}w=248&fit=crop&auto=format`}
+                              /* src={`${image}w=248&fit=crop&auto=format`}
                               srcSet={
                                 `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              }
+                              } */
+                              src={image}
                               alt={item['dishname']}
                               loading="lazy"
                               id={chosenFood === item ?
