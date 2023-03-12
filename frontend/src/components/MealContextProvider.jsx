@@ -5,21 +5,17 @@ import parsePlanData from './parser.jsx';
 const MealsContext = createContext();
 
 // Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (setMeal) => {
+const getMealsForWeek = (setMeal, userId) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  const userId = person ? person.userid : '';
+
   // calculates the start and end of the week
   const currentDay = new Date();
   const dateOffset = currentDay.getDay();
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
   const start = startWeek.toISOString().split('T')[0];
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
   fetch(
     `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
       method: 'get',
@@ -94,11 +90,23 @@ export const MealsProvider = ({children}) => {
     `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
 
+
+  // Represents the user's current meal plan
   const [mealPlan, setPlan] = React.useState(null);
+
+  // User Id of the user
+  let id = null;
+  const item = localStorage.getItem('user');
+  if (item) {
+    const person = JSON.parse(item);
+    id = person ? person.userid : null;
+  }
+  const [userId, setId] = React.useState(id);
+
   useEffect(() => {
     // Grab the meals for the week when loading the page
-    getMealsForWeek(setPlan);
-  }, []);
+    getMealsForWeek(setPlan, userId);
+  }, [userId]);
 
   const [ingredientList, setIngredientList] = useState({});
   const [mealsWithIngredient, setMealsWithIngredient] = useState([]);
@@ -123,14 +131,17 @@ export const MealsProvider = ({children}) => {
       alteratives, setAlteratives,
       mealPlan, setPlan,
       mealsWithIngredient, setMealsWithIngredient,
-      WEEK, startWeek,
+      WEEK, startWeek, userId, setId,
     }}>
       {children}
     </MealsContext.Provider>
   );
 };
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents meals context
+ * @return {Object} context
+ */
 export function useMeals() {
   return useContext(MealsContext);
 };

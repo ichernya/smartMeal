@@ -13,6 +13,49 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /diets:
+    get:
+      description: returns the available diet filters
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: string
+          required: true
+          description: the id of the user
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tags'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      description: returns the available diet filters
+      requestBody:
+        description: userid and the diet being updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dietUpdate'
+      responses:
+        201:
+          description: updated user
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /switchOut:
     get:
       description: returns subsitutions given ingredient
@@ -561,6 +604,9 @@ components:
         mealName:
           type: string
 
+    tags:
+      type: object
+
     ingredientList:
       items:
         $ref: '#/components/schemas/ingredients'
@@ -569,6 +615,15 @@ components:
       properties:
         name:
           type: string
+
+    dietUpdate:
+      properties:
+        mealsid:
+          type: integer
+        dietTag:
+          type: string
+        newValue:
+          type: boolean
 
 
 

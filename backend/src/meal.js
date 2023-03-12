@@ -75,7 +75,17 @@ const addFood = async ( firstDay, mealsid) => {
     //var insert = 'INSERT INTO meals(mealsid, breakfast, lunch, dinner, dayof) VALUES ($1, $2, $3, $4, $5)'
     const mealWeek = `{ "id": "${mealsid}"}`
     const pub = 't'
-    const mealName = 'New Meal'
+    // calculates the start and end of the week
+    const currentDay = new Date();
+    const dateOffset = currentDay.getDay();
+    const startWeek = new Date();
+    startWeek.setDate(currentDay.getDate() - dateOffset);
+    const endWeek = new Date();
+    endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
+    const WEEK = `Week: ${startWeek.getMonth() + 1}` +
+      `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
+      `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
+    const mealName = WEEK;
     var insert = `INSERT INTO meals(firstDay, mealName, public, mealWeek, mealsid) VALUES ($1, $2, $3, $4, $5)`
     const query = {
             text: insert,
@@ -92,6 +102,7 @@ const addFood = async ( firstDay, mealsid) => {
 
     
 }
+
 exports.addFoodUser = async (req, res) => {
     first = req.query.firstDay
     mid = req.query.mealsid
