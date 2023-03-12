@@ -16,7 +16,7 @@ function HeaderButtons() {
       float: 'right',
     }}
     >
-      <AppBar class="appBar" position='static'>
+      <AppBar className="appBar" position='static'>
         <Toolbar id='toolbarButtons'>
           <Link to='/login' className='link'>
             <Button variant="contained"

@@ -71,6 +71,7 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
 
 // Query for meal plans based on a search query
 const searchPlans = (query, setPlans, publicMeals) => {
+  console.log(query, publicMeals);
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
@@ -93,6 +94,10 @@ const searchPlans = (query, setPlans, publicMeals) => {
     }),
   })
     .then((response) => {
+      if (!response.ok) {
+        // No meals that match the query
+        return [];
+      }
       return response.json();
     })
     .then((json) => {
@@ -180,7 +185,7 @@ const updateCurrentPlan = (data, firstDay) => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       }),
-    }).then((json) => console.log(json));
+    });
   }
 };
 
@@ -283,14 +288,10 @@ function ViewMeals(props) {
   const searchInput = (event) => {
     const {value} = event.target;
     setMealSearch(value);
-    // TODO
-    // searchPlans(value, setList, publicMeals);
   };
 
   const clearSearch = () => {
     setMealSearch('');
-    // TODO
-    // searchPlans('', setList, publicMeals);
   };
 
   React.useEffect(() => {
@@ -317,8 +318,6 @@ function ViewMeals(props) {
   // changes the meal plans in current view to user specific or all plans
   const changeView = () => {
     setPublic(!publicMeals);
-    // TODO
-    // searchPlans(mealSearch, setList, !publicMeals);
   };
 
   const onSelectPlan = (data) => {

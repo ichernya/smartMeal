@@ -93,6 +93,7 @@ function Tools(props) {
             <CloseIcon/>
           </IconButton>
           <StyledInputBase
+            id='searchInput'
             className='searchInput'
             placeholder="Search…"
             inputProps={{'aria-label': 'search', 'width': 'inherit'}}

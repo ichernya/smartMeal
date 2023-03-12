@@ -35,31 +35,32 @@ const getMeal = (ingredient, setAlteratives) => {
             }
           ));
       }
-      setAlteratives(alter);
+      if (Object.keys(alter).length === 0) {
+        setAlteratives(false);
+      } else {
+        setAlteratives(alter);
+      }
     });
 };
 // Given the meals of the week and an ingredient
 // Return a list of all the meals with the given ingredient
 const filterMealsForIngredients =
-(meals, setMealsWithIngredient, myIngredient) => {
+(mealPlan, setMealsWithIngredient, myIngredient) => {
   const mealsOfWithIng = [];
-  Object.keys(meals)
+  console.log(mealPlan);
+  Object.keys(mealPlan)
     // ignore the keys 'amount' and 'id'
-    .filter((key) => key !== 'amount' && key !== 'id')
+    .filter((key) => !['id', 'mealname', 'public', 'firstday'].includes(key))
     // Look through the each day of the week that aren't empty
     .forEach((date) => {
-      Object.values(meals[date]).filter((obj) => obj &&
-      Object.keys(obj).length !== 0)
-        // Look through each meal of the day
-        .forEach((meal) => {
-          // If the meal has the ingredient add it to the list of meals with
-          // said ingredient
-          Object.keys(meal['ingredients']).filter((key) => key ===
-          myIngredient)
-            .forEach(() => {
-              mealsOfWithIng.push(meal);
-            });
-        });
+      [0, 1, 2].forEach((timeOfDay) => {
+        if (mealPlan[date][timeOfDay].recipeid !== 0 &&
+          Object.keys(mealPlan[date][timeOfDay].ingredients)
+            .includes(myIngredient)) {
+          mealsOfWithIng.push({'date': date, 'timeOfDay': timeOfDay,
+            'meal': mealPlan[date][timeOfDay]});
+        }
+      });
     });
   setMealsWithIngredient(mealsOfWithIng);
 };
@@ -72,7 +73,7 @@ function IndeterminateCheckbox() {
   const {
     ingredientList, setIngredientList,
     setChosenIngredient,
-    setAlteratives, meals,
+    setAlteratives, mealPlan,
     setMealsWithIngredient,
   } = useMeals();
   // When first lanuch load meal from database and when the week change
@@ -108,12 +109,11 @@ function IndeterminateCheckbox() {
     setChosenIngredient({
       'name': myIngredient,
       'img': info.img,
-      'pricePerUnitWeight': info.pricePerUnitWeight,
-      'quantity': info.quantity,
+      'amount': info.amount,
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
-    filterMealsForIngredients(meals, setMealsWithIngredient,
+    filterMealsForIngredients(mealPlan, setMealsWithIngredient,
       myIngredient);
   };
 
@@ -187,7 +187,7 @@ function IndeterminateCheckbox() {
                   onClick={(handleUpdateElement)}>
                   {ingredient}{', '}
                   {ingredientList[category]['ingredients'][ingredient]
-                    .quantity}
+                    .amount}
                   {' '}
                   {ingredientList[category]['ingredients'][ingredient].unit}
                 </div>

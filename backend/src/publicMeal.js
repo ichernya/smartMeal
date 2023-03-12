@@ -18,7 +18,7 @@ const pool = new Pool({
 // required  public or private
 //optional search
 // return everything public or private
-const userQueryPublicMealPlan = async (public, mealName) => {
+const userQueryPublicMealPlan = async (pub, mealName) => {
     // unnest used to unwrap array in the database
     const select = `SELECT meals.*, JSON_AGG(DISTINCT recipes) AS recipes
                     FROM meals 
@@ -40,13 +40,13 @@ const userQueryPublicMealPlan = async (public, mealName) => {
                 
     const query = {
         text: select,
-        values: [ '%' + mealName + '%', public]
+        values: [ '%' + mealName + '%', pub]
     }
     const {rows} = await pool.query(query);
     return rows;
 }
 
-const userNoQueryPublicMealPlan = async (public) => {
+const userNoQueryPublicMealPlan = async (pub) => {
     // unnest used to unwrap array in the database
     const select = `SELECT meals.*, JSON_AGG(DISTINCT recipes) AS recipes
                     FROM meals 
@@ -68,7 +68,7 @@ const userNoQueryPublicMealPlan = async (public) => {
                 
     const query = {
         text: select,
-        values: [public]
+        values: [pub]
     }
     const {rows} = await pool.query(query);
     return rows;
