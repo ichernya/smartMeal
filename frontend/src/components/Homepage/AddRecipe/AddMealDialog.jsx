@@ -29,7 +29,6 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import InputLabel from '@mui/material/InputLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
 import './AddMealDialog.css';
 import '../../colors.css';
 
@@ -39,7 +38,7 @@ import '../../colors.css';
  * @return {JSX} Jsx
  */
 function AddMealDialog(props) {
-  const {addMeal, setAddMeal} = React.useContext(props['HomeContext']);
+  const {addMeal, setAddMeal, setShowAlert} = React.useContext(props['HomeContext']);
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -252,7 +251,7 @@ function AddMealDialog(props) {
       });
       setAddMeal(false);
       setErrorMessage('');
-      alert('Recipe added');
+      setShowAlert(true);
     } else { // Error handling
       setErrorMessage(
         '! You need to insert a title and at least one ingredient !');
@@ -277,6 +276,7 @@ function AddMealDialog(props) {
           <DialogContentText>
             You can add your own recipe adding a title,
             ingredients, diets and an optional URL image.<br/>
+            {errorMessage}
           </DialogContentText>
           <Grid container component="main" direction="row" spacing={2}>
             <Grid item xs={12} md={5}>
