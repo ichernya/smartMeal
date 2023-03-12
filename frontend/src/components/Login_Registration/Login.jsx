@@ -46,7 +46,6 @@ function Login() {
       })
       .then((json) => {
         localStorage.setItem('user', JSON.stringify(json));
-        localStorage.setItem('myKey_expiration', new Date().getTime() + 10000);
         history('/home');
       }).catch((err) => {
         setStatus(true);
@@ -138,7 +137,7 @@ function Login() {
                   Sign Up
                 </Link>
               </Grid>
-              <Grid item>
+              <Grid item display="none">
                 <Link href="#" id="link_c">
                     Forgot password?
                 </Link>

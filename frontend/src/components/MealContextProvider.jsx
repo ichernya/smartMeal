@@ -5,11 +5,16 @@ import parsePlanData from './parser.jsx';
 const MealsContext = createContext();
 
 // Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (setMeal, startWeek) => {
+const getMealsForWeek = (setMeal) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
+  // calculates the start and end of the week
+  const currentDay = new Date();
+  const dateOffset = currentDay.getDay();
+  const startWeek = new Date();
+  startWeek.setDate(currentDay.getDate() - dateOffset);
   const start = startWeek.toISOString().split('T')[0];
   if (!userId || !bearerToken) {
     // User has not logged in or has timeed out
@@ -40,9 +45,8 @@ const testIngredientList = {
     'ingredients': {
       'Beef': {
         'checked': false,
-        'quantity': 80,
+        'amount': 65,
         'unit': 'Ton',
-        'pricePerUnitWeight': '$20',
       },
     },
   },
@@ -53,15 +57,13 @@ const testIngredientList = {
     'ingredients': {
       'Whole milk': {
         'checked': true,
-        'quantity': 44,
+        'amount': 33,
         'unit': 'liters',
-        'pricePerUnitWeight': '$20',
       },
       'Cheese': {
         'checked': false,
-        'quantity': 22,
+        'amount': 22,
         'unit': 'Ton',
-        'pricePerUnitWeight': '$20',
       },
     },
   },
@@ -70,62 +72,15 @@ const testIngredientList = {
     'amountChecked': 0,
     'hidden': false,
     'ingredients': {
-      'Jalepeno': {
+      'Baby Bella Mushrooms': {
         'checked': false,
-        'quantity': 48,
+        'amount': 36,
         'unit': 'Ton',
-        'pricePerUnitWeight': '$20',
       },
     },
   },
 };
 
-const testMeal = {
-  'recipeid': 1,
-  'dishname': 'Beef stew',
-  'portion': 1,
-  'ingredients': {
-    'Beef': {
-      'quantity': 15,
-      'unit': 'Ton',
-    },
-    'Whole milk': {
-      'quantity': 11,
-      'unit': 'litter',
-    },
-    'Jalepeno': {
-      'quantity': 12,
-      'unit': 'Ton',
-    },
-  },
-  'ingredientam': 3,
-  'imagedata': '',
-  'vegan': false,
-  'halal': true,
-  'healthy': false,
-  'kosher': true,
-};
-const testMeal1 = {
-  'recipeid': 1,
-  'portion': 2,
-  'dishname': 'Beef Stick',
-  'ingredients': {
-    'Beef': {
-      'quantity': 10,
-      'unit': 'Ton',
-    },
-    'Cheese': {
-      'quantity': 11,
-      'unit': 'Ton',
-    },
-  },
-  'ingredientam': 2,
-  'imagedata': '',
-  'vegan': false,
-  'halal': true,
-  'healthy': false,
-  'kosher': true,
-};
 
 export const MealsProvider = ({children}) => {
   // calculates the start and end of the week
@@ -140,10 +95,9 @@ export const MealsProvider = ({children}) => {
     `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
 
   const [mealPlan, setPlan] = React.useState(null);
-
   useEffect(() => {
     // Grab the meals for the week when loading the page
-    getMealsForWeek(setPlan, startWeek);
+    getMealsForWeek(setPlan);
   }, []);
 
   const [ingredientList, setIngredientList] = useState({});
@@ -154,7 +108,7 @@ export const MealsProvider = ({children}) => {
       'name': 'Pick an item from the list',
       'img': '',
       'pricePerUnitWeight': 'by clicking on the name of the item',
-      'quantity': '',
+      'amount': '',
       'category': '',
     },
   );

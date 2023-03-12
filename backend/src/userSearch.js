@@ -20,23 +20,33 @@ const pool = new Pool({
 //      userInput
 // need to return to frontend
 //      return every hit on either ingredients or on dishname
-const userQuery = async (userInput) => {
+
+//    {"Chicken Breast":{"amount": "4","unit":"skinless chicken breast halves"}
+const userQuery = async (userInput, userid) => {
     // unnest used to unwrap array in the database
-    const select = `SELECT * FROM recipes WHERE LOWER(dishname)LIKE LOWER($1) 
-                    UNION 
+    const select = `SELECT * FROM recipes
+                        WHERE 
+                            LOWER(dishname)LIKE LOWER($1) 
+                            AND vegan = (SELECT vegan FROM users WHERE userid = $2::integer)
+                            AND halal = (SELECT halal FROM users WHERE userid = $2::integer)
+                            AND healthy = (SELECT healthy FROM users WHERE userid = $2::integer)
+                            AND kosher = (SELECT kosher FROM users WHERE userid = $2::integer)
+                                UNION 
                     SELECT * FROM recipes WHERE EXISTS 
-                    (SELECT FROM unnest(ingredients) elem WHERE LOWER(elem) LIKE LOWER($1))`
+                        (SELECT FROM jsonb_each(recipes.ingredients) AS food(food_key, food_value)  
+                            WHERE LOWER(food_key) LIKE LOWER($1))`
     const query = {
         text: select,
-        values: [ '%' + userInput + '%' ]
+        values: [ '%' + userInput + '%' , userid]
     }
     const {rows} = await pool.query(query);
     return rows;
 }
 
+
 exports.getUserQuery = async (req, res) => {
     // caller function that awaits and returns entire recipe for hit, send 404 on error
-    const user = await userQuery(req.query.userInput);
+    const user = await userQuery(req.query.userInput, req.query.userid);
     if (user) {
         res.status(200).json(user);
     }

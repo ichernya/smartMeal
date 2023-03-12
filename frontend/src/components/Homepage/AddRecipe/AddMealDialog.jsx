@@ -161,17 +161,17 @@ function AddMealDialog(props) {
     const file = e.target.files[0];
 
     await new Promise((resolve, reject) => {
-        const reader = new FileReader();
+      const reader = new FileReader();
 
-        reader.onload = (event) => {
-            resolve(event.target.result);
-        };
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
 
-        reader.onerror = (err) => {
-            reject(err);
-        };
+      reader.onerror = (err) => {
+        reject(err);
+      };
 
-        reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     }).then((file) => (setImageData(file)));
   }
 
@@ -224,13 +224,13 @@ function AddMealDialog(props) {
   const addRecipe = (event) => {
     // Initializing the dictionary
     const recipe ={dishName: recipeName,
-                  ingredients: formatIngredients(ingredients),
-                  imageData: imageData,
-                  vegan: dietList.includes('Vegan') ? true : false,
-                  halal: dietList.includes('Halal') ? true : false,
-                  healthy: dietList.includes('Healthy') ? true : false,
-                  kosher: dietList.includes('Kosher') ? true : false,
-                };
+      ingredients: formatIngredients(ingredients),
+      imageData: imageData,
+      vegan: dietList.includes('Vegan') ? true : false,
+      halal: dietList.includes('Halal') ? true : false,
+      healthy: dietList.includes('Healthy') ? true : false,
+      kosher: dietList.includes('Kosher') ? true : false,
+    };
     console.log(recipe);
     console.log(JSON.stringify(recipe));
 
@@ -242,12 +242,12 @@ function AddMealDialog(props) {
 
       // Call the API
       fetch(`http://localhost:3010/v0/recipes`, {
-      method: 'POST',
-      body: JSON.stringify(recipe),
-      headers: new Headers({
-        'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        method: 'POST',
+        body: JSON.stringify(recipe),
+        headers: new Headers({
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         }),
       });
       setAddMeal(false);
@@ -367,8 +367,8 @@ function AddMealDialog(props) {
                 size="large"
                 onClick={removeImage}
                 sx={{mt: 2}}>
-                  <HighlightOffIcon fontSize="large"
-                    className="brownColor"/>
+                <HighlightOffIcon fontSize="large"
+                  className="brownColor"/>
               </IconButton>
             </Grid>
             <Grid item xs={12} md={7}>

@@ -79,6 +79,12 @@ paths:
             type: string
           required: true
           description: what the user gives
+        - in: query
+          name: userid
+          schema:
+            type: integer
+          required: true
+          description: userid so we can check the tags for query
       responses:
         200:
           description: OK
@@ -356,6 +362,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /ingredients:
+    get:
+      description: returns food group
+      parameters:
+        - name: ingredient
+          in: query
+          schema:
+            type: string
+          required: true
+          description: ingredient name
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingredientList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Error:
@@ -426,24 +456,24 @@ components:
       properties:
         recipeid:
           type: integer
-        dishname:
-          type: string
-        ingredients:
-          type: object
-          items:
-            type: string
-        ingredientAm:
-          type: integer
-        imageData:
-          type: string
-        vegan:
-          type: boolean
-        halal:
-          type: boolean
-        healthy:
-          type: boolean
-        kosher:
-          type: boolean
+#        dishname:
+#          type: string
+#        ingredients:
+#          type: object
+#          items:
+#            type: string
+#        ingredientAm:
+#          type: integer
+#        imageData:
+#          type: string
+#        vegan:
+#          type: boolean
+#        halal:
+#          type: boolean
+#        healthy:
+#          type: boolean
+#        kosher:
+#          type: boolean
 
     putMealToUser:
       properties:
@@ -529,6 +559,15 @@ components:
         mealsid:
           type: integer
         mealName:
+          type: string
+
+    ingredientList:
+      items:
+        $ref: '#/components/schemas/ingredients'
+
+    ingredients:
+      properties:
+        name:
           type: string
 
 

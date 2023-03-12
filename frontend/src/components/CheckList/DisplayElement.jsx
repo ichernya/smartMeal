@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
-import Slider from '@mui/material/Slider';
 import defaultImage from '../../assets/qqq.png';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -16,6 +15,42 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
+// eslint-disable-next-line no-unused-vars
+const postNewRecipe = (userId, newRecipe) => {
+  const parsedRecipe = {...newRecipe};
+  parsedRecipe.ingredients = [];
+  delete parsedRecipe.recipeid;
+  console.log(newRecipe);
+  Object.keys(newRecipe.ingredients).forEach((ingredient) => {
+    const ingredientParam = [];
+    ingredientParam.push(ingredient);
+    ingredientParam.push(newRecipe.ingredients[ingredient].unit);
+    ingredientParam.push(newRecipe.ingredients[ingredient].amount);
+    parsedRecipe.ingredients.push(ingredientParam);
+  });
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  console.log(parsedRecipe);
+  fetch(
+    `http://localhost:3010/v0/recipes`, {
+      method: 'POST',
+      body: JSON.stringify(parsedRecipe),
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => {
+    if (!res.ok) {
+      throw res.json();
+    }
+    return res;
+  }).then((id) => {
+    console.log(id);
+  })
+  ;
+};
+
 /**
  * Left side view of the checklist where the user can select an ingredient
  * and swap it out with another ingredient
@@ -25,11 +60,10 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives, meals} = useMeals();
+    alteratives, setAlteratives, mealPlan, setPlan} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
-  const [portion, setPortion] = useState(0);
   const [isView, setView] = useState(false);
   // Hide the alterative ingredient list of the selected category
   const handleHidden = (a) => {
@@ -46,7 +80,8 @@ function DisplayElement() {
     setChosenIngredient({
       'name': 'Pick an item from the list',
       'img': '',
-      'quantity': '',
+      'amount': '',
+      'category': '',
     });
     setAlteratives({});
     setView(false);
@@ -57,33 +92,35 @@ function DisplayElement() {
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
     const newListElement =
-      oldListElement['ingredients'][isChosenIngredient.name];
+      oldListElement.ingredients[isChosenIngredient.name];
     const oldMealsWithIngredient = mealsWithIngredient;
-    const newChosenMeal = oldMealsWithIngredient[activeStep];
+    const specificMealtoChange = oldMealsWithIngredient[activeStep];
+    const newChosenMeal = specificMealtoChange.meal;
     const ingredientElement =
-    newChosenMeal['ingredients'][isChosenIngredient.name];
-    newListElement['quantity'] -= ingredientElement['quantity'];
-    // If the quantity in the checklist is 0
-    if (newListElement['quantity'] === 0) {
-      if (oldListElement['checked'] === true) {
-        --oldListElement['amountChecked'];
+    newChosenMeal.ingredients[isChosenIngredient.name];
+    newListElement.amount -= ingredientElement.amount;
+    // CheckList update
+    // If the amount in the checklist is 0
+    if (newListElement.amount === 0) {
+      if (oldListElement.checked === true) {
+        --oldListElement.amountChecked;
       }
-      --oldListElement['amount'];
+      --oldListElement.amount;
       // Remove the old element from the checklist
-      delete oldListElement['ingredients'][isChosenIngredient.name];
+      delete oldListElement.ingredients[isChosenIngredient.name];
       setAlteratives({});
     } else {
-      ++oldListElement['amount'];
+      ++oldListElement.amount;
     }
     // If the intended swap ingredient is already in the checklist
-    if (oldListElement['ingredients'][selectedAlterative]) {
-      oldListElement['amountChecked'] -= 1;
-      oldListElement['ingredients'][selectedAlterative]['quantity'] +=
-        ingredientElement['quantity'];
-      oldListElement['ingredients'][selectedAlterative]['checked'] = false;
+    if (oldListElement.ingredients[selectedAlterative]) {
+      oldListElement.amountChecked -= 1;
+      oldListElement.ingredients[selectedAlterative].amount +=
+        ingredientElement.amount;
+      oldListElement.ingredients[selectedAlterative].checked = false;
     } else { // The intended ingredient is not in the checklist
       const newIngredient = {...ingredientElement};
-      newIngredient['checked'] = false;
+      newIngredient.checked = false;
       oldListElement['ingredients'][selectedAlterative] = newIngredient;
     }
     // From the list of all the meals with the ingredient
@@ -98,32 +135,65 @@ function DisplayElement() {
     if (activeStep === oldMealsWithIngredient.length) {
       setActiveStep(activeStep - 1);
     }
-    console.log(meals);
+    // Recipes Update
+    // Create a deep copy
+    const newMeals = JSON.parse(JSON.stringify(mealPlan));
+    // Update the specific meal step is on
+    const specificMeal =
+      newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
+    // Changing the nmae
+    specificMeal.ingredients[selectedAlterative] =
+      specificMeal.ingredients[isChosenIngredient.name];
+    // Remove the old name
+    delete specificMeal.ingredients[isChosenIngredient.name];
+    console.log(postNewRecipe(null, specificMeal));
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
-    // setChosenIngredient({...isChosenIngredient, 'name': selectedAlterative});
+    setPlan(newMeals);
   };
 
   // Change one ingredient for all the meals with that ingredient
   const handleChangeAll = () => {
+    // Updating CheckList
     const newList = {...ingredientList};
     const oldListElement = newList[isChosenIngredient.category];
-    const newListElement = oldListElement['ingredients'];
-    newListElement[selectedAlterative] =
+    const newListElement = oldListElement.ingredients;
+    if (Object.keys(newListElement).includes(selectedAlterative)) {
+      oldListElement.amount -= 1;
+      if (newListElement[isChosenIngredient.name].checked) {
+        oldListElement.amountChecked -= 1;
+      }
+      newListElement[selectedAlterative].amount +=
+        newListElement[isChosenIngredient.name].amount;
+    } else {
+      newListElement[selectedAlterative] =
       newListElement[isChosenIngredient.name];
-    if (newListElement[selectedAlterative]['checked']) {
-      newListElement[selectedAlterative]['checked'] = false;
-      oldListElement['amountChecked'] -= 1;
+    }
+    if (newListElement[selectedAlterative].checked) {
+      newListElement[selectedAlterative].checked = false;
+      oldListElement.amountChecked -= 1;
     };
-    delete newListElement[isChosenIngredient['name']];
+    delete newListElement[isChosenIngredient.name];
+    // Updating the recipes
+    // Creating a deep copy
+    const newMeals = JSON.parse(JSON.stringify(mealPlan));
+    // Go over all the meal that has the ingredient
+    // and change the ingredient in it
+    mealsWithIngredient.forEach((e) => {
+      const specificMeal = newMeals[e.date][e.timeOfDay];
+      specificMeal.ingredients[selectedAlterative] =
+        specificMeal.ingredients[isChosenIngredient.name];
+      delete specificMeal.ingredients[isChosenIngredient.name];
+    });
     setIngredientList(newList);
+    setPlan(newMeals);
     handleCancel();
   };
 
   // On select alterantive create a copy of the alteratives
   useEffect(() => {
-    if (alteratives && Object.keys(alteratives).length !== 0) {
+    if (!alteratives || Object.keys(alteratives).length > 0) {
       setModifiedState(alteratives);
       setSelectedAlterative(null);
       setActiveStep(0);
@@ -131,7 +201,6 @@ function DisplayElement() {
     } else {
       setModifiedState({});
     }
-    setPortion();
   }, [alteratives]);
   // Move to the next meal
   const handleNext = () => {
@@ -141,8 +210,19 @@ function DisplayElement() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const handleSliderChange = (event, newValue) => {
-    setPortion(newValue);
+  const days = {
+    'mon': 'Monday',
+    'tues': 'Tuesday',
+    'wed': 'Wednesday',
+    'thrus': 'Thrusday',
+    'fri': 'Friday',
+    'sat': 'Saturday',
+    'sun': 'Sunday',
+  };
+  const timeOfTheDay = {
+    0: 'breakfast',
+    1: 'lunch',
+    2: 'dinner',
   };
   return (
     <Grid
@@ -201,7 +281,10 @@ function DisplayElement() {
                 <TextField
                   label="Meal"
                   variant="standard"
-                  value={mealsWithIngredient[activeStep].dishname}
+                  value={`${mealsWithIngredient[activeStep].meal.dishname}` +
+                    ` - ${days[mealsWithIngredient[activeStep].date]}` +
+              ` ${timeOfTheDay[mealsWithIngredient[activeStep].timeOfDay]}`
+                  }
                   inputProps={{min: 0, style: {textAlign: 'center'}}}
                   sx={{
                     '& .MuiInputBase-input.Mui-disabled': {
@@ -224,14 +307,6 @@ function DisplayElement() {
                 fullWidth
                 disabled
               />
-              {mealsWithIngredient[activeStep] ?
-                <Slider
-                  sx={{width: '75%', paddingTop: '3vh'}}
-                  aria-labelledby="input-slider"
-                  step={1}
-                  value={portion}
-                  onChange={handleSliderChange}
-                />: <div/>}
             </div> :
             isChosenIngredient.name
           }
