@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 
+import {Alert} from '@mui/material';
 import {useDimensions} from '../DimensionsProvider.jsx';
 import {useMeals} from '../MealContextProvider.jsx';
 import Calendar from './Calendar.jsx';
@@ -82,6 +83,8 @@ function Homepage(props) {
   const [changeName, setChangeName] = React.useState(false);
   // Represents whether to display the add meal dialog
   const [addMeal, setAddMeal] = React.useState(false);
+  // Represent whether to display the Alert
+  const [showAlert, setShowAlert] = React.useState(false);
   // Represents the alignments of the tags
   const [alignments, setAlignment] = React.useState({});
 
@@ -129,15 +132,23 @@ function Homepage(props) {
     setName(value);
   };
 
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
 
   return (
     <HomeContext.Provider
       value={{
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
-        alignments, setAlignment, addMeal, setAddMeal,
+        filters, setFilter, alignments, setAlignment,
+        addMeal, setAddMeal, showAlert, setShowAlert
       }}
     >
+      {showAlert &&
+        <Alert onClose={closeAlert} severity="success"
+          style={{position: 'fixed', zIndex: 100}}>Recipe added succesfully!</Alert>
+      }
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}

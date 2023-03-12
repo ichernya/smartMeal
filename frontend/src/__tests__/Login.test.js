@@ -1,9 +1,9 @@
-import {render, fireEvent} from '@testing-library/react';
+import {act, waitFor, render, fireEvent} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {screen} from '@testing-library/react';
 import {rest} from 'msw';
 import {setupServer} from 'msw/node';
-import {configure} from '@testing-library/dom';
+import {configure} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import App from '../App.js';
@@ -12,7 +12,7 @@ const URL = 'http://localhost:3010/v0';
 window.alert = jest.fn();
 
 const currentDay = new Date();
-const dateOffset = currentDay. getDay();
+const dateOffset = currentDay.getDay();
 const startDay = new Date();
 startDay.setDate(currentDay.getDate() - dateOffset);
 const start = startDay.toISOString().split('T')[0];
@@ -51,146 +51,146 @@ const server = setupServer(
         ctx.json(
           [
             {
-              "recipeid": 1,
-              "dishname": "Mushroom Poppers",
-              "ingredients": {
-                "Cheese": {
-                  "unit": "cups",
-                  "amount": "2"
+              'recipeid': 1,
+              'dishname': 'Mushroom Poppers',
+              'ingredients': {
+                'Cheese': {
+                  'unit': 'cups',
+                  'amount': '2',
                 },
-                "Jalepeno": {
-                  "unit": "jalepeno",
-                  "amount": "4"
+                'Jalepeno': {
+                  'unit': 'jalepeno',
+                  'amount': '4',
                 },
-                "Baby Bella Mushrooms": {
-                  "unit": "mushrooms",
-                  "amount": "20"
-                }
+                'Baby Bella Mushrooms': {
+                  'unit': 'mushrooms',
+                  'amount': '20',
+                },
               },
-              "ingredientam": 3,
-              "imagedata": "/test.png",
-              "vegan": false,
-              "halal": true,
-              "healthy": false,
-              "kosher": true
+              'ingredientam': 3,
+              'imagedata': '/test.png',
+              'vegan': false,
+              'halal': true,
+              'healthy': false,
+              'kosher': true,
             },
             {
-              "recipeid": 2,
-              "dishname": "Chicken Parmesan",
-              "ingredients": {
-                "Pasta": {
-                  "unit": "ounces",
-                  "amount": "8"
+              'recipeid': 2,
+              'dishname': 'Chicken Parmesan',
+              'ingredients': {
+                'Pasta': {
+                  'unit': 'ounces',
+                  'amount': '8',
                 },
-                "Butter": {
-                  "unit": "nobs",
-                  "amount": "3"
+                'Butter': {
+                  'unit': 'nobs',
+                  'amount': '3',
                 },
-                "Parmesan": {
-                  "unit": "cup",
-                  "amount": "1"
+                'Parmesan': {
+                  'unit': 'cup',
+                  'amount': '1',
                 },
-                "Chicken Breast": {
-                  "unit": "skinless chicken breast halves",
-                  "amount": "4"
-                }
+                'Chicken Breast': {
+                  'unit': 'skinless chicken breast halves',
+                  'amount': '4',
+                },
               },
-              "ingredientam": 4,
-              "imagedata": "/test.png",
-              "vegan": false,
-              "halal": true,
-              "healthy": true,
-              "kosher": true
+              'ingredientam': 4,
+              'imagedata': '/test.png',
+              'vegan': false,
+              'halal': true,
+              'healthy': true,
+              'kosher': true,
             },
             {
-              "recipeid": 3,
-              "dishname": "Cheeseburger",
-              "ingredients": {
-                "Buns": {
-                  "unit": "buns",
-                  "amount": "2"
+              'recipeid': 3,
+              'dishname': 'Cheeseburger',
+              'ingredients': {
+                'Buns': {
+                  'unit': 'buns',
+                  'amount': '2',
                 },
-                "Ketchup": {
-                  "unit": "tablespoon",
-                  "amount": "1"
+                'Ketchup': {
+                  'unit': 'tablespoon',
+                  'amount': '1',
                 },
-                "Lettuce": {
-                  "unit": "N/A",
-                  "amount": "1"
+                'Lettuce': {
+                  'unit': 'N/A',
+                  'amount': '1',
                 },
-                "Pickels": {
-                  "unit": "N/A",
-                  "amount": "4"
+                'Pickels': {
+                  'unit': 'N/A',
+                  'amount': '4',
                 },
-                "Mayonaise": {
-                  "unit": "tablespoon",
-                  "amount": "1"
+                'Mayonaise': {
+                  'unit': 'tablespoon',
+                  'amount': '1',
                 },
-                "Beef Patty": {
-                  "unit": "pounds",
-                  "amount": ".25"
+                'Beef Patty': {
+                  'unit': 'pounds',
+                  'amount': '.25',
                 },
-                "American Cheddar": {
-                  "unit": "slices",
-                  "amount": "2"
-                }
+                'American Cheddar': {
+                  'unit': 'slices',
+                  'amount': '2',
+                },
               },
-              "ingredientam": 7,
-              "imagedata": "/backend/images/cheeseburger.png",
-              "vegan": false,
-              "halal": true,
-              "healthy": false,
-              "kosher": true
+              'ingredientam': 7,
+              'imagedata': '/backend/images/cheeseburger.png',
+              'vegan': false,
+              'halal': true,
+              'healthy': false,
+              'kosher': true,
             },
             {
-              "recipeid": 4,
-              "dishname": "Pepperoni Pizza",
-              "ingredients": {
-                "Pepperoni": {
-                  "unit": "N/A",
-                  "amount": "15"
+              'recipeid': 4,
+              'dishname': 'Pepperoni Pizza',
+              'ingredients': {
+                'Pepperoni': {
+                  'unit': 'N/A',
+                  'amount': '15',
                 },
-                "Pizza Dough": {
-                  "unit": "pound",
-                  "amount": "1"
+                'Pizza Dough': {
+                  'unit': 'pound',
+                  'amount': '1',
                 },
-                "Mozzarella Cheese": {
-                  "unit": "slices",
-                  "amount": "2"
-                }
+                'Mozzarella Cheese': {
+                  'unit': 'slices',
+                  'amount': '2',
+                },
               },
-              "ingredientam": 3,
-              "imagedata": "/test.png",
-              "vegan": false,
-              "halal": false,
-              "healthy": false,
-              "kosher": false
+              'ingredientam': 3,
+              'imagedata': '/test.png',
+              'vegan': false,
+              'halal': false,
+              'healthy': false,
+              'kosher': false,
             },
             {
-              "recipeid": 5,
-              "dishname": "Burger",
-              "ingredients": {
-                "Egg": {
-                  "unit": "N/A",
-                  "amount": "1"
+              'recipeid': 5,
+              'dishname': 'Burger',
+              'ingredients': {
+                'Egg': {
+                  'unit': 'N/A',
+                  'amount': '1',
                 },
-                "Rice": {
-                  "unit": "g",
-                  "amount": "4"
+                'Rice': {
+                  'unit': 'g',
+                  'amount': '4',
                 },
-                "Burger patty": {
-                  "unit": "pounds",
-                  "amount": ".25"
-                }
+                'Burger patty': {
+                  'unit': 'pounds',
+                  'amount': '.25',
+                },
               },
-              "ingredientam": 3,
-              "imagedata": "/test.png",
-              "vegan": false,
-              "halal": true,
-              "healthy": false,
-              "kosher": true
-            }
-          ]
+              'ingredientam': 3,
+              'imagedata': '/test.png',
+              'vegan': false,
+              'halal': true,
+              'healthy': false,
+              'kosher': true,
+            },
+          ],
         ));
     }
   }),
@@ -201,18 +201,18 @@ const server = setupServer(
       ctx.json(
         [
           {
-            "firstday": start,
-            "mealname": "New Meal",
-            "public": true,
-            "mealweek": {
-              "id": "3"
+            'firstday': start,
+            'mealname': 'New Meal',
+            'public': true,
+            'mealweek': {
+              'id': '3',
             },
-            "mealsid": 3,
-            "recipes": [
-              null
-            ]
-          }
-        ]
+            'mealsid': 3,
+            'recipes': [
+              null,
+            ],
+          },
+        ],
       ),
     );
   }),
@@ -222,11 +222,11 @@ const server = setupServer(
       ctx.status(200),
       ctx.json(
         {
-          "vegan": false,
-          "halal": false,
-          "healthy": true,
-          "kosher": false
-        }
+          'vegan': false,
+          'halal': false,
+          'healthy': true,
+          'kosher': false,
+        },
       ),
     );
   }),
@@ -254,7 +254,9 @@ test('Invalid Login', async () => {
     {target: {value: 'test@pa.edu'}});
   fireEvent.change(screen.getByLabelText('Password *'),
     {target: {value: 'wringpass'}});
-  fireEvent.click(screen.getByText('Sign In'));
+  act(() => {
+    fireEvent.click(screen.getByText('Sign In'));
+  });
   await screen.findByText('Sign In');
 });
 
@@ -270,7 +272,14 @@ test('Login', async () => {
     {target: {value: 'molly@books.com'}});
   fireEvent.change(screen.getByLabelText('Password *'),
     {target: {value: 'mollymember'}});
-  fireEvent.click(screen.getByText('Sign In'));
+  act(() => {
+    fireEvent.click(screen.getByText('Sign In'));
+  });
+
+  waitFor(() => {
+    const home = screen.findByText('New Meal');
+    expect(home).toBeInTheDocument();
+  });
   await screen.findByText('Mushroom Poppers');
   await screen.findByText('Cheeseburger');
 });

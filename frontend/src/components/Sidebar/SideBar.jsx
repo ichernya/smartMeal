@@ -102,7 +102,7 @@ function TheDrawer() {
               open={open}
             >
               <DrawerHeader className='greyBack'>
-                <IconButton onClick={handleDrawer}>
+                <IconButton onClick={handleDrawer} id='openSidebar'>
                   {open ? <ChevronLeftIcon /> :
                     <ChevronRightIcon />}
                 </IconButton>

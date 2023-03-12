@@ -62,16 +62,14 @@ const searchRecipes = (query, setMenu) => {
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
   const userId = user ? user.userid : '';
-  console.log(`http://localhost:3010/v0/userSearch?userInput=${query}&userid=${userId}`);
   fetch(`http://localhost:3010/v0/userSearch?userInput=${query}&userid=${userId}`, {
-    method: 'get',
+    method: 'GET',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
   })
     .then((response) => {
-      console.log(33);
       return response.json();
     })
     .then((json) => {
@@ -111,7 +109,6 @@ function Menu(props) {
   React.useEffect(() => {
     // Update search state
     if (search) {
-      console.log(search);
       searchRecipes(search, setMenu);
     }
   }, [search]);
@@ -163,6 +160,7 @@ function Menu(props) {
                   }}
                 >
                   <ImageList
+                    id={`menu${index}`}
                     onScroll={scroller}
                     ref={scrollRef}
                     className={'menu ' + menuClass}
@@ -175,7 +173,7 @@ function Menu(props) {
                           return <div key={ind + index}/>;
                         }
 
-                        const image = item['imageData'] ? item['imageData'] :
+                        const image = item['imagedata'] ? item['imagedata'] :
                           require('../../assets/default.png');
                         return (
                           <ImageListItem
@@ -185,10 +183,11 @@ function Menu(props) {
                             id={item['dishname']}
                           >
                             <img
-                              src={`${image}w=248&fit=crop&auto=format`}
+                              /* src={`${image}w=248&fit=crop&auto=format`}
                               srcSet={
                                 `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              }
+                              } */
+                              src={image}
                               alt={item['dishname']}
                               loading="lazy"
                               id={chosenFood === item ?
@@ -220,16 +219,16 @@ function Menu(props) {
         </Stack>
         <div className='stretch'/>
         <div id='btnList'>
-          <IconButton onClick={() => setAddMeal(!addMeal)}>
+          <IconButton onClick={() => setAddMeal(!addMeal)} id='addMeal'>
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>
-            <IconButton>
+            <IconButton id='checklist'>
               <FormatListBulletedIcon className='btn brownColor'/>
             </IconButton>
           </Link>
           <Link to='/mealplans'>
-            <IconButton>
+            <IconButton id='mealsPlans'>
               <LocalDiningIcon className='btn brownColor'/>
             </IconButton>
           </Link>
