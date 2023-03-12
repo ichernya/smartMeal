@@ -70,6 +70,7 @@ function Toggles(props) {
       <ToggleButton
         value={false}
         onClick={() => updateTags(name, false)}
+        id={`${name}False`}
         style={{
           color: value? '' : 'red',
         }}
@@ -79,6 +80,7 @@ function Toggles(props) {
       <ToggleButton
         value={true}
         onClick={() => updateTags(name, true)}
+        id={`${name}True`}
         style={{
           color: value ? 'green' : '',
         }}
@@ -101,14 +103,6 @@ function Tags(props) {
 
 
   const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
-
     setDrawer(open);
   };
 
@@ -162,19 +156,22 @@ function Tags(props) {
       anchor={'right'}
       open={tagsDrawer}
       onClose={toggleDrawer(false)}
+      id='tagsDrawer'
     >
       <div className='header'>
-        <IconButton onClick={toggleDrawer(false)}>
+        <IconButton onClick={toggleDrawer(false)} id='closeTags'>
           <CloseIcon/>
         </IconButton>
         <div className='stretch'/>
         <IconButton
           onClick={() => setAllState(false)}
+          id='allFalse'
         >
           <MoodBadIcon id='red'/>
         </IconButton>
         <IconButton
           onClick={() => setAllState(true)}
+          id='allTrue'
         >
           <SentimentVerySatisfiedIcon id='green'/>
         </IconButton>
