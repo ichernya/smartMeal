@@ -137,11 +137,6 @@ function Menu(props) {
     topMenu.current.scrollLeft = scroll.target.scrollLeft;
   };
 
-  //test function
-  const test = () => {
-    console.log(recipes);
-  }
-
   return (
     <div>
       <Tools HomeContext={props['HomeContext']}/>
@@ -227,9 +222,6 @@ function Menu(props) {
         <div className='stretch'/>
         <div id='btnList'>
           <IconButton onClick={() => setAddMeal(!addMeal)}>
-            <AddIcon className='btn brownColor'/>
-          </IconButton>
-          <IconButton onClick={test}>
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>
