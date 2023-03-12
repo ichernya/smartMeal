@@ -543,6 +543,7 @@ components:
           type: integer
         checklist:
           type: string
+
     recipe:
       properties:
         recipeid:
@@ -636,6 +637,8 @@ components:
           type: string
         ingredient:
           type: string
+        check:
+          type: boolean
 
     putMealToUserNew:
       properties:
