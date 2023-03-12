@@ -124,6 +124,11 @@ function Menu(props) {
     topMenu.current.scrollLeft = scroll.target.scrollLeft;
   };
 
+  //test function
+  const test = () => {
+    console.log(recipes);
+  }
+
   return (
     <div>
       <Tools HomeContext={props['HomeContext']}/>
@@ -162,7 +167,7 @@ function Menu(props) {
                           return <div key={ind + index}/>;
                         }
 
-                        const image = item['imageData'] ? item['imageData'] :
+                        const image = item['imagedata'] ? item['imagedata'] :
                           require('../../assets/ass.png');
                         return (
                           <ImageListItem
@@ -171,10 +176,11 @@ function Menu(props) {
                             key={item['dishname'] + ind + index}
                           >
                             <img
-                              src={`${image}w=248&fit=crop&auto=format`}
+                              /* src={`${image}w=248&fit=crop&auto=format`}
                               srcSet={
                                 `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              }
+                              } */
+                              src={image}
                               alt={item['dishname']}
                               loading="lazy"
                               id={chosenFood === item ?
@@ -207,6 +213,9 @@ function Menu(props) {
         <div className='stretch'/>
         <div id='btnList'>
           <IconButton onClick={() => setAddMeal(!addMeal)}>
+            <AddIcon className='btn brownColor'/>
+          </IconButton>
+          <IconButton onClick={test}>
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>

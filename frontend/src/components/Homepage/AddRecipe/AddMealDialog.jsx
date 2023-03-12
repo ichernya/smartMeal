@@ -39,7 +39,7 @@ import '../../colors.css';
  * @return {JSX} Jsx
  */
 function AddMealDialog(props) {
-  const {addMeal, setAddMeal} = React.useContext(props['HomeContext']);
+  const {addMeal, setAddMeal, setShowAlert} = React.useContext(props['HomeContext']);
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -252,7 +252,7 @@ function AddMealDialog(props) {
       });
       setAddMeal(false);
       setErrorMessage('');
-      alert('Recipe added');
+      setShowAlert(true);
     } else { // Error handling
       setErrorMessage(
         '! You need to insert a title and at least one ingredient !');
