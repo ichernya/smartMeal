@@ -239,7 +239,7 @@ exports.pullGroceryList = async (req, res) => {
   }
   else {
     // we have to compare grocerylistinitial to grocerylist
-    res.status(200).json(grocerylist)
+    res.status(200).json(grocerylistInitial)
   }
   
 }
