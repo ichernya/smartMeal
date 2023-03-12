@@ -453,6 +453,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /groceryList:
+    get:
+      security:
+        - bearerAuth: []
+      description: retrieve meals that should be displayed on that date
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: mealsid
+        - in: query
+          name: firstDay
+          schema:
+            type: string
+          required: false
+          description: first day of that week
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putMealToUser'
+        404:
+          description: wrong date
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        201:
+          description: created checklist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createCheckList'
+
+
 components:
   schemas:
     Error:
@@ -468,7 +510,14 @@ components:
     recipes:
       items:
         $ref: '#/components/schemas/recipesJson'
-
+    createCheckList:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+        checklist:
+          type: string
     recipe:
       properties:
         recipeid:
