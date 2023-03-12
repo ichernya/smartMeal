@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {styled} from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -88,9 +88,10 @@ function Calendar(props) {
   // food used multiple times on unshift
   // Without keeping track of the count, the user could unselect with unshift
   // even if they havent added the selected item before
-  const [chosenFood, setChosen] = React.useState((selectedFood && selectedFood[0]) || null);
-  const [chosenUsed, setUsed] = React.useState((selectedFood && selectedFood[1]) || 0);
-
+  const [chosenFood, setChosen] =
+   useState((selectedFood && selectedFood[0]) || null);
+  const [chosenUsed, setUsed] =
+   useState((selectedFood && selectedFood[1]) || 0);
   React.useEffect(() => {
     if (selectedFood) {
       setChosen(selectedFood[0]);

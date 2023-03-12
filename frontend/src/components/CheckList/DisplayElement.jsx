@@ -26,7 +26,8 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives, mealPlan, setPlan, startWeek} = useMeals();
+    alteratives, setAlteratives,
+    mealPlan, setPlan, startWeek} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
@@ -107,14 +108,17 @@ function DisplayElement() {
     // Update the specific meal step is on
     const specificMeal =
       newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
-    // Changing the nmae
+    // Changing the name
     specificMeal.ingredients[selectedAlterative] =
       specificMeal.ingredients[isChosenIngredient.name];
+    specificMeal.ingredients[selectedAlterative].dishname =
+      `(${selectedAlterative}) ${specificMeal
+        .ingredients[selectedAlterative].dishname}`;
     // Remove the old name
+    specificMeal.dishname = `(${selectedAlterative}) ${specificMeal.dishname}`;
     delete specificMeal.ingredients[isChosenIngredient.name];
-    postChangeRecipe(1, specificMeal, {...mealPlan}, startWeek,
-      specificMealtoChange.date, specificMealtoChange.timeOfDay,
-      selectedAlterative);
+    postChangeRecipe(specificMeal, {...mealPlan}, startWeek,
+      specificMealtoChange.date, specificMealtoChange.timeOfDay);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -160,7 +164,7 @@ function DisplayElement() {
     });
     setIngredientList(newList);
     setPlan(newMeals);
-    postChangeAllRecipes(1, mealsWithIngredient, {...mealPlan},
+    postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
       startWeek);
     handleCancel();
   };

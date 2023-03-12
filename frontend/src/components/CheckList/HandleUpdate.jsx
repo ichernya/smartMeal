@@ -11,8 +11,8 @@ const dateToIntConvert = (day) => {
   return dateMap[day];
 };
 
-export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
-  weekday, timeOfDay, newIngredient) => {
+export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
+  weekday, timeOfDay) => {
   const parsedRecipe = {...newRecipe};
   parsedRecipe.ingredients = [];
   delete parsedRecipe.recipeid;
@@ -23,7 +23,6 @@ export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
     ingredientParam.push(newRecipe.ingredients[ingredient].amount);
     parsedRecipe.ingredients.push(ingredientParam);
   });
-  parsedRecipe.dishname = `(${newIngredient}) ${parsedRecipe.dishname}`;
   // The first day of the week
   const startDay = startWeek.toISOString().split('T')[0];
   // The  day of the week that is being updated
@@ -42,6 +41,7 @@ export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
   }
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
+  const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
   fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
@@ -82,7 +82,7 @@ export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
     });
 };
 
-export const postChangeAllRecipes = (userId, mealsWithIngredient, mealPlan,
+export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
   startWeek) => {
   const toChangeDayMap = {
     'sun': {},
@@ -108,10 +108,9 @@ export const postChangeAllRecipes = (userId, mealsWithIngredient, mealPlan,
       uniqueMeals[meal.meal.recipeid]['index'] = [i];
     };
   });
-  console.log(uniqueMeals);
-  // TODO: Remove
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
+  const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
   Object.values(uniqueMeals).forEach((meal) => {
     const parsedRecipe = {...meal.meal};
@@ -124,7 +123,6 @@ export const postChangeAllRecipes = (userId, mealsWithIngredient, mealPlan,
       ingredientParam.push(meal.meal.ingredients[ingredient].amount);
       parsedRecipe.ingredients.push(ingredientParam);
     });
-    console.log(parsedRecipe);
     fetch('http://localhost:3010/v0/recipes', {
       method: 'POST',
       body: JSON.stringify(parsedRecipe),

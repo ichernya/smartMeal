@@ -114,6 +114,7 @@ function IndeterminateCheckbox() {
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
+    console.log(mealPlan);
     filterMealsForIngredients(mealPlan, setMealsWithIngredient,
       myIngredient);
   };

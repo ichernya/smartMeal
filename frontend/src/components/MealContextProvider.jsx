@@ -41,7 +41,7 @@ const testIngredientList = {
     'ingredients': {
       'Beef': {
         'checked': false,
-        'amount': 65,
+        'amount': 20,
         'unit': 'Ton',
       },
     },
