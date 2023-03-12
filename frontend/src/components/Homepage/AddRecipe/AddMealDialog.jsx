@@ -221,7 +221,12 @@ function AddMealDialog(props) {
   function formatIngredients(ingredients) {
     let resultArray = [];
     ingredients.forEach(function(ingredient) {
-      const ing = [ingredient.name, ingredient.quantity, ingredient.unit];
+      let ing;
+      if (ingredient.unit === 'unit'){
+        ing = [ingredient.name, ingredient.quantity, ingredient.name];
+      } else {
+        ing = [ingredient.name, ingredient.quantity, ingredient.unit];
+      }
       resultArray = [...resultArray, ing];
     });
     return resultArray;
