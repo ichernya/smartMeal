@@ -48,7 +48,6 @@ const userQuery = async (userInput, userid) => {
                             (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $2))
                             AND 
                             (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $2)))
-                            
                 UNION 
                     SELECT * FROM recipes WHERE
                     (vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $2))

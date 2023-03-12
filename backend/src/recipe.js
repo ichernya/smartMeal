@@ -71,7 +71,7 @@ exports.postRecipe = async (req, res) => {
     const newRecipe = {};
     //add the stuff here
     //dishname
-    newRecipe.dishname = req.body.dishName;
+    newRecipe.dishname = req.body.dishname;
 
     //create dictionary
     let ingredientsList = {};
