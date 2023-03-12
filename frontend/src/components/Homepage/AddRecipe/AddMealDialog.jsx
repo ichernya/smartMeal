@@ -29,7 +29,6 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import InputLabel from '@mui/material/InputLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
 import './AddMealDialog.css';
 import '../../colors.css';
 
@@ -277,7 +276,7 @@ function AddMealDialog(props) {
           <DialogContentText>
             You can add your own recipe adding a title,
             ingredients, diets and an optional URL image.<br/>
-            <Typography style={{color: 'red'}}>{errorMessage}</Typography>
+            {errorMessage}
           </DialogContentText>
           <Grid container component="main" direction="row" spacing={2}>
             <Grid item xs={12} md={5}>
