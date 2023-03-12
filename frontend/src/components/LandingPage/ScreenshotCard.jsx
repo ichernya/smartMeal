@@ -31,7 +31,7 @@ function MediaCard() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Link to='/login' class='center'>
+        <Link to='/login' className='center'>
           <Button size="small">Get started</Button>
         </Link>
       </CardActions>

@@ -29,6 +29,7 @@ function App() {
               <Route path={'/signup'} exact element={<Registration/>}/>
               <Route path={'/login'} exact element= {<Login/>}/>
               <Route path={'/'} exact element= {<LandingPage/>}/>
+              <Route path={'*'} exact element={<Error/>}/>
             </Routes>
           </BrowserRouter>
         </MealsProvider>
@@ -37,7 +38,6 @@ function App() {
   );
 }
 
-// <Route path={'*'} exact element={<Error/>}/>
 const RequireAuth = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {
