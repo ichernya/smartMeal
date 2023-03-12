@@ -71,7 +71,7 @@ exports.postRecipe = async (req, res) => {
     const newRecipe = {};
     //add the stuff here
     //dishname
-    newRecipe.dishname = req.body.dishName;
+    newRecipe.dishname = req.body.dishName; // this makes it null bc it cant find dishName from req.body
 
     //create dictionary
     let ingredientsList = {};
