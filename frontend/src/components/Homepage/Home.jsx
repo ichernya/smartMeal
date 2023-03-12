@@ -141,13 +141,15 @@ function Homepage(props) {
       value={{
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
-        filters, setFilter, alignments, setAlignment,
-        addMeal, setAddMeal, showAlert, setShowAlert
+        alignments, setAlignment,
+        addMeal, setAddMeal, showAlert, setShowAlert,
       }}
     >
       {showAlert &&
         <Alert onClose={closeAlert} severity="success"
-          style={{position: 'fixed', zIndex: 100}}>Recipe added succesfully!</Alert>
+          style={{position: 'fixed', zIndex: 100}}>
+            Recipe added succesfully!
+        </Alert>
       }
       <div
         tabIndex='0'
