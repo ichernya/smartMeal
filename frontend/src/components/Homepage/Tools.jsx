@@ -112,6 +112,7 @@ function Tools(props) {
         <Filter HomeContext={props['HomeContext']}/>
         <div className='stretch'/>
         <IconButton
+          id='filterOpen'
           onClick={() => setDrawer(true)}
         >
           <FilterAltIcon className='brownColor'/>

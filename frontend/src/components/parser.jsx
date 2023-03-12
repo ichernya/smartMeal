@@ -5,6 +5,7 @@
  */
 function parsePlanData(setMeal, json) {
   const data = json['mealweek'];
+  console.log(data);
   const mealPlan = {'mealname': json['mealname']};
   const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
   const TIMES = ['breakfast', 'lunch', 'dinner'];
@@ -32,7 +33,8 @@ function parsePlanData(setMeal, json) {
   ];
 
   // Represents the current day I'm getting the meal data for
-  const startDate = new Date(json['firstday']);
+  const [year, month, day] = json['firstday'].split('-');
+  const startDate = new Date(year, month - 1, day);
 
   for (const weekday of daysOfWeek) {
     const dateIso = startDate.toISOString().split('T')[0];
@@ -62,6 +64,7 @@ function parsePlanData(setMeal, json) {
     startDate.setDate(startDate.getDate() + 1);
   }
 
+  console.log(mealPlan);
   setMeal(mealPlan);
 };
 

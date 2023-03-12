@@ -25,10 +25,6 @@ const updateDietFilter = (diet, value) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   const body = {
     'mealsid': userId,
@@ -68,12 +64,14 @@ function Filter(props) {
     >
       <FormControl sx={{m: 1, width: '100%'}}>
         <Select
+          id='homeFilter'
           multiple
           value={Object.keys(alignments).filter((key) => alignments[key])}
-          input={<OutlinedInput id="select-multiple-chip"/>}
+          input={<OutlinedInput/>}
           renderValue={(selected) => (
             <Box
               className='tags'
+              id='homeFilters'
               onClick={() => setDrawer(true)}
             >
               {selected.map((name) =>
@@ -88,6 +86,7 @@ function Filter(props) {
               <MenuItem
                 key={name}
                 value={name}
+                id={`home${name}`}
                 onClick={() => handleChange(name)}
               >
                 {name}
