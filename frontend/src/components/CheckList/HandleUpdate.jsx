@@ -12,7 +12,7 @@ const dateToIntConvert = (day) => {
 };
 
 export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
-  weekday, timeOfDay) => {
+  weekday, timeOfDay, newIngredient) => {
   const parsedRecipe = {...newRecipe};
   parsedRecipe.ingredients = [];
   delete parsedRecipe.recipeid;
@@ -23,6 +23,7 @@ export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
     ingredientParam.push(newRecipe.ingredients[ingredient].amount);
     parsedRecipe.ingredients.push(ingredientParam);
   });
+  parsedRecipe.dishname = `(${newIngredient}) ${parsedRecipe.dishname}`;
   // The first day of the week
   const startDay = startWeek.toISOString().split('T')[0];
   // The  day of the week that is being updated
@@ -39,7 +40,6 @@ export const postChangeRecipe = (userId, newRecipe, mealForDay, startWeek,
     const time = TIMES[ind];
     update[time] = `${meal['recipeid']}`;
   }
-
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';

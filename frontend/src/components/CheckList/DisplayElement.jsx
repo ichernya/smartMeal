@@ -112,8 +112,9 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
-    postChangeRecipe(1, specificMeal, {...mealPlan},
-      startWeek, specificMealtoChange.date, specificMealtoChange.timeOfDay);
+    postChangeRecipe(1, specificMeal, {...mealPlan}, startWeek,
+      specificMealtoChange.date, specificMealtoChange.timeOfDay,
+      selectedAlterative);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
