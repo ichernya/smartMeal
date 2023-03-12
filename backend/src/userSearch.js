@@ -24,20 +24,50 @@ const pool = new Pool({
 //    {"Chicken Breast":{"amount": "4","unit":"skinless chicken breast halves"}
 const userQuery = async (userInput, userid) => {
     // unnest used to unwrap array in the database
+
+    const selecttest = `
+    
+    SELECT * FROM recipes 
+    WHERE 
+    ((vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $1))
+    AND 
+    (halal = false OR halal = (SELECT halal FROM users WHERE userid = $1))
+    AND 
+    (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $1))
+    AND 
+    (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $1)))
+    
+        `
     const select = `SELECT * FROM recipes
                         WHERE 
-                            LOWER(dishname)LIKE LOWER($1) 
-                            AND vegan = (SELECT vegan FROM users WHERE userid = $2::integer)
-                            AND halal = (SELECT halal FROM users WHERE userid = $2::integer)
-                            AND healthy = (SELECT healthy FROM users WHERE userid = $2::integer)
-                            AND kosher = (SELECT kosher FROM users WHERE userid = $2::integer)
-                                UNION 
-                    SELECT * FROM recipes WHERE EXISTS 
+                            LOWER(dishname) LIKE LOWER($1) AND (
+                            (vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $2))
+                            AND 
+                            (halal = false OR halal = (SELECT halal FROM users WHERE userid = $2))
+                            AND 
+                            (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $2))
+                            AND 
+                            (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $2)))
+                UNION 
+                    SELECT * FROM recipes WHERE
+                    (vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $2))
+                            AND 
+                            (halal = false OR halal = (SELECT halal FROM users WHERE userid = $2))
+                            AND 
+                            (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $2))
+                            AND 
+                            (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $2)) AND EXISTS 
                         (SELECT FROM jsonb_each(recipes.ingredients) AS food(food_key, food_value)  
-                            WHERE LOWER(food_key) LIKE LOWER($1))`
+                            WHERE LOWER(food_key) LIKE LOWER($1))
+                `
+                
     const query = {
         text: select,
         values: [ '%' + userInput + '%' , userid]
+    }
+    const query2 = {
+        text: selecttest,
+        values: [ userid]
     }
     const {rows} = await pool.query(query);
     return rows;

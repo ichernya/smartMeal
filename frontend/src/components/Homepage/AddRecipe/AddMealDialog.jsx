@@ -252,6 +252,7 @@ function AddMealDialog(props) {
       });
       setAddMeal(false);
       setErrorMessage('');
+      alert('Recipe added');
     } else { // Error handling
       setErrorMessage(
         '! You need to insert a title and at least one ingredient !');
