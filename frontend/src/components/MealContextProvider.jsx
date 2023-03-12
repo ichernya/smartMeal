@@ -104,8 +104,10 @@ export const MealsProvider = ({children}) => {
   const [userId, setId] = React.useState(id);
 
   useEffect(() => {
-    // Grab the meals for the week when loading the page
-    getMealsForWeek(setPlan, userId);
+    if (userId) {
+      // Grab the meals for the week when loading the page
+      getMealsForWeek(setPlan, userId);
+    }
   }, [userId]);
 
   const [ingredientList, setIngredientList] = useState({});

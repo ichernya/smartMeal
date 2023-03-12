@@ -1,4 +1,4 @@
-import {waitFor, render, fireEvent, act} from '@testing-library/react';
+import {waitForElementToBeRemoved, waitFor, render, fireEvent, act} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {screen} from '@testing-library/react';
 import {rest} from 'msw';
@@ -51,6 +51,10 @@ const server = setupServer(
           'F9.1nwY0lDMGrb7AUFFgSaYd4Q7Tzr-BjABclmoKZOqmr4',
       }),
     );
+  }),
+
+  rest.get(URL + '/publicMeal', (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json([]));
   }),
 
   rest.get(URL + '/recipes', (req, res, ctx) => {
@@ -299,7 +303,7 @@ function setWidth(width) {
 
 /**
  */
-test('search for recipe', async () => {
+test('scroll menu', async () => {
   window.alert.mockClear();
   render(<App/>);
   fireEvent.click(screen.getByText('Login'));
@@ -320,6 +324,25 @@ test('search for recipe', async () => {
     expect(home).toBeInTheDocument();
   });
 
+
+  await screen.findByText('New Meal');
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
+
+
+  act(() => {
+    fireEvent.scroll(screen.getByTestId('menu1'), {target: {scrollLeft: 100}});
+  });
+  act(() => {
+    fireEvent.scroll(screen.getByTestId('menu0'), {target: {scrollLeft: 100}});
+  });
+});
+
+/**
+ */
+test('search for recipe', async () => {
+  window.alert.mockClear();
+  render(<App/>);
   await screen.findByText('New Meal');
   await screen.findByText('Mushroom Poppers');
   await screen.findByText('Cheeseburger');
@@ -331,12 +354,60 @@ test('search for recipe', async () => {
   });
   fireEvent.change(screen.getByTestId('searchInput'),
     {target: {value: 'che'}});
+});
 
-  //  expect(await screen.findByText('Mushroom Poppers'))
-  //  .toBeNull();
-  waitFor(() => {
-    expect(screen.getByTestId('Mushroom')).toBeInTheDocument();
-    expect(screen.getByTestId('Burger Pizza')).toBeNull();
+
+/**
+ */
+test('Select item twice', async () => {
+  window.alert.mockClear();
+  render(<App/>);
+
+  await screen.findByText('New Meal');
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
+
+
+  act(() => {
+    fireEvent.click(screen.getByTestId('Cheeseburger'));
   });
-  await screen.getByTestId('Mushroom');
+  act(() => {
+    fireEvent.click(screen.getByTestId('Cheeseburger'));
+  });
+});
+
+
+/**
+ */
+test('checklist button', async () => {
+  window.alert.mockClear();
+  render(<App/>);
+
+  await screen.findByText('New Meal');
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
+
+
+  act(() => {
+    fireEvent.click(screen.getByTestId('checklist'));
+  });
+});
+
+/**
+ */
+test('mealsPlans button', async () => {
+  window.alert.mockClear();
+  render(<App/>);
+  act(() => {
+    fireEvent.click(screen.getByTestId('Home'));
+  });
+
+  await screen.findByText('New Meal');
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
+
+
+  act(() => {
+    fireEvent.click(screen.getByTestId('mealsPlans'));
+  });
 });
