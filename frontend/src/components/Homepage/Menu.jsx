@@ -61,7 +61,9 @@ const searchRecipes = (query, setMenu) => {
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
-  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}`, {
+  const userId = user ? user.userid : '';
+  console.log(`http://localhost:3010/v0/userSearch?userInput=${query}&userid=${userId}`);
+  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}&userid=${userId}`, {
     method: 'get',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -69,6 +71,7 @@ const searchRecipes = (query, setMenu) => {
     }),
   })
     .then((response) => {
+      console.log(33);
       return response.json();
     })
     .then((json) => {
@@ -108,6 +111,7 @@ function Menu(props) {
   React.useEffect(() => {
     // Update search state
     if (search) {
+      console.log(search);
       searchRecipes(search, setMenu);
     }
   }, [search]);

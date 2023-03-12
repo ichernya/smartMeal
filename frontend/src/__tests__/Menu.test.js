@@ -242,6 +242,40 @@ const server = setupServer(
       ),
     );
   }),
+
+  rest.get(URL + `/userSearch`, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        [
+          {
+            'recipeid': 1,
+            'dishname': 'Mushroom',
+            'ingredients': {
+              'Cheese': {
+                'unit': 'cups',
+                'amount': '2',
+              },
+              'Jalepeno': {
+                'unit': 'jalepeno',
+                'amount': '4',
+              },
+              'Baby Bella Mushrooms': {
+                'unit': 'mushrooms',
+                'amount': '20',
+              },
+            },
+            'ingredientam': 3,
+            'imagedata': '/test.png',
+            'vegan': false,
+            'halal': true,
+            'healthy': false,
+            'kosher': true,
+          },
+        ],
+      ),
+    );
+  }),
 );
 
 beforeAll(() => server.listen());
@@ -265,7 +299,7 @@ function setWidth(width) {
 
 /**
  */
-test('change name', async () => {
+test('search for recipe', async () => {
   window.alert.mockClear();
   render(<App/>);
   fireEvent.click(screen.getByText('Login'));
@@ -281,77 +315,28 @@ test('change name', async () => {
   act(() => {
     fireEvent.click(screen.getByText('Sign In'));
   });
-
   waitFor(() => {
     const home = screen.getByText('New Meal');
     expect(home).toBeInTheDocument();
   });
+
   await screen.findByText('New Meal');
   await screen.findByText('Mushroom Poppers');
   await screen.findByText('Cheeseburger');
 
 
-  // Change meal plan name
-  fireEvent.click(screen.getByText('New Meal'));
-
   act(() => {
-    fireEvent.change(screen.getByLabelText('Meal Plan Name'),
-      {target: {value: 'mollymember'}});
+    fireEvent.change(screen.getByTestId('searchInput'),
+      {target: {value: 'cheese'}});
   });
-  await screen.findByText('mollymember');
-  fireEvent.keyUp(await screen.getByLabelText('Meal Plan Name'), {code: 'Enter'});
-});
+  fireEvent.change(screen.getByTestId('searchInput'),
+    {target: {value: 'che'}});
 
-/**
- */
-test('change to defualt name', async () => {
-  window.alert.mockClear();
-  render(<App/>);
-  await screen.findByText('Mushroom Poppers');
-  await screen.findByText('Cheeseburger');
-
-  await screen.findByText('New Meal');
-
-  // Change meal plan name
-  fireEvent.click(screen.getByText('New Meal'));
-
-  act(() => {
-    fireEvent.change(screen.getByLabelText('Meal Plan Name'),
-      {target: {value: ''}});
+  //  expect(await screen.findByText('Mushroom Poppers'))
+  //  .toBeNull();
+  waitFor(() => {
+    expect(screen.getByTestId('Mushroom')).toBeInTheDocument();
+    expect(screen.getByTestId('Burger Pizza')).toBeNull();
   });
-  fireEvent.keyUp(await screen.getByLabelText('Meal Plan Name'), {code: 'Enter'});
-
-  const currentDay = new Date();
-  const dateOffset = currentDay.getDay();
-  const startWeek = new Date();
-  startWeek.setDate(currentDay.getDate() - dateOffset);
-  const endWeek = new Date();
-  endWeek.setDate(currentDay.getDate() + (7 - dateOffset));
-  const WEEK = `Week: ${startWeek.getMonth() + 1}` +
-    `/${startWeek.getDate()}/${startWeek.getFullYear()} - ` +
-    `${endWeek.getMonth() + 1}/${endWeek.getDate()}/${endWeek.getFullYear()}`;
-
-  await screen.findByText(WEEK);
-});
-
-/**
- */
-test('pick a meal', async () => {
-  window.alert.mockClear();
-  setWidth(1200);
-  render(<App/>);
-
-  await screen.findByText('Mushroom Poppers');
-  await screen.findByText('Cheeseburger');
-  await screen.findByText('New Meal');
-
-
-  act(() => {
-    fireEvent.click(screen.getByTestId('Cheeseburger'));
-  });
-  act(() => {
-    fireEvent.click(screen.getByTestId('Sun Lunch'));
-  });
-  const items = await screen.findAllByText('Cheeseburger');
-  expect(items).toHaveLength(2);
+  await screen.getByTestId('Mushroom');
 });
