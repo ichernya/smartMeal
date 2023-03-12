@@ -93,6 +93,7 @@ function Tools(props) {
             <CloseIcon/>
           </IconButton>
           <StyledInputBase
+            id='searchInput'
             className='searchInput'
             placeholder="Search…"
             inputProps={{'aria-label': 'search', 'width': 'inherit'}}
@@ -111,6 +112,7 @@ function Tools(props) {
         <Filter HomeContext={props['HomeContext']}/>
         <div className='stretch'/>
         <IconButton
+          id='filterOpen'
           onClick={() => setDrawer(true)}
         >
           <FilterAltIcon className='brownColor'/>

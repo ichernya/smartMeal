@@ -14,10 +14,32 @@ import CloseIcon from '@mui/icons-material/Close';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import './Tags.css';
+
+// Updates a diet filter
+const updateDietFilter = (diet, value) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+
+  const body = {
+    'mealsid': userId,
+    'dietTag': diet,
+    'newValue': value,
+  };
+
+  fetch(`http://localhost:3010/v0/diets`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
 
 /**
  * Represents the page to select the filters/tags
@@ -25,30 +47,18 @@ import './Tags.css';
  * @return {JSX} Jsx
  */
 function Toggles(props) {
-  const {alignments, setAlignment, name, setFilter, filters, category} = props;
+  const {alignments, setAlignment, name} = props;
 
-  const value = alignments[category][name];
+  // Current alignment
+  const value = alignments[name];
   const control = {
     value: value,
     exclusive: true,
   };
 
   const updateTags = (name, newAlignment) => {
-    if (newAlignment !== value) {
-      if (newAlignment === 'yes') {
-        setFilter({...filters, [name]: newAlignment});
-      } else {
-        const copy = {...filters};
-        delete copy[name];
-        setFilter(copy);
-      }
-      setAlignment(
-        {...alignments,
-          [category]: {...alignments[category],
-            [name]: newAlignment},
-        },
-      );
-    }
+    setAlignment({...alignments, [name]: newAlignment});
+    updateDietFilter(name, newAlignment);
   };
 
   return (
@@ -58,19 +68,21 @@ function Toggles(props) {
       aria-label="Small sizes"
     >
       <ToggleButton
-        value="no"
-        onClick={() => updateTags(name, 'no')}
+        value={false}
+        onClick={() => updateTags(name, false)}
+        id={`${name}False`}
         style={{
-          color: value === 'no' ? 'red' : '',
+          color: value? '' : 'red',
         }}
       >
         <SentimentDissatisfiedOutlinedIcon />
       </ToggleButton>
       <ToggleButton
-        value="yes"
-        onClick={() => updateTags(name, 'yes')}
+        value={true}
+        onClick={() => updateTags(name, true)}
+        id={`${name}True`}
         style={{
-          color: value === 'yes' ? 'green' : '',
+          color: value ? 'green' : '',
         }}
       >
         <SentimentSatisfiedAltOutlinedIcon />
@@ -79,50 +91,27 @@ function Toggles(props) {
   );
 }
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Represents the tags
+ * @param {Object} props
+ * @return {JSX} Jsx
+ */
 function Tags(props) {
   const {tagsDrawer, setDrawer, setFilter, filters,
     alignments, setAlignment,
   } = React.useContext(props['HomeContext']);
 
 
-  // Represents whether the category is hidden or not
-  // TODO should be a query to db later
-  const [categoryView, setView] = React.useState({
-    'tag1': true,
-    'tag2': true,
-  });
-
-  const updateView = (category) => {
-    // Swap the view
-    setView({...categoryView, [category]: !categoryView[category]});
-  };
-
   const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
-
     setDrawer(open);
   };
 
   const setAllState = (choice) => {
-    const newFilters = {};
-
     const copyAlign = {...alignments};
-    for (const category of Object.keys(copyAlign)) {
-      for (const key of Object.keys(copyAlign[category])) {
-        if (choice === 'yes') {
-          newFilters[key] = 'yes';
-        }
-        copyAlign[category][key] = choice;
-      }
+    for (const key of Object.keys(copyAlign)) {
+      copyAlign[key] = choice;
+      updateDietFilter(key, choice);
     }
-    setFilter(newFilters);
     setAlignment(copyAlign);
   };
 
@@ -133,51 +122,32 @@ function Tags(props) {
       role="presentation"
       onKeyDown={toggleDrawer(false)}
     >
-      {Object.keys(categoryView).map((category) => {
-        const allTags = Object.keys(alignments[category]);
-        return (
-          <Grid container spacing={1} className='tagsRow' key={category}>
-            <Grid item className='category'>
-              {category}
-              <IconButton onClick={() => updateView(category)}>
-                {categoryView[category] ?
-                  <ExpandLessIcon/> :
-                  <ExpandMoreIcon/>
-                }
-              </IconButton>
+      <Grid
+        container
+        spacing={1}
+        className='tagsRow'
+      >
+        {Object.keys(alignments).map((name) => {
+          return (
+            <Grid container item spacing={0} key={name} className='row'>
+              <React.Fragment>
+                <Grid item xs={6}>
+                  {name}
+                </Grid>
+                <Grid item xs={6} className='selections'>
+                  <Toggles
+                    setAlignment={setAlignment}
+                    alignments={alignments}
+                    name={name}
+                    setFilter={setFilter}
+                    filters={filters}
+                  />
+                </Grid>
+              </React.Fragment>
             </Grid>
-            <Grid
-              container
-              spacing={1}
-              style={{
-                display: categoryView[category] ? '' : 'none',
-              }}
-            >
-              {allTags.map((name) => {
-                return (
-                  <Grid container item spacing={0} key={name} className='row'>
-                    <React.Fragment>
-                      <Grid item xs={6}>
-                        {name}
-                      </Grid>
-                      <Grid item xs={6} className='selections'>
-                        <Toggles
-                          setAlignment={setAlignment}
-                          alignments={alignments}
-                          name={name}
-                          setFilter={setFilter}
-                          filters={filters}
-                          category={category}
-                        />
-                      </Grid>
-                    </React.Fragment>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Grid>
-        );
-      })}
+          );
+        })}
+      </Grid>
     </Box>
   );
 
@@ -186,19 +156,22 @@ function Tags(props) {
       anchor={'right'}
       open={tagsDrawer}
       onClose={toggleDrawer(false)}
+      id='tagsDrawer'
     >
       <div className='header'>
-        <IconButton onClick={toggleDrawer(false)}>
+        <IconButton onClick={toggleDrawer(false)} id='closeTags'>
           <CloseIcon/>
         </IconButton>
         <div className='stretch'/>
         <IconButton
-          onClick={() => setAllState('no')}
+          onClick={() => setAllState(false)}
+          id='allFalse'
         >
           <MoodBadIcon id='red'/>
         </IconButton>
         <IconButton
-          onClick={() => setAllState('yes')}
+          onClick={() => setAllState(true)}
+          id='allTrue'
         >
           <SentimentVerySatisfiedIcon id='green'/>
         </IconButton>

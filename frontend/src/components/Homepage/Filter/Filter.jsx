@@ -19,26 +19,43 @@ const MenuProps = {
   },
 };
 
+// Updates a diet filter
+const updateDietFilter = (diet, value) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+  const userId = person ? person.userid : '';
+
+  const body = {
+    'mealsid': userId,
+    'dietTag': diet,
+    'newValue': value,
+  };
+
+  fetch(`http://localhost:3010/v0/diets`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  });
+};
+
+
 /**
  * Represents the display for the currently chosen tags/filters
  * @param {Object} props
  * @return {JSX} Jsx
  */
 function Filter(props) {
-  const {setDrawer, setFilter, filters, setAlignment, alignments} =
+  const {setDrawer, setAlignment, alignments} =
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
-    let copy = {...filters};
-    delete copy[name];
-    setFilter({...copy});
-    copy = {...alignments};
-    for (const category of Object.keys(copy)) {
-      if (copy[category][name]) {
-        copy[category][name] = 'no';
-      }
-    }
-    setAlignment({...copy});
+    updateDietFilter(name, false);
+    setAlignment({...alignments, [name]: false});
   };
 
   return (
@@ -47,12 +64,14 @@ function Filter(props) {
     >
       <FormControl sx={{m: 1, width: '100%'}}>
         <Select
+          id='homeFilter'
           multiple
-          value={Object.keys(filters)}
-          input={<OutlinedInput id="select-multiple-chip"/>}
+          value={Object.keys(alignments).filter((key) => alignments[key])}
+          input={<OutlinedInput/>}
           renderValue={(selected) => (
             <Box
               className='tags'
+              id='homeFilters'
               onClick={() => setDrawer(true)}
             >
               {selected.map((name) =>
@@ -62,15 +81,17 @@ function Filter(props) {
           )}
           MenuProps={MenuProps}
         >
-          {Object.keys(filters).map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              onClick={() => handleChange(name)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          {Object.keys(alignments).filter((key) => alignments[key])
+            .map((name) => (
+              <MenuItem
+                key={name}
+                value={name}
+                id={`home${name}`}
+                onClick={() => handleChange(name)}
+              >
+                {name}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
 

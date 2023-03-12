@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import {styled} from '@mui/material/styles';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 
 import Tools from './Tools.jsx';
@@ -27,12 +27,11 @@ const Item = styled(Paper)(({theme}) => ({
 
 
 // Grabs the recipes for the menu from the database
-const getRecipes = (setMenu) => {
+const getRecipes = (setMenu, history) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
   fetch('http://localhost:3010/v0/recipes', {
-  // fetch('http://localhost:3010/v0/mealWeek?mealsid=1&dayof=2023-01-19', {
     method: 'get',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -40,6 +39,16 @@ const getRecipes = (setMenu) => {
     }),
   })
     .then((response) => {
+      // User timed out, so redirect back to login
+      // Unsure if we're keeping this functionality
+      /*
+      if (response['status'] === 403) {
+        alert('You have time out. Please log back in.');
+        localStorage.removeItem('user');
+        history('/login');
+        return [];
+      }
+      */
       return response.json();
     })
     .then((json) => {
@@ -52,8 +61,9 @@ const searchRecipes = (query, setMenu) => {
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
-  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}`, {
-    method: 'get',
+  const userId = user ? user.userid : '';
+  fetch(`http://localhost:3010/v0/userSearch?userInput=${query}&userid=${userId}`, {
+    method: 'GET',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -74,6 +84,7 @@ const searchRecipes = (query, setMenu) => {
  * @return {JSX} Jsx
  */
 function Menu(props) {
+  const history = useNavigate();
   const {
     width, selectedFood, setSelected, search,
     setAddMeal, addMeal,
@@ -85,9 +96,8 @@ function Menu(props) {
   const ROWS = 2;
 
   React.useEffect(() => {
-    getRecipes(setMenu);
-    // TODO setMenu([...itemData]);
-  }, []);
+    getRecipes(setMenu, history);
+  }, [history]);
 
   const [chosenFood] = selectedFood || [null, null];
   const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
@@ -150,6 +160,7 @@ function Menu(props) {
                   }}
                 >
                   <ImageList
+                    id={`menu${index}`}
                     onScroll={scroller}
                     ref={scrollRef}
                     className={'menu ' + menuClass}
@@ -159,22 +170,24 @@ function Menu(props) {
                       .map((_, ind) => {
                         const item = recipes[(ind * 2) + index];
                         if (!item) {
-                          return <div/>;
+                          return <div key={ind + index}/>;
                         }
 
-                        const image = item['imageData'] ? item['imageData'] :
-                          require('../../assets/ass.png');
+                        const image = item['imagedata'] ? item['imagedata'] :
+                          require('../../assets/default.png');
                         return (
                           <ImageListItem
                             className='margins'
                             onClick={() => clickItem(item)}
-                            key={item['dishname'] + ind}
+                            key={item['dishname'] + ind + index}
+                            id={item['dishname']}
                           >
                             <img
-                              src={`${image}w=248&fit=crop&auto=format`}
+                              /* src={`${image}w=248&fit=crop&auto=format`}
                               srcSet={
                                 `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              }
+                              } */
+                              src={image}
                               alt={item['dishname']}
                               loading="lazy"
                               id={chosenFood === item ?
@@ -206,16 +219,16 @@ function Menu(props) {
         </Stack>
         <div className='stretch'/>
         <div id='btnList'>
-          <IconButton onClick={() => setAddMeal(!addMeal)}>
+          <IconButton onClick={() => setAddMeal(!addMeal)} id='addMeal'>
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>
-            <IconButton>
+            <IconButton id='checklist'>
               <FormatListBulletedIcon className='btn brownColor'/>
             </IconButton>
           </Link>
           <Link to='/mealplans'>
-            <IconButton>
+            <IconButton id='mealsPlans'>
               <LocalDiningIcon className='btn brownColor'/>
             </IconButton>
           </Link>

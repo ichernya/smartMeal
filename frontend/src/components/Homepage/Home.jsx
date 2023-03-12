@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 
+import {Alert} from '@mui/material';
 import {useDimensions} from '../DimensionsProvider.jsx';
 import {useMeals} from '../MealContextProvider.jsx';
 import Calendar from './Calendar.jsx';
@@ -12,29 +13,15 @@ import Tags from './Filter/Tags.jsx';
 import './Home.css';
 
 const HomeContext = React.createContext();
-const names = {
-  'tag1': {
-    'Oliver Hansen': 'yes',
-    'Van Henry': 'yes',
-  },
-  'tag2': {
-    'Kelly Snyder': 'yes',
-  },
-};
 
 // Updates the name of the meal plan in the backend
-const saveUpdatedName = (name, startDay) => {
+const saveUpdatedName = (name, startDay, userId) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  const userId = person ? person.userid : '';
-  if (!userId || !bearerToken) {
-    // User has not logged in or has timeed out
-    return;
-  }
 
   const body = {
-    'firstday': startDay.toISOString().split('T')[0],
+    'firstDay': startDay.toISOString().split('T')[0],
     'mealsid': userId,
     'mealName': name,
   };
@@ -50,6 +37,28 @@ const saveUpdatedName = (name, startDay) => {
   });
 };
 
+// Queries for the diets tags of the user
+const queryAlignments = (userId, setAlignment) => {
+  const item = localStorage.getItem('user');
+  const person = JSON.parse(item);
+  const bearerToken = person ? person.accessToken : '';
+
+  fetch(`http://localhost:3010/v0/diets?mealsid=${userId}`, {
+    method: 'GET',
+    headers: new Headers({
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    }),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      setAlignment(json);
+    });
+};
+
 
 /**
  * Represents the homepage
@@ -57,7 +66,7 @@ const saveUpdatedName = (name, startDay) => {
  * @return {JSX} Jsx
  */
 function Homepage(props) {
-  const {WEEK, startWeek, mealPlan, setPlan} = useMeals();
+  const {userId, WEEK, startWeek, mealPlan, setPlan} = useMeals();
   const {width} = useDimensions();
   // Precalculated card size for the calendar
   const cardSize = React.useRef(width >= 1200 ? (width * .11) : 175);
@@ -67,15 +76,6 @@ function Homepage(props) {
   const [search, setSearch] = React.useState('');
   // Represents whether the tags drawer is open or not
   const [tagsDrawer, setDrawer] = React.useState(false);
-  // Represents the filtered tags
-  // TODO query db for tags
-  // ideally, format will be
-  // { category :
-  //   {name: align}
-  // }
-  const [filters, setFilter] = React.useState(
-    {'Oliver Hansen': 'yes', 'Van Henry': 'yes', 'Kelly Snyder': 'yes'},
-  );
   // Represents the weekly meal plans name
   const [planName, setName] =
     React.useState((mealPlan && mealPlan['mealname']) || null);
@@ -83,24 +83,24 @@ function Homepage(props) {
   const [changeName, setChangeName] = React.useState(false);
   // Represents whether to display the add meal dialog
   const [addMeal, setAddMeal] = React.useState(false);
+  // Represent whether to display the Alert
+  const [showAlert, setShowAlert] = React.useState(false);
   // Represents the alignments of the tags
-  const [alignments, setAlignment] =
-    // TODO query db for tags
-    // ideally, format will be
-    // { category :
-    //   {name: align}
-    // }
-    React.useState(names);
+  const [alignments, setAlignment] = React.useState({});
 
   React.useEffect(() => {
-    if (mealPlan && planName) {
+    queryAlignments(userId, setAlignment);
+  }, [userId]);
+
+  React.useEffect(() => {
+    if ((mealPlan && planName) || changeName) {
       // pass
     } else if (mealPlan && mealPlan['mealname'] === '' && planName !== WEEK) {
       setName(WEEK);
     } else if (mealPlan && mealPlan['mealname'] !== planName) {
       setName(mealPlan['mealname']);
     }
-  }, [mealPlan, WEEK, planName]);
+  }, [mealPlan, WEEK, planName, changeName]);
 
   React.useEffect(() => {
     cardSize.current = width >= 1200 ? (width * .11) : 175;
@@ -123,7 +123,7 @@ function Homepage(props) {
       if (planName === '') {
         setName(WEEK);
       }
-      saveUpdatedName(planName, startWeek);
+      saveUpdatedName(planName, startWeek, userId);
     }
   };
 
@@ -132,6 +132,9 @@ function Homepage(props) {
     setName(value);
   };
 
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
 
   return (
     <HomeContext.Provider
@@ -139,9 +142,13 @@ function Homepage(props) {
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
         filters, setFilter, alignments, setAlignment,
-        addMeal, setAddMeal,
+        addMeal, setAddMeal, showAlert, setShowAlert
       }}
     >
+      {showAlert &&
+        <Alert onClose={closeAlert} severity="success"
+          style={{position: 'fixed', zIndex: 100}}>Recipe added succesfully!</Alert>
+      }
       <div
         tabIndex='0'
         onKeyUp={shiftRelease}
@@ -181,5 +188,4 @@ function Homepage(props) {
 
 
 export default Homepage;
-
 

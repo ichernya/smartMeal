@@ -33,9 +33,7 @@ function Settings(props) {
 
   const handleClose = () => {
     setSettings(false);
-    if (needSave) {
-      // db query to update things TODO
-    }
+    // db query to update things TODO
   };
 
   const updateAllergies = (allergy) => {
@@ -61,6 +59,7 @@ function Settings(props) {
           <FormGroup>
             {Object.keys(allergies).map((allergy) => (
               <FormControlLabel
+                id={allergy}
                 key={allergy}
                 control={<Switch checked={allergies[allergy]} />}
                 label={allergy}
@@ -70,7 +69,7 @@ function Settings(props) {
           </FormGroup>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleClose} autoFocus id='closeSetting'>
             Close
           </Button>
         </DialogActions>
