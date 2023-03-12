@@ -314,6 +314,7 @@ function AddMealDialog(props) {
               <TextField
                 fullWidth
                 label="Name of Recipe"
+                id='recipeName'
                 variant='outlined'
                 margin='normal'
                 onChange={changeRecipeName}
@@ -325,6 +326,7 @@ function AddMealDialog(props) {
                 <InputLabel>Diets</InputLabel>
                 <Select
                   label='Diet'
+                  id='diets'
                   className='greyBack'
                   multiple
                   onChange={changeDiet}
@@ -333,6 +335,7 @@ function AddMealDialog(props) {
                 >
                   {diets.map((diet) => (
                     <MenuItem
+                      id={diet}
                       value={diet}
                       key={diet}>
                       <Checkbox checked={dietList.indexOf(diet) > -1}/>
@@ -353,8 +356,8 @@ function AddMealDialog(props) {
                   onChange={changeSystem}
                 >
                   <FormControlLabel value="metric" control={<Radio />}
-                    label="Metric" />
-                  <FormControlLabel value="US" control={<Radio />} label="US" />
+                    label="Metric" id='Metric'/>
+                  <FormControlLabel value="US" control={<Radio />} label="US" id='US'/>
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -384,6 +387,7 @@ function AddMealDialog(props) {
                   className='brownColor'/>
                 <input
                   type="file"
+                  id='imgUpload'
                   hidden
                   accept='.jpeg, .jpg, .png'
                   onChange={handleCapture}
@@ -393,6 +397,7 @@ function AddMealDialog(props) {
             <Grid item xs={2}>
               <IconButton
                 component="label"
+                id='removeImg'
                 variant="outlined"
                 size="large"
                 onClick={removeImage}
@@ -405,6 +410,7 @@ function AddMealDialog(props) {
               <TextField
                 fullWidth
                 label="Ingredient"
+                id="ingredient"
                 variant='outlined'
                 margin='normal'
                 value={inputName}
@@ -420,7 +426,7 @@ function AddMealDialog(props) {
                 sx={{mt: 2, mb: 2, mr: 2, maxWidth: 80}}
                 variant="outlined">
                 <OutlinedInput
-                  id="outlined-weight"
+                  id="quantity"
                   value={inputWeight}
                   aria-describedby="outlined-weight-helper-text"
                   inputProps={{
@@ -430,7 +436,7 @@ function AddMealDialog(props) {
                   onChange={(event) => setInputWeight(event.target.value)}
                   className='greyBack'
                 />
-                <FormHelperText id="outlined-weight-helper-text">
+                <FormHelperText>
                   Quantitiy
                 </FormHelperText>
               </FormControl>
@@ -441,9 +447,10 @@ function AddMealDialog(props) {
                   value={unit}
                   onChange={changeUnit}
                   className='greyBack'
+                  id='units'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                    <MenuItem value={unit} key={unit}>{unit}</MenuItem>
+                    <MenuItem id={unit} value={unit} key={unit}>{unit}</MenuItem>
                   ))}
                 </Select>
                 <FormHelperText id="select-text">Unit</FormHelperText>
@@ -455,6 +462,7 @@ function AddMealDialog(props) {
                 sx={{mt: 2}}
                 size="large"
                 onClick={addIngredient}
+                id='addIngredient'
               >
                 <AddBoxIcon fontSize='large' className='brownColor'/>
               </IconButton>
@@ -484,11 +492,14 @@ function AddMealDialog(props) {
                           float: 'right',
                         }}>
                           <ListItemButton
+                            id={`del${ingredient['name']}`}
                             alignItems='center'
                             variant="outlined"
                             size="large"
                             onClick={() => removeIngredient(ingredient.name)}
-                          ><DeleteIcon className='brownColor'/></ListItemButton>
+                          >
+                            <DeleteIcon className='brownColor'/>
+                          </ListItemButton>
                         </Grid>
                       </Grid>
                     </ListItem>
@@ -499,8 +510,8 @@ function AddMealDialog(props) {
           </Grid>
         </DialogContent>
         <DialogActions className='aliceBlueBack'>
-          <Button onClick={addRecipe}>Add recipe</Button>
-          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={addRecipe} id='add'>Add recipe</Button>
+          <Button onClick={handleClose} id='close'>Close</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

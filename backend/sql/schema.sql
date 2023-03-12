@@ -43,6 +43,13 @@ CREATE TABLE substitutions (
     tradeFor text [],
     veganAlternative text []
 );
+DROP TABLE IF EXISTS checklistUser;
+
+CREATE TABLE checklistUser (
+    firstDay text,
+    mealsid int,
+    checklist jsonb
+);
 
 /*
 Every user has an id used to match meals object with same id

@@ -20,15 +20,14 @@ const pool = new Pool({
 
 
 
+exports.getImage = async (req, res) => { 
+  return req;
+}
 
-// exports.getImage = async (req, res) => { 
-//     return req;
-// }
 
+const userQueryPublicMealPlan = async (public, mealName) => { }
 
-// const userQueryPublicMealPlan = async (public, mealName) => { }
-
-// exports.postImage = async (req, res) => {
-//     console.log(req.file)
-//     res.status(404)
-//  }
+exports.postImage = async (req, res) => {
+  console.log(req.file)
+  res.status(404)
+}
