@@ -37,7 +37,6 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const dateCopy = new Date(startWeek);
   dateCopy.setDate(dateCopy.getDate() + weekday);
 
-
   const TIMES = ['breakfast', 'lunch', 'dinner'];
 
   // updated data in the formatted needed by backend

@@ -54,7 +54,8 @@ const filterMealsForIngredients =
     // Look through the each day of the week that aren't empty
     .forEach((date) => {
       [0, 1, 2].forEach((timeOfDay) => {
-        if (mealPlan[date][timeOfDay].recipeid !== 0 &&
+        if (mealPlan[date][timeOfDay][0] !== '0' &&
+          mealPlan[date][timeOfDay].recipeid !== 0 &&
           Object.keys(mealPlan[date][timeOfDay].ingredients)
             .includes(myIngredient)) {
           mealsOfWithIng.push({'date': date, 'timeOfDay': timeOfDay,

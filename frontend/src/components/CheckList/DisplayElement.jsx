@@ -1,55 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@mui/material/Grid';
-import defaultImage from '../../assets/qqq.png';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import ButtonBase from '@mui/material/ButtonBase';
-import {useMeals} from '../MealContextProvider';
 import IconButton from '@mui/material/IconButton';
-
+import MobileStepper from '@mui/material/MobileStepper';
+import Typography from '@mui/material/Typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {Typography} from '@mui/material';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 
-// eslint-disable-next-line no-unused-vars
-const postNewRecipe = (userId, newRecipe) => {
-  const parsedRecipe = {...newRecipe};
-  parsedRecipe.ingredients = [];
-  delete parsedRecipe.recipeid;
-  console.log(newRecipe);
-  Object.keys(newRecipe.ingredients).forEach((ingredient) => {
-    const ingredientParam = [];
-    ingredientParam.push(ingredient);
-    ingredientParam.push(newRecipe.ingredients[ingredient].unit);
-    ingredientParam.push(newRecipe.ingredients[ingredient].amount);
-    parsedRecipe.ingredients.push(ingredientParam);
-  });
-  const item = localStorage.getItem('user');
-  const person = JSON.parse(item);
-  const bearerToken = person ? person.accessToken : '';
-  console.log(parsedRecipe);
-  fetch(
-    `http://localhost:3010/v0/recipes`, {
-      method: 'POST',
-      body: JSON.stringify(parsedRecipe),
-      headers: {
-        'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => {
-    if (!res.ok) {
-      throw res.json();
-    }
-    return res;
-  }).then((id) => {
-    console.log(id);
-  })
-  ;
-};
+import defaultImage from '../../assets/qqq.png';
+
+import {useMeals} from '../MealContextProvider';
+import {postChangeRecipe, postChangeAllRecipes} from './HandleUpdate.jsx';
 
 /**
  * Left side view of the checklist where the user can select an ingredient
@@ -60,7 +26,7 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives, mealPlan, setPlan} = useMeals();
+    alteratives, setAlteratives, mealPlan, setPlan, startWeek} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
   const [activeStep, setActiveStep] = useState(0);
@@ -146,7 +112,8 @@ function DisplayElement() {
       specificMeal.ingredients[isChosenIngredient.name];
     // Remove the old name
     delete specificMeal.ingredients[isChosenIngredient.name];
-    console.log(postNewRecipe(null, specificMeal));
+    postChangeRecipe(1, specificMeal, {...mealPlan},
+      startWeek, specificMealtoChange.date, specificMealtoChange.timeOfDay);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -176,18 +143,24 @@ function DisplayElement() {
     };
     delete newListElement[isChosenIngredient.name];
     // Updating the recipes
-    // Creating a deep copy
+    // Creating a very deep copy
     const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Go over all the meal that has the ingredient
+    console.log(mealsWithIngredient);
     // and change the ingredient in it
     mealsWithIngredient.forEach((e) => {
       const specificMeal = newMeals[e.date][e.timeOfDay];
       specificMeal.ingredients[selectedAlterative] =
         specificMeal.ingredients[isChosenIngredient.name];
+      e.meal.ingredients[selectedAlterative] =
+      specificMeal.ingredients[isChosenIngredient.name];
       delete specificMeal.ingredients[isChosenIngredient.name];
+      delete e.meal.ingredients[isChosenIngredient.name];
     });
     setIngredientList(newList);
     setPlan(newMeals);
+    postChangeAllRecipes(1, mealsWithIngredient, {...mealPlan},
+      startWeek);
     handleCancel();
   };
 
