@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 
 import parsePlanData from './parser.jsx';
-// import createList from './GenerateList.jsx';
+import createList from './GenerateList.jsx';
 
 const MealsContext = createContext();
 
@@ -61,9 +61,9 @@ export const MealsProvider = ({children}) => {
   useEffect(() => {
     if (userId) {
       // Grab the meals for the week when loading the page
-      // const startWeek = new Date();
+      const startWeek = new Date();
       getMealsForWeek(setPlan, userId);
-      // createList(setIngredientList, startWeek);
+      createList(setIngredientList, startWeek);
     }
   }, [userId]);
 
