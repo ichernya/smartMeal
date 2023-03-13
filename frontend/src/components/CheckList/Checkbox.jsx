@@ -80,8 +80,33 @@ function IndeterminateCheckbox() {
   // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
-    Object.keys(target[location]['ingredients']).forEach((key) => {
-      target[location]['ingredients'][key].checked = value;
+    const item = localStorage.getItem('user');
+    const person = JSON.parse(item);
+    const bearerToken = person ? person.accessToken : '';
+    const userId = person ? person.userid : '';
+    const startDay = new Date(startWeek);
+    const startIso = startDay.toISOString().split('T')[0];
+    const ingredentsToChange = target[location].ingredients;
+    Object.keys(ingredentsToChange).forEach((ingredent) => {
+      if (ingredentsToChange[ingredent].checked !== value) {
+        const body = {
+          'mealsid': userId,
+          'firstDay': startIso,
+          'category': location,
+          'ingredient': ingredent,
+          'check': value,
+        };
+        fetch(`http://localhost:3010/v0/groceryList`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+          headers: new Headers({
+            'Authorization': `Bearer ${bearerToken}`,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }),
+        });
+      }
+      ingredentsToChange[ingredent].checked = value;
     });
   };
   const setAllCategory = (target, location, value) => {
@@ -138,11 +163,11 @@ function IndeterminateCheckbox() {
     const body = {
       'mealsid': userId,
       'firstDay': startIso,
-      'category': 'parentCategory',
+      'category': parentCategory,
       'ingredient': myIngredient,
       'check': alter[parentCategory]['ingredients'][myIngredient].checked,
     };
-    fetch(`http://localhost:3010/v0/meals`, {
+    fetch(`http://localhost:3010/v0/groceryList`, {
       method: 'PUT',
       body: JSON.stringify(body),
       headers: new Headers({
