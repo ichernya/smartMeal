@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS recipes;
 
 CREATE TABLE recipes(
     recipeid SERIAL UNIQUE NOT NULL,
-    dishname VARCHAR(32),
+    dishname text,
     ingredients jsonb,
     ingredientAm int,
     imageData text,
@@ -18,10 +18,10 @@ CREATE TABLE users(
     userid SERIAL UNIQUE NOT NULL,
     username VARCHAR(255) NOT NULL,
     passwrd VARCHAR(255) NOT NULL,
-    vegan boolean DEFAULT TRUE,
-    halal boolean DEFAULT TRUE,
-    healthy boolean DEFAULT TRUE,
-    kosher boolean DEFAULT TRUE,
+    vegan boolean DEFAULT FALSE,
+    halal boolean DEFAULT FALSE,
+    healthy boolean DEFAULT FALSE,
+    kosher boolean DEFAULT FALSE,
     PRIMARY KEY (userid)
     );
 
@@ -69,5 +69,3 @@ CREATE TABLE ingredients (
     spices text[],
     grains text[]
 );
-
-

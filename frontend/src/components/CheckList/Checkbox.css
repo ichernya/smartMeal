@@ -4,8 +4,14 @@
 .listElement {
   display: inline-block;
   vertical-align: middle;
+  font-family: Postoni, garamond, serif;
 }
 
+.button {
+  display: inline-block;
+  vertical-align: middle;
+  font-family: Postoni, garamond, serif;
+}
 @media (max-width: 900px) {
   #leftCheck {
     display: none !important;
