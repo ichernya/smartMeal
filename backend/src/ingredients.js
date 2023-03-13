@@ -1,3 +1,4 @@
+const groceryList = require('./groceryList');
 const {Pool} = require('pg');
 
 const user = "postgres";
@@ -130,14 +131,73 @@ const pullIng = async (diet) => {
 //   if (recipe) {res.status(200).json(recipe);}
 //   else {res.status(404).send();}
 // }
+
+const updatePutQuery = async (firstDay, mealsid, category, ingredient) => {
+  const update = `
+  UPDATE checklistUser
+  SET checklist = jsonb_set(checklist, $3, 'true', true)
+  WHERE mealsid = $2 AND firstDay = $1;`
+  const query = {
+      text: update,
+      values: [firstDay, mealsid, `{${category},"ingredients","${ingredient}","checked"}`]
+  }
+  await pool.query(query);
+
+  // category mapping to value wouldnt work in values, so query design had to change
+  // weird conversions because integer cant cast to jsonb, but integer can to text then to jsonb
+  const result = await pool.query(
+    `UPDATE checklistUser
+     SET checklist = jsonb_set(checklist, '{${category},amountChecked}', ((checklist->'${category}'->>'amountChecked')::integer + 1)::text::jsonb)      
+     WHERE mealsid = $2 AND firstDay = $1
+     RETURNING checklist`,
+    [firstDay, mealsid]
+  );
+
+  const updatedList = result.rows[0].checklist;
+
+  return updatedList;
+  
+}
+
+const downdatePutQuery = async (firstDay, mealsid, category, ingredient) => {
+  const update = `
+  UPDATE checklistUser
+  SET checklist = jsonb_set(checklist, $3, 'false', false)
+  WHERE mealsid = $2 AND firstDay = $1;`
+  const query = {
+      text: update,
+      values: [firstDay, mealsid, `{${category},"ingredients","${ingredient}","checked"}`]
+  }
+  await pool.query(query);
+
+  // category mapping to value wouldnt work in values, so query design had to change
+  // weird conversions because integer cant cast to jsonb, but integer can to text then to jsonb
+  const result = await pool.query(
+    `UPDATE checklistUser
+     SET checklist = jsonb_set(checklist, '{${category},amountChecked}', ((checklist->'${category}'->>'amountChecked')::integer - 1)::text::jsonb)      
+     WHERE mealsid = $2 AND firstDay = $1
+     RETURNING checklist`,
+    [firstDay, mealsid]
+  );
+
+  const updatedList = result.rows[0].checklist;
+  return updatedList;
+  
+}
+exports.updateAsChecked = async (req, res) => {
+  if (req.body.check) {var update = await updatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
+  else {var update = await downdatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
+  res.status(201).json(update)
+}
+
 const createGroceryList = async (mealsid, firstDay, ingredientList) => {
-  const insert = `INSERT INTO checklistUser(firstDay, mealsid, checklist) VALUES ($1, $2, $3)`
+  const insert = `INSERT INTO checklistUser(firstDay, mealsid, checklist) VALUES ($1, $2, $3) RETURNING firstday, mealsid, checklist`
   const query = {
     text: insert,
     values: [firstDay, mealsid, ingredientList]
   }
-  await pool.query(query);
-  return ingredientList;
+  const {rows} = await pool.query(query);
+  return rows;
 };
 
 const checkGroceryList = async (mealsid, firstDay) => {
@@ -182,64 +242,88 @@ const pullGroceryListFull = async (mealsid, firstDay) => {
 
 exports.pullGroceryList = async (req, res) => {
   var food = await pullGroceryListFull(req.query.mealsid, req.query.firstDay);
-  if (!food[0].recipes) {res.status(404).json(food[0])}
-  const ingredientCategories = {
-    'Protein': ['Beef', 'Chicken', 'Fish', 'Pork', 'Tofu'],
-    'Grains': ['Pasta', 'Bread', 'Rice'],
-    'Dairy': ['Milk', 'Cheese', 'Butter', 'Yogurt'],
-    'Vegetables': ['Lettuce', 'Tomato', 'Onion', 'Pepper', 'Baby Bella Mushrooms'],
-    'Fruit': ['Apple', 'Banana', 'Orange', 'Berries'],
-    'Nuts and Seeds': ['Almonds', 'Walnuts', 'Sesame seeds', 'Flax seeds'],
-    'Oils': ['Olive oil', 'Canola oil', 'Coconut oil', 'Sesame oil']
-  };
-  
-  const ingredientList = {};
-  // Iterate through each ingredient in the recipe
-  //console.log(food[0].recipes)
-  for (const recipe of food[0].recipes) {
-    if (recipe != null) {
-      Object.entries(recipe.ingredients).forEach(([ingredientName, ingredientData]) => {
-        // Check which category the ingredient belongs to
-        let category = '';
-        for (const [categoryName, categoryIngredients] of Object.entries(ingredientCategories)) {
-          if (categoryIngredients.includes(ingredientName)) {
-            category = categoryName;
-            break;
-          }
-        }
-        // If no category found, add the ingredient to the Other category
-        if (category === '') {
-          category = 'Other';
-        }
-      
-        // If the category doesn't exist in the ingredient list, create it
-        if (!ingredientList[category]) {
-          ingredientList[category] = {
-            amount: 0,
-            amountChecked: 0,
-            hidden: false,
-            ingredients: {}
-          };
-        }
-      
-        // Add the ingredient to the category in the ingredient list
-        ingredientList[category].ingredients[ingredientName] = {
-          checked: false,
-          amount: ingredientData.amount,
-          unit: ingredientData.unit
-        };
-        ingredientList[category].amount += 1;
-      });
-  }
-  }
-  grocerylistInitial = await checkGroceryList(req.query.mealsid, req.query.firstDay);
-  if (!grocerylistInitial[0]) {
-    grocerylist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
-    res.status(201).json(grocerylist)
-  }
+  if (!food[0]) {res.status(404).json(food[0])}
   else {
-    // we have to compare grocerylistinitial to grocerylist
-    res.status(200).json(grocerylistInitial[0])
+    const ingredientCategories = {
+      'Protein': ['Beef', 'Chicken', 'Fish', 'Pork', 'Tofu'],
+      'Grains': ['Pasta', 'Bread', 'Rice'],
+      'Dairy': ['Milk', 'Cheese', 'Butter', 'Yogurt'],
+      'Vegetables': ['Lettuce', 'Tomato', 'Onion', 'Pepper', 'Baby Bella Mushrooms'],
+      'Fruit': ['Apple', 'Banana', 'Orange', 'Berries'],
+      'Nuts and Seeds': ['Almonds', 'Walnuts', 'Sesame seeds', 'Flax seeds'],
+      'Oils': ['Olive oil', 'Canola oil', 'Coconut oil', 'Sesame oil']
+    };
+    
+    const ingredientList = {};
+    // Iterate through each ingredient in the recipe
+    //console.log(food[0].recipes)
+    for (const recipe of food[0].recipes) {
+      if (recipe != null) {
+        Object.entries(recipe.ingredients).forEach(([ingredientName, ingredientData]) => {
+          // Check which category the ingredient belongs to
+          let category = '';
+          for (const [categoryName, categoryIngredients] of Object.entries(ingredientCategories)) {
+            if (categoryIngredients.includes(ingredientName)) {
+              category = categoryName;
+              break;
+            }
+          }
+          // If no category found, add the ingredient to the Other category
+          if (category === '') {
+            category = 'Other';
+          }
+        
+          // If the category doesn't exist in the ingredient list, create it
+          if (!ingredientList[category]) {
+            ingredientList[category] = {
+              amount: 0,
+              amountChecked: 0,
+              hidden: false,
+              ingredients: {}
+            };
+          }
+        
+          // Add the ingredient to the category in the ingredient list
+          ingredientList[category].ingredients[ingredientName] = {
+            checked: false,
+            amount: ingredientData.amount,
+            unit: ingredientData.unit
+          };
+          ingredientList[category].amount += 1;
+        });
+    }
+    }
+    grocerylistInitial = await checkGroceryList(req.query.mealsid, req.query.firstDay);
+    if (!grocerylistInitial[0]) {
+      grocerylist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
+      console.log(groceryList)
+      res.status(201).json(grocerylist)
+    }
+    else {
+      // we have to compare grocerylistinitial to grocerylist
+      grocerylist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
+      
+      // // Loop through each category in the new checklist
+      // console.log(grocerylistInitial)
+      // for (let category in groceryList) {
+      //   // Loop through each ingredient in that category
+      //   console.log(category)
+      //   for (let ingredient in groceryList[category].ingredients) {
+      //     // If the amount has changed
+      //     console.log(groceryList[category].ingredients[ingredient].amount)
+      //     console.log(groceryListInitial.checklist[category].ingredients[ingredient].amount)
+      //     if (groceryList[category].ingredients[ingredient].amount >= groceryListInitial.checklist[category].ingredients[ingredient].amount) {
+      //       //we must set FALSE!!!!!
+      //       category = grocerylist[category];
+      //       ingredient = grocerylist[category].ingredient[ingredient];
+      //       console.log("difference spotted", category, ingredient);
+      //       //grocerylist[category].ingredients[ingredient].checked = false;
+      //     }
+      //   }
+      // }
+      
+      res.status(200).json(grocerylist[0])
+      }
+      
   }
-  
 }
