@@ -430,7 +430,9 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
-                        id={(meal1 && `copy${meal1['mealname']}${(index * 2) + (page * (mealsPerPage * 2))}`) || ''}
+                        id={(meal1 &&
+                           `copy${meal1['mealname']}${(index * 2) +
+                             (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal1)}
                       >
                         <ContentPasteIcon/>
@@ -493,7 +495,9 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
-                        id={(meal2 && `copy${meal2['mealname']}${(index * 2) + 1 + (page * (mealsPerPage * 2))}`) || ''}
+                        id={(meal2 &&
+                          `copy${meal2['mealname']}${(index * 2) +
+                            1 + (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal2)}
                       >
                         <ContentPasteIcon/>

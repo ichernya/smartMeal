@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {styled} from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -33,7 +33,6 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const dateCopy = new Date(year, month - 1, day);
   dateCopy.setDate(dateCopy.getDate() + weekday);
   const [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
-
 
   const TIMES = ['breakfast', 'lunch', 'dinner'];
 

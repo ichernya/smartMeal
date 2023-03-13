@@ -19,8 +19,11 @@ const theme = createTheme({
   },
   backgroundColor: '#f3f1fa',
 });
-
-// eslint-disable-next-line require-jsdoc
+/**
+ * The layout of how the page looks like when its desktop, mobile, tablet
+ * @param {*} props
+ * @return {object}
+ */
 function HomeLayout(props) {
   return (
     <ThemeProvider theme={theme}>

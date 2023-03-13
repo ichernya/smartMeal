@@ -54,7 +54,8 @@ const filterMealsForIngredients =
     // Look through the each day of the week that aren't empty
     .forEach((date) => {
       [0, 1, 2].forEach((timeOfDay) => {
-        if (mealPlan[date][timeOfDay].recipeid !== 0 &&
+        if (mealPlan[date][timeOfDay][0] !== '0' &&
+          mealPlan[date][timeOfDay].recipeid !== 0 &&
           Object.keys(mealPlan[date][timeOfDay].ingredients)
             .includes(myIngredient)) {
           mealsOfWithIng.push({'date': date, 'timeOfDay': timeOfDay,
@@ -74,13 +75,38 @@ function IndeterminateCheckbox() {
     ingredientList, setIngredientList,
     setChosenIngredient,
     setAlteratives, mealPlan,
-    setMealsWithIngredient,
+    setMealsWithIngredient, startWeek,
   } = useMeals();
   // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
   const setAll = (target, location, value) => {
-    Object.keys(target[location]['ingredients']).forEach((key) => {
-      target[location]['ingredients'][key].checked = value;
+    const item = localStorage.getItem('user');
+    const person = JSON.parse(item);
+    const bearerToken = person ? person.accessToken : '';
+    const userId = person ? person.userid : '';
+    const startDay = new Date(startWeek);
+    const startIso = startDay.toISOString().split('T')[0];
+    const ingredentsToChange = target[location].ingredients;
+    Object.keys(ingredentsToChange).forEach((ingredent) => {
+      if (ingredentsToChange[ingredent].checked !== value) {
+        const body = {
+          'mealsid': userId,
+          'firstDay': startIso,
+          'category': location,
+          'ingredient': ingredent,
+          'check': value,
+        };
+        fetch(`http://localhost:3010/v0/groceryList`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+          headers: new Headers({
+            'Authorization': `Bearer ${bearerToken}`,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }),
+        });
+      }
+      ingredentsToChange[ingredent].checked = value;
     });
   };
   const setAllCategory = (target, location, value) => {
@@ -113,13 +139,13 @@ function IndeterminateCheckbox() {
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
+    console.log(mealPlan);
     filterMealsForIngredients(mealPlan, setMealsWithIngredient,
       myIngredient);
   };
 
-  const handleChildChange = (event) => {
+  const handleChildChange = (parentCategory, myIngredient, startWeek) => {
     const alter = {...ingredientList};
-    const [parentCategory, myIngredient] = event.target.id.split('-');
     if (alter[parentCategory]['ingredients'][myIngredient].checked) {
       alter[parentCategory]['ingredients'][myIngredient].checked = false;
       alter[parentCategory]['amountChecked'] -= 1;
@@ -127,6 +153,29 @@ function IndeterminateCheckbox() {
       alter[parentCategory]['ingredients'][myIngredient].checked = true;
       alter[parentCategory]['amountChecked'] += 1;
     }
+    const item = localStorage.getItem('user');
+    const person = JSON.parse(item);
+    const bearerToken = person ? person.accessToken : '';
+    const userId = person ? person.userid : '';
+
+    const startDay = new Date(startWeek);
+    const startIso = startDay.toISOString().split('T')[0];
+    const body = {
+      'mealsid': userId,
+      'firstDay': startIso,
+      'category': parentCategory,
+      'ingredient': myIngredient,
+      'check': alter[parentCategory]['ingredients'][myIngredient].checked,
+    };
+    fetch(`http://localhost:3010/v0/groceryList`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }),
+    });
     setIngredientList(alter);
   };
   const handleHidden = (category) => {
@@ -145,7 +194,8 @@ function IndeterminateCheckbox() {
         <Grid container
           direction="column"
           justifyContent="flex-start"
-          alignItems="flex-start" key={category}>
+          alignItems="flex-start"
+          key={category}>
           <Grid item>
             <FormControlLabel
               label={category}
@@ -179,7 +229,8 @@ function IndeterminateCheckbox() {
                       checked=
                         {ingredientList[category]['ingredients'][ingredient]
                           .checked}
-                      onChange={handleChildChange}
+                      onChange={() =>
+                        handleChildChange(category, ingredient, startWeek)}
                     />
                   }
                 />

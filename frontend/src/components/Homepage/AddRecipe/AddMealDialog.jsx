@@ -524,4 +524,3 @@ function AddMealDialog(props) {
 };
 
 export default AddMealDialog;
-
