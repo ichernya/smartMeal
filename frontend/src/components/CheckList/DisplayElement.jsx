@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import defaultImage from '../../assets/qqq.png';
 
 import {useMeals} from '../MealContextProvider';
+import './Checkbox.css';
 import {postChangeRecipe, postChangeAllRecipes} from './HandleUpdate.jsx';
 
 /**
@@ -159,13 +160,15 @@ function DisplayElement() {
         specificMeal.ingredients[isChosenIngredient.name];
       e.meal.ingredients[selectedAlterative] =
       specificMeal.ingredients[isChosenIngredient.name];
+      specificMeal.dishname =
+       `(${selectedAlterative}) ${specificMeal.dishname}`;
       delete specificMeal.ingredients[isChosenIngredient.name];
       delete e.meal.ingredients[isChosenIngredient.name];
     });
     setIngredientList(newList);
     setPlan(newMeals);
     postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
-      startWeek);
+      startWeek, selectedAlterative);
     handleCancel();
   };
 
@@ -310,6 +313,7 @@ function DisplayElement() {
                       sx={{display: modifiedState[a].hidden ? 'none' :
                         'inline-block', ml: 3, gap: 1, mt: 1}}
                       key={ingredient}
+                      className='listElement'
                       onClick={() => (handleSelect(ingredient))}
                     >
                       {ingredient}
@@ -339,6 +343,7 @@ function DisplayElement() {
           {Object.keys(alteratives).length ?
             <Grid item>
               <ButtonBase onClick={handleChange}
+                className='listElement'
                 disabled={selectedAlterative === null}>
               Change this
               </ButtonBase>

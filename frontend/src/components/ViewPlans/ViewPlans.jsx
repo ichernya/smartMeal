@@ -134,7 +134,7 @@ const updateCurrentPlan = (data, firstDay) => {
   const startIso = startDay.toISOString().split('T')[0];
 
   // First day of the week of the plan we're copying
-  const [year, month, day] = json['firstday'].split('-');
+  const [year, month, day] = data['firstday'].split('-');
   const firstCopyDay = (new Date(year, month - 1, day)).getDate();
 
   for (const [day, meals] of Object.entries(data['mealweek'])) {
@@ -426,7 +426,9 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
-                        id={(meal1 && `copy${meal1['mealname']}${(index * 2) + (page * (mealsPerPage * 2))}`) || ''}
+                        id={(meal1 &&
+                           `copy${meal1['mealname']}${(index * 2) +
+                             (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal1)}
                       >
                         <ContentPasteIcon/>
@@ -489,7 +491,9 @@ function ViewMeals(props) {
                     >
                       <IconButton
                         className='copy'
-                        id={(meal2 && `copy${meal2['mealname']}${(index * 2) + 1 + (page * (mealsPerPage * 2))}`) || ''}
+                        id={(meal2 &&
+                          `copy${meal2['mealname']}${(index * 2) +
+                            1 + (page * (mealsPerPage * 2))}`) || ''}
                         onClick={() => onSelectPlan(meal2)}
                       >
                         <ContentPasteIcon/>

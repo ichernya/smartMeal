@@ -14,6 +14,8 @@ import {useNavigate, Link} from 'react-router-dom';
 
 import '../colors.css';
 import './DrawerContent.css';
+import createList from '../GenerateList';
+import {useMeals} from '../MealContextProvider';
 
 /**
  * Represents what is in the sidebar component
@@ -24,11 +26,16 @@ function DrawerContent(props) {
   const {settingsDialog, setSettings, open} =
     React.useContext(props['context']);
   const history = useNavigate();
+  const {setIngredientList, startWeek} = useMeals();
   const logout = () => {
     localStorage.removeItem('user');
     history('/login');
   };
-
+  const onClickNav = (path) => {
+    if (path === '/checklist') {
+      createList(setIngredientList, startWeek);
+    };
+  };
   const settingsOnclick = () => {
     setSettings(!settingsDialog);
   };
@@ -52,6 +59,7 @@ function DrawerContent(props) {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
+                onClick={() => onClickNav(urls[index])}
               >
                 <ListItemIcon
                   sx={{

@@ -147,7 +147,8 @@ function IndeterminateCheckbox() {
         <Grid container
           direction="column"
           justifyContent="flex-start"
-          alignItems="flex-start" key={category}>
+          alignItems="flex-start"
+          key={category}>
           <Grid item>
             <FormControlLabel
               label={category}

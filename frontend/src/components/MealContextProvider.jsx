@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 
 import parsePlanData from './parser.jsx';
+import createList from './GenerateList.jsx';
 
 const MealsContext = createContext();
 
@@ -32,52 +33,6 @@ const getMealsForWeek = (setMeal, userId) => {
     });
 };
 
-
-const testIngredientList = {
-  'Protein': {
-    'amount': 1,
-    'amountChecked': 0,
-    'hidden': false,
-    'ingredients': {
-      'Beef': {
-        'checked': false,
-        'amount': 20,
-        'unit': 'Ton',
-      },
-    },
-  },
-  'Dairy': {
-    'amount': 2,
-    'amountChecked': 1,
-    'hidden': false,
-    'ingredients': {
-      'Whole milk': {
-        'checked': true,
-        'amount': 33,
-        'unit': 'liters',
-      },
-      'Cheese': {
-        'checked': false,
-        'amount': 22,
-        'unit': 'Ton',
-      },
-    },
-  },
-  'Vegetables': {
-    'amount': 1,
-    'amountChecked': 0,
-    'hidden': false,
-    'ingredients': {
-      'Baby Bella Mushrooms': {
-        'checked': false,
-        'amount': 36,
-        'unit': 'Ton',
-      },
-    },
-  },
-};
-
-
 export const MealsProvider = ({children}) => {
   // calculates the start and end of the week
   const currentDay = new Date();
@@ -102,7 +57,10 @@ export const MealsProvider = ({children}) => {
     id = person ? person.userid : null;
   }
   const [userId, setId] = React.useState(id);
-
+  useEffect(() => {
+    const startWeek = new Date();
+    createList(setIngredientList, startWeek);
+  }, []);
   useEffect(() => {
     if (userId) {
       // Grab the meals for the week when loading the page
@@ -122,9 +80,6 @@ export const MealsProvider = ({children}) => {
       'category': '',
     },
   );
-  useEffect(() => {
-    setIngredientList(testIngredientList);
-  }, []);
 
   return (
     <MealsContext.Provider value={{

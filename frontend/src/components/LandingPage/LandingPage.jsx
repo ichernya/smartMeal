@@ -6,8 +6,10 @@ import ScreenshotCard from './ScreenshotCard';
 import ScreenshotCard2 from './ScreenshotCard2';
 import {Typography} from '@mui/material';
 import './LandingPage.css';
-
-// eslint-disable-next-line require-jsdoc
+/**
+ * The page where users are first directed that shows what out page is about
+ * @return {object}
+ */
 function LandingPage() {
   return (
     <div className='root'>

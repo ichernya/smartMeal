@@ -4,7 +4,7 @@ const dateToIntConvert = (day) => {
     'mon': 1,
     'tues': 2,
     'wed': 3,
-    'thrus': 4,
+    'thurs': 4,
     'fri': 5,
     'sat': 6,
   };
@@ -83,22 +83,20 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
 };
 
 export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
-  startWeek) => {
+  startWeek, specificIngredient) => {
   const toChangeDayMap = {
     'sun': {},
     'mon': {},
     'tues': {},
     'wed': {},
-    'thrus': {},
+    'thurs': {},
     'fri': {},
     'sat': {},
   };
   const uniqueMeals = {};
-
   // The first day of the week
   const startDay = startWeek.toISOString().split('T')[0];
   // The  day of the week that is being updated
-  const dateCopy = new Date(startWeek);
   const TIMES = ['breakfast', 'lunch', 'dinner'];
   mealsWithIngredient.forEach((meal, i) => {
     if (Object.keys(uniqueMeals).includes(meal.meal.recipeid.toString())) {
@@ -116,6 +114,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
     const parsedRecipe = {...meal.meal};
     parsedRecipe.ingredients = [];
     delete parsedRecipe.recipeid;
+    parsedRecipe.dishname = `(${specificIngredient}) ${meal.meal.dishname}`;
     Object.keys(meal.meal.ingredients).forEach((ingredient) => {
       const ingredientParam = [];
       ingredientParam.push(ingredient);
@@ -123,6 +122,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
       ingredientParam.push(meal.meal.ingredients[ingredient].amount);
       parsedRecipe.ingredients.push(ingredientParam);
     });
+    console.log(meal);
     fetch('http://localhost:3010/v0/recipes', {
       method: 'POST',
       body: JSON.stringify(parsedRecipe),
@@ -163,6 +163,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
               'lunch': '0',
               'dinner': '0',
             };
+            const dateCopy = new Date(startWeek);
             dateCopy.setDate(dateCopy.getDate() + dateToIntConvert(day));
             for (const [ind, recipeid] of Object.entries(toChangeDayMap[day])) {
               const time = TIMES[ind];
@@ -189,9 +190,6 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
             });
           }
         });
-        console.log(toChangeDayMap);
       });
   });
-  console.log(mealsWithIngredient, mealPlan,
-    startWeek);
 };

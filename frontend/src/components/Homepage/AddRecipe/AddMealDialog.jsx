@@ -38,7 +38,8 @@ import '../../colors.css';
  * @return {JSX} Jsx
  */
 function AddMealDialog(props) {
-  const {addMeal, setAddMeal, setShowAlert} = React.useContext(props['HomeContext']);
+  const {addMeal, setAddMeal, setShowAlert} =
+   React.useContext(props['HomeContext']);
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -326,7 +327,8 @@ function AddMealDialog(props) {
                 >
                   <FormControlLabel value="metric" control={<Radio />}
                     label="Metric" id='Metric'/>
-                  <FormControlLabel value="US" control={<Radio />} label="US" id='US'/>
+                  <FormControlLabel value="US" control={<Radio />}
+                    label="US" id='US'/>
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -419,7 +421,8 @@ function AddMealDialog(props) {
                   id='units'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                    <MenuItem id={unit} value={unit} key={unit}>{unit}</MenuItem>
+                    <MenuItem id={unit} value={unit}
+                      key={unit}>{unit}</MenuItem>
                   ))}
                 </Select>
                 <FormHelperText id="select-text">Unit</FormHelperText>

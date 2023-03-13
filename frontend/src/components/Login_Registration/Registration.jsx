@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, {useState} from 'react';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
@@ -66,7 +65,7 @@ function SignUp() {
         return res;
       })
       .then((res) => {
-        history('/home');
+        history('/');
       }).catch((err) => {
         setInvalid(true);
       });
