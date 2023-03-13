@@ -126,8 +126,10 @@ function Menu(props) {
     // Update search state
     if (search) {
       searchRecipes(search, setMenu);
+    } else {
+      getRecipes(setMenu, history);
     }
-  }, [search]);
+  }, [search, history]);
 
   React.useEffect(() => {
     // Update menu if user added a new meal

@@ -17,7 +17,6 @@ const pool = new Pool({
 // for pulling the recipe to display dishname and ingredients
 // send back entire week of food
 const pullAllRecipe = async (mealsid) => {
-
     const tags = 'SELECT vegan, halal, healthy, kosher FROM users WHERE userid = $1';
     let query = {
         text: tags,
