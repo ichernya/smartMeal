@@ -17,9 +17,11 @@ const theme = createTheme({
     },
   },
 });
-
-// eslint-disable-next-line require-jsdoc
-function PlansLayout(props) {
+/**
+ * The layout of how the page looks like when its desktop, mobile, tablet
+ * @return {object}
+ */
+function PlansLayout() {
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={0}>

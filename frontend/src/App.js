@@ -9,6 +9,7 @@ import CheckList from './components/CheckList.jsx';
 import MealsProvider from './components/MealContextProvider.jsx';
 import PlansLayout from './components/PlansLayout.jsx';
 import LandingPage from './components/LandingPage/LandingPage.jsx';
+import Error from './components/Page404.jsx';
 import './App.css';
 
 
