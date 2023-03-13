@@ -168,7 +168,7 @@ const updateCurrentPlan = (data, firstDay) => {
     setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
 
     const [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
-    const dayof = `${dateY}-${dateM}-${dateY}`;
+    const dayof = `${dateY}-${dateM}-${dateD}`;
 
     const body = {
       'mealsid': userId,

@@ -158,7 +158,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 7,
-              'imagedata': '/backend/images/cheeseburger.png',
+              'imagedata': '/cheeseburger.png',
               'vegan': false,
               'halal': true,
               'healthy': false,

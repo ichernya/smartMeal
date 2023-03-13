@@ -20,11 +20,11 @@
     height: 50px !important;
 }
 
-#selected {
+.selected {
     opacity: 50%;
 }
 
-#unselected {
+.unselected {
     opacity: 101%;
 }
 
