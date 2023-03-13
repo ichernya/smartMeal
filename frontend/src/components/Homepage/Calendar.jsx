@@ -27,11 +27,12 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const userId = person ? person.userid : '';
 
   // The first day of the week
-  const startDay = startWeek.toISOString().split('T')[0];
+  const [month, day, year] = startWeek.toLocaleDateString().split('/');
 
   // The  day of the week that is being updated
-  const dateCopy = new Date(startWeek);
+  const dateCopy = new Date(year, month - 1, day);
   dateCopy.setDate(dateCopy.getDate() + weekday);
+  const [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
 
   const TIMES = ['breakfast', 'lunch', 'dinner'];
 
@@ -55,11 +56,10 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
 
   const body = {
     'mealsid': userId,
-    'dayof': `{${dateCopy.toISOString().split('T')[0]}}`,
-    'firstDay': startDay,
+    'dayof': `{${dateY}-${dateM}-${dateD}}`,
+    'firstDay': `${year}-${month}-${day}`,
     'changes': bodyStringified,
   };
-  console.log(body);
 
   fetch(`http://localhost:3010/v0/meals`, {
     method: 'PUT',
@@ -90,9 +90,10 @@ function Calendar(props) {
   // Without keeping track of the count, the user could unselect with unshift
   // even if they havent added the selected item before
   const [chosenFood, setChosen] =
-   useState((selectedFood && selectedFood[0]) || null);
+    React.useState((selectedFood && selectedFood[0]) || null);
   const [chosenUsed, setUsed] =
-   useState((selectedFood && selectedFood[1]) || 0);
+    React.useState((selectedFood && selectedFood[1]) || 0);
+
   React.useEffect(() => {
     if (selectedFood) {
       setChosen(selectedFood[0]);

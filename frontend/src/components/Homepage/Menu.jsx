@@ -12,6 +12,17 @@ import {styled} from '@mui/material/styles';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {Link, useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Divider from '@mui/material/Divider';
+
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import {useTheme} from '@mui/material/styles';
 
 import Tools from './Tools.jsx';
 import './Menu.css';
@@ -31,7 +42,8 @@ const getRecipes = (setMenu, history) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
-  fetch('http://localhost:3010/v0/recipes', {
+  const userId = person ? person.userid : '';
+  fetch(`http://localhost:3010/v0/recipes?mealsid=${userId}`, {
     method: 'get',
     headers: new Headers({
       'Authorization': `Bearer ${bearerToken}`,
@@ -87,11 +99,15 @@ function Menu(props) {
   const history = useNavigate();
   const {
     width, selectedFood, setSelected, search,
-    setAddMeal, addMeal,
+    setAddMeal, addMeal, showAlert, setChange,
+    alignmentsChange,
   } = React.useContext(props['HomeContext']);
 
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
+  // Represents whether to show the ingredients popup
+  const [ingredient, setIngredient] = React.useState({});
+  const [ingredientPopup, setPopup] = React.useState(false);
   // number of rows for the menu display
   const ROWS = 2;
 
@@ -113,6 +129,19 @@ function Menu(props) {
     }
   }, [search]);
 
+  React.useEffect(() => {
+    // Update menu if user added a new meal
+    if (showAlert) {
+      getRecipes(setMenu, history);
+    }
+  }, [showAlert, history]);
+
+  React.useEffect(() => {
+    // Update menu if user added a new meal
+    getRecipes(setMenu, history);
+    setChange(false);
+  }, [alignmentsChange, history, setChange]);
+
   const clickItem = (item) => {
     // Choose item on click
     if (chosenFood === item) {
@@ -121,6 +150,20 @@ function Menu(props) {
       setSelected([item, 0]);
     }
   };
+
+
+  const foodInfo = (food) => {
+    setIngredient(food);
+    setPopup(true);
+  };
+
+  const clearFoodInfo = () => {
+    setIngredient({});
+    setPopup(false);
+  };
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Use references to move both menu sliders together
   const topMenu = React.useRef(0);
@@ -137,6 +180,47 @@ function Menu(props) {
   return (
     <div>
       <Tools HomeContext={props['HomeContext']}/>
+      <Dialog
+        fullScreen={fullScreen}
+        open={ingredientPopup}
+        onClose={clearFoodInfo}
+        aria-labelledby="responsive-dialog-title"
+        style={{display: ingredientPopup ? '' : 'none'}}
+      >
+        <DialogTitle id="responsive-dialog-title">
+          {`Ingredients for ${ingredient['dishname']}`}
+        </DialogTitle>
+        <DialogContent>
+          <List>
+            {ingredient['ingredients'] &&
+            Object.keys(ingredient['ingredients']).map((food) => {
+              const data = ingredient['ingredients'][food];
+              const amount = data['amount'] || data['quantity'];
+              let unit = data['unit'] === 'N/A' ? food : data['unit'];
+              if (
+                parseInt(amount) > 1 && data['unit'] === 'N/A'
+              ) {
+                unit += 's';
+              }
+              return (
+
+                <div key={food}>
+                  <ListItem>
+                    {`${food}: ${amount} ${unit}`}
+                  </ListItem>
+                  <Divider/>
+                </div>
+              );
+            })
+            }
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={clearFoodInfo} autoFocus id='closeSetting'>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Grid
         container
         spacing={0}
@@ -185,11 +269,15 @@ function Menu(props) {
                         return (
                           <ImageListItem
                             className='margins'
-                            onClick={() => clickItem(item)}
                             key={item['dishname'] + ind + index}
                             id={item['dishname']}
                           >
                             <img
+                              /* src={`${image}w=248&fit=crop&auto=format`}
+                              srcSet={
+                                `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
+                              } */
+                              onClick={() => clickItem(item)}
                               src={image}
                               alt={item['dishname']}
                               loading="lazy"
@@ -202,6 +290,7 @@ function Menu(props) {
                             />
                             <ImageListItemBar
                               title={item['dishname']}
+                              onClick={() => foodInfo(item)}
                               actionIcon={
                                 <IconButton
                                   sx={{color: 'rgba(255, 255, 255, 0.54)'}}
