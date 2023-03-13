@@ -17,22 +17,46 @@ const pool = new Pool({
 // for pulling the recipe to display dishname and ingredients
 // send back entire week of food
 const pullAllRecipe = async (mealsid) => {
-    //const select = 'SELECT * FROM recipes';
-    const select = `SELECT * FROM recipes
-                        WHERE (
-                            (vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $1))
-                            AND 
-                            (halal = false OR halal = (SELECT halal FROM users WHERE userid = $1))
-                            AND 
-                            (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $1))
-                            AND 
-                            (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $1)))`
-    const query = {
-        text: select,
+    const tags = 'SELECT vegan, halal, healthy, kosher FROM users WHERE userid = $1';
+    let query = {
+        text: tags,
         values: [mealsid]
     }
-    const {rows} = await pool.query(query);
-    return rows;
+    let {rows} = await pool.query(query);
+
+    let allFalse = true;
+
+    // If allFalse, return all recipes
+    for (const tag of Object.values(rows[0])) {
+        if (tag) {
+            allFalse = false;
+        }
+    }
+
+    let select = 'SELECT * FROM recipes';
+
+    // Determines whether to add an "AND"
+    let count = 0;
+    if (!allFalse) {
+        // If allFalse, return all recipes
+        select += ' WHERE ';
+        for (const [tag, bool] of Object.entries(rows[0])) {
+            if (count > 0 && bool) {
+              select += ' AND '
+            }
+            if (bool) {
+                select += `${tag} = true`
+                count += 1
+            }
+        }
+    }
+
+    query = {
+        text: select,
+        values: []
+    }
+    rows = await pool.query(query);
+    return rows['rows'];
 }
 
 exports.getAll = async (req, res) => {
