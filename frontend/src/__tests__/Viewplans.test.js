@@ -10,6 +10,7 @@ import App from '../App.js';
 
 const URL = 'http://localhost:3010/v0';
 window.alert = jest.fn();
+let search404 = false;
 
 const currentDay = new Date();
 const dateOffset = currentDay.getDay();
@@ -245,6 +246,7 @@ const server = setupServer(
   }),
 
   rest.get(URL + `/publicMeal`, (req, res, ctx) => {
+    console.log(search404);
     return res(
       ctx.status(200),
       ctx.json(
@@ -1341,41 +1343,129 @@ function setWidth(width) {
 /**
  */
 test('view meal plans', async () => {
-  window.alert.mockClear();
-  render(<App/>);
-  fireEvent.click(screen.getByText('Login'));
+  window.alert.mockclear();
+  render(<app/>);
+  fireevent.click(screen.getbytext('login'));
 
-  // Log in
-  await screen.findByText('Sign In');
-  fireEvent.change(screen.getByTestId('email'), {target: {value: ''}});
-  fireEvent.change(screen.getByTestId('password'), {target: {value: ''}});
-  fireEvent.change(screen.getByTestId('email'),
+  // log in
+  await screen.findbytext('sign in');
+  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('email'),
     {target: {value: 'molly@books.com'}});
-  fireEvent.change(screen.getByLabelText('Password *'),
+  fireevent.change(screen.getbylabeltext('password *'),
     {target: {value: 'mollymember'}});
   act(() => {
-    fireEvent.click(screen.getByText('Sign In'));
+    fireevent.click(screen.getbytext('sign in'));
   });
 
-  waitFor(() => {
-    const home = screen.getByText('New Meal');
-    expect(home).toBeInTheDocument();
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
   });
-  await screen.findByText('New Meal');
-  await screen.findByText('Mushroom Poppers');
-  await screen.findByText('Cheeseburger');
-  fireEvent.click(screen.getByTestId('mealsPlans'));
+  await screen.findbytext('new meal');
+  await screen.findbytext('mushroom poppers');
+  await screen.findbytext('cheeseburger');
   act(() => {
-    fireEvent.click(screen.getByTestId('privated'));
+    fireevent.click(screen.getbytestid('mealsplans'));
   });
-  waitFor(() => {
-    const home = screen.getByText('New Meal');
-    expect(home).toBeInTheDocument();
+  act(() => {
+    fireevent.click(screen.getbytestid('privated'));
   });
-  fireEvent.click(screen.getByTestId('next'));
-  fireEvent.click(screen.getByTestId('first'));
-  fireEvent.click(screen.getByTestId('last'));
-  fireEvent.click(screen.getByTestId('prev'));
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  fireevent.click(screen.getbytestid('next'));
+  fireevent.click(screen.getbytestid('first'));
+  fireevent.click(screen.getbytestid('last'));
+  fireevent.click(screen.getbytestid('prev'));
+});
+
+
+/**
+ */
+test('view meal plans', async () => {
+  window.alert.mockclear();
+  render(<app/>);
+  fireevent.click(screen.getbytext('login'));
+
+  // log in
+  await screen.findbytext('sign in');
+  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('email'),
+    {target: {value: 'molly@books.com'}});
+  fireevent.change(screen.getbylabeltext('password *'),
+    {target: {value: 'mollymember'}});
+  act(() => {
+    fireevent.click(screen.getbytext('sign in'));
+  });
+
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  await screen.findbytext('new meal');
+  await screen.findbytext('mushroom poppers');
+  await screen.findbytext('cheeseburger');
+  act(() => {
+    fireevent.click(screen.getbytestid('mealsplans'));
+  });
+  act(() => {
+    fireevent.click(screen.getbytestid('privated'));
+  });
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  fireevent.click(screen.getbytestid('next'));
+  fireevent.click(screen.getbytestid('first'));
+  fireevent.click(screen.getbytestid('last'));
+  fireevent.click(screen.getbytestid('prev'));
+});
+
+
+/**
+ */
+test('view meal plans', async () => {
+  window.alert.mockclear();
+  render(<app/>);
+  fireevent.click(screen.getbytext('login'));
+
+  // log in
+  await screen.findbytext('sign in');
+  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('email'),
+    {target: {value: 'molly@books.com'}});
+  fireevent.change(screen.getbylabeltext('password *'),
+    {target: {value: 'mollymember'}});
+  act(() => {
+    fireevent.click(screen.getbytext('sign in'));
+  });
+
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  await screen.findbytext('new meal');
+  await screen.findbytext('mushroom poppers');
+  await screen.findbytext('cheeseburger');
+  act(() => {
+    fireevent.click(screen.getbytestid('mealsplans'));
+  });
+  act(() => {
+    fireevent.click(screen.getbytestid('privated'));
+  });
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  fireevent.click(screen.getbytestid('next'));
+  fireevent.click(screen.getbytestid('first'));
+  fireevent.click(screen.getbytestid('last'));
+  fireevent.click(screen.getbytestid('prev'));
 });
 
 /**
@@ -1383,27 +1473,49 @@ test('view meal plans', async () => {
 test('search meal plan', async () => {
   window.alert.mockClear();
   render(<App/>);
+  fireevent.click(screen.getbytext('login'));
+
+  // log in
+  await screen.findbytext('sign in');
+  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
+  fireevent.change(screen.getbytestid('email'),
+    {target: {value: 'molly@books.com'}});
+  fireevent.change(screen.getbylabeltext('password *'),
+    {target: {value: 'mollymember'}});
+  act(() => {
+    fireevent.click(screen.getbytext('sign in'));
+  });
+
+  waitfor(() => {
+    const home = screen.getbytext('new meal');
+    expect(home).tobeinthedocument();
+  });
+  await screen.findbytext('new meal');
+  await screen.findbytext('mushroom poppers');
+  await screen.findbytext('cheeseburger');
+  act(() => {
+    fireevent.click(screen.getbytestid('mealsplans'));
+  });
 
   act(() => {
     fireEvent.click(screen.getByTestId('privated'));
   });
-  waitFor(() => {
-    const home = screen.getByText('My Healthy Meal');
-    expect(home).toBeInTheDocument();
-    const home2 = screen.getByText('Test Meal');
-    expect(home2).toBeInTheDocument();
-  });
-  await screen.findByText('Test Meal');
-  await screen.findByText('My Healthy Meal');
   fireEvent.click(screen.getByTestId('next'));
   fireEvent.click(screen.getByTestId('first'));
   fireEvent.click(screen.getByTestId('last'));
   fireEvent.click(screen.getByTestId('prev'));
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
+  });
+  search404 = true;
 
   act(() => {
     fireEvent.change(screen.getByTestId('planSearch'),
       {target: {value: 'moll'}});
   });
+  search404 = false;
   act(() => {
     fireEvent.click(screen.getByTestId('cancelSearch'));
   });

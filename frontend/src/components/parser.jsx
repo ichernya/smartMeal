@@ -5,7 +5,6 @@
  */
 function parsePlanData(setMeal, json) {
   const data = json['mealweek'];
-  console.log(data);
   const mealPlan = {'mealname': json['mealname']};
   const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
   const TIMES = ['breakfast', 'lunch', 'dinner'];
@@ -37,7 +36,8 @@ function parsePlanData(setMeal, json) {
   const startDate = new Date(year, month - 1, day);
 
   for (const weekday of daysOfWeek) {
-    const dateIso = startDate.toISOString().split('T')[0];
+    const [month, day, year] = startDate.toLocaleDateString().split('/');
+    const dateIso = `${year}-${month}-${day}`;
 
     const mealsForDay = data[dateIso];
 
@@ -45,7 +45,7 @@ function parsePlanData(setMeal, json) {
       // User has data for this day
       mealPlan[weekday] = [];
       for (const time of TIMES) {
-        if (mealsForDay[time]) {
+        if (mealsForDay[time] && isNaN(mealsForDay[time])) {
           // User has meal for the specific time of day
           // breakfast, lunch, dinner
           mealPlan[weekday].push({...mealsForDay[time]});
@@ -64,7 +64,6 @@ function parsePlanData(setMeal, json) {
     startDate.setDate(startDate.getDate() + 1);
   }
 
-  console.log(mealPlan);
   setMeal(mealPlan);
 };
 

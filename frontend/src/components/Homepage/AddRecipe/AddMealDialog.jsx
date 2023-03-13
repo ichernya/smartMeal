@@ -192,7 +192,6 @@ function AddMealDialog(props) {
 
   // Handle the image upload
   const handleCapture = (event) => {
-    console.log(event.target.files[0]);
     const imageName = event.target.files[0].name;
     setFileName(imageName);
     readFileDataAsBase64(event);
@@ -222,7 +221,7 @@ function AddMealDialog(props) {
     let resultArray = [];
     ingredients.forEach(function(ingredient) {
       let ing;
-      if (ingredient.unit === 'unit'){
+      if (ingredient.unit === 'unit') {
         ing = [ingredient.name, ingredient.quantity, ingredient.name];
       } else {
         ing = [ingredient.name, ingredient.quantity, ingredient.unit];
@@ -243,7 +242,7 @@ function AddMealDialog(props) {
 
   const addRecipe = (event) => {
     // Initializing the dictionary
-    const recipe ={dishname: recipeName,
+    const recipe = {dishname: recipeName,
       ingredients: formatIngredients(ingredients),
       imageData: imageData,
       vegan: dietList.includes('Vegan') ? true : false,
@@ -251,8 +250,6 @@ function AddMealDialog(props) {
       healthy: dietList.includes('Healthy') ? true : false,
       kosher: dietList.includes('Kosher') ? true : false,
     };
-    console.log(recipe);
-    console.log(JSON.stringify(recipe));
 
     if (recipeIsCorrect(recipe)) {// call the API
       // Retrieve the token
@@ -362,7 +359,8 @@ function AddMealDialog(props) {
                 >
                   <FormControlLabel value="metric" control={<Radio />}
                     label="Metric" id='Metric'/>
-                  <FormControlLabel value="US" control={<Radio />} label="US" id='US'/>
+                  <FormControlLabel value="US" control={<Radio />}
+                    label="US" id='US'/>
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -455,7 +453,9 @@ function AddMealDialog(props) {
                   id='units'
                 >
                   {(system === 'metric' ? metricUnits : USUnits).map((unit) => (
-                    <MenuItem id={unit} value={unit} key={unit}>{unit}</MenuItem>
+                    <MenuItem id={unit} value={unit} key={unit}>
+                      {unit}
+                    </MenuItem>
                   ))}
                 </Select>
                 <FormHelperText id="select-text">Unit</FormHelperText>

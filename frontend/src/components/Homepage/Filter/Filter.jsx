@@ -50,11 +50,12 @@ const updateDietFilter = (diet, value) => {
  * @return {JSX} Jsx
  */
 function Filter(props) {
-  const {setDrawer, setAlignment, alignments} =
+  const {setDrawer, setAlignment, alignments, setChange} =
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
     updateDietFilter(name, false);
+    setChange(true);
     setAlignment({...alignments, [name]: false});
   };
 
