@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 
 import parsePlanData from './parser.jsx';
-import createList from './GenerateList.jsx';
+// import createList from './GenerateList.jsx';
 
 const MealsContext = createContext();
 
@@ -17,6 +17,7 @@ const getMealsForWeek = (setMeal, userId) => {
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
   const start = startWeek.toISOString().split('T')[0];
+  console.log(start);
   fetch(
     `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
       method: 'get',
@@ -58,13 +59,11 @@ export const MealsProvider = ({children}) => {
   }
   const [userId, setId] = React.useState(id);
   useEffect(() => {
-    const startWeek = new Date();
-    createList(setIngredientList, startWeek);
-  }, []);
-  useEffect(() => {
     if (userId) {
       // Grab the meals for the week when loading the page
+      // const startWeek = new Date();
       getMealsForWeek(setPlan, userId);
+      // createList(setIngredientList, startWeek);
     }
   }, [userId]);
 

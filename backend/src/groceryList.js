@@ -24,7 +24,6 @@ const updatePutQuery = async (firstDay, mealsid, category, ingredient) => {
         values: [firstDay, mealsid, `{${category},"ingredients","${ingredient}","checked"}`]
     }
     await pool.query(query);
-
     // category mapping to value wouldnt work in values, so query design had to change
     // weird conversions because integer cant cast to jsonb, but integer can to text then to jsonb
     const result = await pool.query(
@@ -34,9 +33,7 @@ const updatePutQuery = async (firstDay, mealsid, category, ingredient) => {
        RETURNING checklist`,
       [firstDay, mealsid]
     );
-
     const updatedList = result.rows[0].checklist;
-
     return updatedList;
     
 }
@@ -68,7 +65,12 @@ const downdatePutQuery = async (firstDay, mealsid, category, ingredient) => {
     
 }
 exports.updateAsChecked = async (req, res) => {
-    if (req.body.check) {var update = await updatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
-    else {var update = await downdatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
+  var update;
+  console.log(req.body.check);
+    if (req.body.check) {
+      update = await updatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);
+    } else {
+      update = await downdatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);
+    }
     res.status(201).json(update)
 }

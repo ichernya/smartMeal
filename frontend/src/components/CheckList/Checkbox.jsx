@@ -75,7 +75,7 @@ function IndeterminateCheckbox() {
     ingredientList, setIngredientList,
     setChosenIngredient,
     setAlteratives, mealPlan,
-    setMealsWithIngredient,
+    setMealsWithIngredient, startWeek,
   } = useMeals();
   // When first lanuch load meal from database and when the week change
   const [loading, setLoading] = useState(true);
@@ -119,9 +119,8 @@ function IndeterminateCheckbox() {
       myIngredient);
   };
 
-  const handleChildChange = (event) => {
+  const handleChildChange = (parentCategory, myIngredient, startWeek) => {
     const alter = {...ingredientList};
-    const [parentCategory, myIngredient] = event.target.id.split('-');
     if (alter[parentCategory]['ingredients'][myIngredient].checked) {
       alter[parentCategory]['ingredients'][myIngredient].checked = false;
       alter[parentCategory]['amountChecked'] -= 1;
@@ -129,6 +128,29 @@ function IndeterminateCheckbox() {
       alter[parentCategory]['ingredients'][myIngredient].checked = true;
       alter[parentCategory]['amountChecked'] += 1;
     }
+    const item = localStorage.getItem('user');
+    const person = JSON.parse(item);
+    const bearerToken = person ? person.accessToken : '';
+    const userId = person ? person.userid : '';
+
+    const startDay = new Date(startWeek);
+    const startIso = startDay.toISOString().split('T')[0];
+    const body = {
+      'mealsid': userId,
+      'firstDay': startIso,
+      'category': 'parentCategory',
+      'ingredient': myIngredient,
+      'check': alter[parentCategory]['ingredients'][myIngredient].checked,
+    };
+    fetch(`http://localhost:3010/v0/meals`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }),
+    });
     setIngredientList(alter);
   };
   const handleHidden = (category) => {
@@ -182,7 +204,8 @@ function IndeterminateCheckbox() {
                       checked=
                         {ingredientList[category]['ingredients'][ingredient]
                           .checked}
-                      onChange={handleChildChange}
+                      onChange={() =>
+                        handleChildChange(category, ingredient, startWeek)}
                     />
                   }
                 />

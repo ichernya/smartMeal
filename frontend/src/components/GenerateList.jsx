@@ -18,9 +18,8 @@ const createList = (setIngredientList, startWeek) => {
       return res.json();
     })
     .then((json) => {
-      const list = json[0][0] ?? json[0];
-      console.log(list);
-      setIngredientList(list.checklist);
+      const checklist = {...json};
+      setIngredientList(checklist);
     });
 };
 

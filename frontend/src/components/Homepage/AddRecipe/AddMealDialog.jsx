@@ -222,7 +222,7 @@ function AddMealDialog(props) {
     let resultArray = [];
     ingredients.forEach(function(ingredient) {
       let ing;
-      if (ingredient.unit === 'unit'){
+      if (ingredient.unit === 'unit') {
         ing = [ingredient.name, ingredient.quantity, ingredient.name];
       } else {
         ing = [ingredient.name, ingredient.quantity, ingredient.unit];
