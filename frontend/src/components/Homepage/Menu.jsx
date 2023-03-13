@@ -256,9 +256,16 @@ function Menu(props) {
                         if (!item) {
                           return <div key={ind + index}/>;
                         }
-
-                        const image = item['imagedata'] ? item['imagedata'] :
-                          require('../../assets/default.png');
+                        let image;
+                        if (item['imagedata']) {
+                          image = item['imagedata'];
+                          if (!image.startsWith('data:')) {
+                            image = require('../../assets/templateImage/'+
+                              image);
+                          }
+                        } else {
+                          image = require('../../assets/default.png');
+                        }
                         return (
                           <ImageListItem
                             className='margins'

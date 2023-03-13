@@ -17,6 +17,7 @@ const publicMeal = require('./publicMeal');
 const signup = require('./signup');
 const ingredients = require('./ingredients');
 const tags = require('./tags');
+const groceryList = require('./groceryList')
 
 // use express to create the app
 const app = express();
@@ -56,6 +57,8 @@ app.get('/v0/ingredients', ingredients.getIngredients);
 app.get('/v0/allIngredients', ingredients.pullIngredients);
 app.get('/v0/diets', tags.getDiets);
 app.put('/v0/diets', tags.updateDiet);
+app.get('/v0/groceryList', ingredients.pullGroceryList);
+app.put('/v0/groceryList', ingredients.updateAsChecked);
 
 
 // outputting error codes and mesages for debugging

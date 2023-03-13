@@ -460,6 +460,73 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /groceryList:
+    get:
+      security:
+        - bearerAuth: []
+      description: retrieve meals that should be displayed on that date
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: mealsid
+        - in: query
+          name: firstDay
+          schema:
+            type: string
+          required: false
+          description: first day of that week
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putMealToUser'
+        404:
+          description: wrong date
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        201:
+          description: created checklist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createCheckList'
+
+    put:
+      security:
+        - bearerAuth: []
+      description: Update an ingredient as checked
+      requestBody:
+        description: mealsid, firstday, ingredient to check
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putGroceryList'
+      responses:
+        201:
+          description: updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putGroceryList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
 components:
   schemas:
     Error:
@@ -475,6 +542,14 @@ components:
     recipes:
       items:
         $ref: '#/components/schemas/recipesJson'
+    createCheckList:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+        checklist:
+          type: string
 
     recipe:
       properties:
@@ -559,6 +634,18 @@ components:
           type: string
         firstDay:
           type: string
+    putGroceryList:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+        category:
+          type: string
+        ingredient:
+          type: string
+        check:
+          type: boolean
 
     putMealToUserNew:
       properties:

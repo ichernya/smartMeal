@@ -150,7 +150,7 @@ function Homepage(props) {
       {showAlert &&
         <Alert onClose={closeAlert} severity="success"
           style={{position: 'fixed', zIndex: 100}}>
-          Recipe added succesfully!
+            Recipe added succesfully!
         </Alert>
       }
       <div
