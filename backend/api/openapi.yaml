@@ -276,6 +276,13 @@ paths:
       security:
         - bearerAuth: []
       description: returns all recipes
+      parameters:
+        - in: query
+          name: mealsid
+          schema:
+            type: integer
+          required: true
+          description: the id of the user
       responses:
         200:
           description: OK

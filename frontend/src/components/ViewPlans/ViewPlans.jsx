@@ -131,10 +131,11 @@ const updateCurrentPlan = (data, firstDay) => {
   const userId = person ? person.userid : '';
 
   const startDay = new Date(firstDay);
-  const startIso = startDay.toISOString().split('T')[0];
+
+  const [month, day, year] = startDay.toLocaleDateString().split('/');
+  const startIso = `${year}-${month}-${day}`;
 
   // First day of the week of the plan we're copying
-  const [year, month, day] = json['firstday'].split('-');
   const firstCopyDay = (new Date(year, month - 1, day)).getDate();
 
   for (const [day, meals] of Object.entries(data['mealweek'])) {
@@ -166,9 +167,12 @@ const updateCurrentPlan = (data, firstDay) => {
     const setDateOffset = new Date(firstDay);
     setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
 
+    const [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
+    const dayof = `${dateY}-${dateM}-${dateY}`;
+
     const body = {
       'mealsid': userId,
-      'dayof': `{${setDateOffset.toISOString().split('T')[0]}}`,
+      'dayof': `{${dayof}}`,
       'firstDay': startIso,
       'changes': bodyStringified,
     };

@@ -47,7 +47,8 @@ const updateDietFilter = (diet, value) => {
  * @return {JSX} Jsx
  */
 function Toggles(props) {
-  const {alignments, setAlignment, name} = props;
+  const {alignments, setAlignment, name,
+    setChange} = props;
 
   // Current alignment
   const value = alignments[name];
@@ -57,8 +58,9 @@ function Toggles(props) {
   };
 
   const updateTags = (name, newAlignment) => {
-    setAlignment({...alignments, [name]: newAlignment});
+    setChange(true);
     updateDietFilter(name, newAlignment);
+    setAlignment({...alignments, [name]: newAlignment});
   };
 
   return (
@@ -98,7 +100,7 @@ function Toggles(props) {
  */
 function Tags(props) {
   const {tagsDrawer, setDrawer, setFilter, filters,
-    alignments, setAlignment,
+    alignments, setAlignment, setChange,
   } = React.useContext(props['HomeContext']);
 
 
@@ -112,6 +114,7 @@ function Tags(props) {
       copyAlign[key] = choice;
       updateDietFilter(key, choice);
     }
+    setChange(true);
     setAlignment(copyAlign);
   };
 
@@ -137,6 +140,7 @@ function Tags(props) {
                 <Grid item xs={6} className='selections'>
                   <Toggles
                     setAlignment={setAlignment}
+                    setChange={setChange}
                     alignments={alignments}
                     name={name}
                     setFilter={setFilter}

@@ -136,6 +136,7 @@ exports.pullFoodDay = async (req, res) => {
             }
         
         }
+        console.log(food)
         
         res.status(200).json(food)
         

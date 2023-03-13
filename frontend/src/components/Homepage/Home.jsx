@@ -87,6 +87,8 @@ function Homepage(props) {
   const [showAlert, setShowAlert] = React.useState(false);
   // Represents the alignments of the tags
   const [alignments, setAlignment] = React.useState({});
+  // Represents whether the alignments have changed
+  const [alignmentsChange, setChange] = React.useState({});
 
   React.useEffect(() => {
     queryAlignments(userId, setAlignment);
@@ -141,13 +143,15 @@ function Homepage(props) {
       value={{
         width, cardSize, selectedFood, setSelected,
         setSearch, search, startWeek, tagsDrawer, setDrawer,
-        filters, setFilter, alignments, setAlignment,
-        addMeal, setAddMeal, showAlert, setShowAlert
+        alignments, setAlignment, addMeal, setAddMeal,
+        showAlert, setShowAlert, alignmentsChange, setChange,
       }}
     >
       {showAlert &&
         <Alert onClose={closeAlert} severity="success"
-          style={{position: 'fixed', zIndex: 100}}>Recipe added succesfully!</Alert>
+          style={{position: 'fixed', zIndex: 100}}>
+          Recipe added succesfully!
+        </Alert>
       }
       <div
         tabIndex='0'
