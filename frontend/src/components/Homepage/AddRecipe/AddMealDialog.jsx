@@ -23,7 +23,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import {Paper} from '@mui/material';
+import {Paper, Typography} from '@mui/material';
 import {TextField} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -39,7 +39,7 @@ import '../../colors.css';
  */
 function AddMealDialog(props) {
   const {addMeal, setAddMeal, setShowAlert} =
-   React.useContext(props['HomeContext']);
+    React.useContext(props['HomeContext']);
   const metricUnits = [
     'ml', 'dl', 'l', 'mg', 'g', 'kg', 'mm', 'cm', 'm', '°C', 'unit',
   ];
@@ -86,6 +86,21 @@ function AddMealDialog(props) {
 
   // Close the dialog
   const handleClose = () => {
+    // Clean the states
+    setRecipeName('');
+    setDietList([]);
+    setIngredients([]);
+    setInputName('');
+    setInputWeight('');
+    setUnit('');
+    setFileName('Select Image (jpeg | png | jpg)');
+    setImageData('');
+    setErrorN(false);
+    setErrorW(false);
+    setErrorSameN(false);
+    setErrorU(false);
+    setErrorMessage('');
+    // Close the dialog
     setAddMeal(false);
   };
 
@@ -206,7 +221,12 @@ function AddMealDialog(props) {
   function formatIngredients(ingredients) {
     let resultArray = [];
     ingredients.forEach(function(ingredient) {
-      const ing = [ingredient.name, ingredient.quantity, ingredient.unit];
+      let ing;
+      if (ingredient.unit === 'unit'){
+        ing = [ingredient.name, ingredient.quantity, ingredient.name];
+      } else {
+        ing = [ingredient.name, ingredient.quantity, ingredient.unit];
+      }
       resultArray = [...resultArray, ing];
     });
     return resultArray;
@@ -223,7 +243,7 @@ function AddMealDialog(props) {
 
   const addRecipe = (event) => {
     // Initializing the dictionary
-    const recipe = {dishName: recipeName,
+    const recipe ={dishname: recipeName,
       ingredients: formatIngredients(ingredients),
       imageData: imageData,
       vegan: dietList.includes('Vegan') ? true : false,
@@ -250,6 +270,21 @@ function AddMealDialog(props) {
           'Access-Control-Allow-Origin': '*',
         }),
       });
+      // Clean the states
+      setRecipeName('');
+      setDietList([]);
+      setIngredients([]);
+      setInputName('');
+      setInputWeight('');
+      setUnit('');
+      setFileName('Select Image (jpeg | png | jpg)');
+      setImageData('');
+      setErrorN(false);
+      setErrorW(false);
+      setErrorSameN(false);
+      setErrorU(false);
+      setErrorMessage('');
+      // Close the dialog and show the alert
       setAddMeal(false);
       setErrorMessage('');
       setShowAlert(true);
@@ -276,9 +311,9 @@ function AddMealDialog(props) {
         <DialogContent className='aliceBlueBack'>
           <DialogContentText>
             You can add your own recipe adding a title,
-            ingredients, diets and an optional URL image.<br/>
-            {errorMessage}
+            ingredients, diets and an optional URL image.
           </DialogContentText>
+          <Typography color={'red'}>{errorMessage}</Typography>
           <Grid container component="main" direction="row" spacing={2}>
             <Grid item xs={12} md={5}>
               <TextField

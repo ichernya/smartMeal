@@ -494,6 +494,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/createCheckList'
 
+    put:
+      security:
+        - bearerAuth: []
+      description: Update an ingredient as checked
+      requestBody:
+        description: mealsid, firstday, ingredient to check
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putGroceryList'
+      responses:
+        201:
+          description: updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putGroceryList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
 components:
   schemas:
@@ -518,6 +543,7 @@ components:
           type: integer
         checklist:
           type: string
+
     recipe:
       properties:
         recipeid:
@@ -601,6 +627,18 @@ components:
           type: string
         firstDay:
           type: string
+    putGroceryList:
+      properties:
+        firstDay:
+          type: string
+        mealsid:
+          type: integer
+        category:
+          type: string
+        ingredient:
+          type: string
+        check:
+          type: boolean
 
     putMealToUserNew:
       properties:

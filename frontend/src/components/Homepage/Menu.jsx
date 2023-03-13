@@ -172,9 +172,16 @@ function Menu(props) {
                         if (!item) {
                           return <div key={ind + index}/>;
                         }
-
-                        const image = item['imagedata'] ? item['imagedata'] :
-                          require('../../assets/default.png');
+                        let image;
+                        if (item['imagedata']) {
+                          image = item['imagedata'];
+                          if (!image.startsWith('data:')) {
+                            image = require('../../assets/templateImage/'+
+                              image);
+                          }
+                        } else {
+                          image = require('../../assets/default.png');
+                        }
                         return (
                           <ImageListItem
                             className='margins'
@@ -183,10 +190,6 @@ function Menu(props) {
                             id={item['dishname']}
                           >
                             <img
-                              /* src={`${image}w=248&fit=crop&auto=format`}
-                              srcSet={
-                                `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              } */
                               src={image}
                               alt={item['dishname']}
                               loading="lazy"
