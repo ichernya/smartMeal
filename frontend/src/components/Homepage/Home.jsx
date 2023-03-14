@@ -20,8 +20,18 @@ const saveUpdatedName = (name, startDay, userId) => {
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
 
+
+  // The first day of the week
+  let [month, day, year] = startDay.toLocaleDateString().split('/');
+  if (parseInt(month) < 10) {
+    month = '0' + month;
+  }
+  if (parseInt(day) < 10) {
+    day = '0' + day;
+  }
+
   const body = {
-    'firstDay': startDay.toISOString().split('T')[0],
+    'firstDay': `${year}-${month}-${day}`,
     'mealsid': userId,
     'mealName': name,
   };
