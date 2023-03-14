@@ -17,7 +17,6 @@ const getMealsForWeek = (setMeal, userId, setIngredientList) => {
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
   let [month, day, year] = startWeek.toLocaleDateString().split('/');
-
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
