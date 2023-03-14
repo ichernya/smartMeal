@@ -331,8 +331,6 @@ exports.pullGroceryList = async (req, res) => {
       // if an ingredient stays the same, but the amount increases, that means it should now be unchecked in the new grocerylist
       const oldlist = await deleteGrocerylist(req.query.mealsid, req.query.firstDay);
       const newlist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
-      console.log(oldlist[0].checklist['Other']);
-      console.log(newlist[0].checklist['Other']);
       for (const category in newlist[0].checklist) {
         if (oldlist[0].checklist[category]) {
           for (const ingredient in oldlist[0].checklist[category].ingredients) {
@@ -345,7 +343,6 @@ exports.pullGroceryList = async (req, res) => {
               // make sure that the category exists
               // check if the amount is greater, then downtick
               // if true and AMOUNT is less than > then set to true
-              console.log(oldAmount, newAmount, oldChecked, ingredient);
               if (oldChecked && oldAmount >= newAmount) {
                 console.log(13123);
                 await updatePutQuery(req.query.firstDay, req.query.mealsid, category, ingredient);

@@ -19,7 +19,7 @@ const MenuProps = {
   },
 };
 
-// Updates a diet filter
+// Updates a diet filter in the backend
 const updateDietFilter = (diet, value) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
@@ -54,6 +54,7 @@ function Filter(props) {
     React.useContext(props['HomeContext']);
 
   const handleChange = (name) => {
+    // Removing a tag/diet from the homepage
     updateDietFilter(name, false);
     setChange(true);
     setAlignment({...alignments, [name]: false});

@@ -58,6 +58,7 @@ function Toggles(props) {
   };
 
   const updateTags = (name, newAlignment) => {
+    // Update alignment for a tag
     setChange(true);
     updateDietFilter(name, newAlignment);
     setAlignment({...alignments, [name]: newAlignment});
@@ -109,6 +110,7 @@ function Tags(props) {
   };
 
   const setAllState = (choice) => {
+    // Sets all alignments to true/false
     const copyAlign = {...alignments};
     for (const key of Object.keys(copyAlign)) {
       copyAlign[key] = choice;
