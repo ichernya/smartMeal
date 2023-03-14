@@ -46,3 +46,26 @@ test('Create grocerylist with mealsid, firstDay', async () => {
     expect(mealRetry.statusCode).toBe(200);
   });
 
+//   curl -X 'PUT' \
+//   'http://localhost:3010/v0/meals' \
+//   -H 'accept: application/json' \
+//   -H 'Authorization: Bearer aaa' \
+//   -H 'Content-Type: application/json' \
+//   -d '{
+//   "mealsid": 1,
+//   "dayof": "{2023-02-24}",
+//   "changes": "{'\''breakfast'\'': '\''2'\'', '\''lunch'\'': '\''2'\'', '\''dinner'\'': '\''4'\''}",
+//   "firstDay": "2023-02-19"
+// }'
+
+test('Create grocerylist with mealsid, firstDay', async () => {
+  
+  const body = {
+    mealsid: 1,
+    dayof: "{2023-02-24}",
+    changes: "{'\''breakfast'\'': '\''2'\'', '\''lunch'\'': '\''2'\'', '\''dinner'\'': '\''4'\''}",
+    firstDay: "2023-02-19"
+  }
+  const meal = await request.get('/v0/meals').send(body).set(token[0], token[1]);
+  expect(meal.statusCode).toBe(201);
+});

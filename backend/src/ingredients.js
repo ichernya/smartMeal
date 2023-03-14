@@ -1,4 +1,4 @@
-const groceryList = require('./groceryList');
+//const groceryList = require('./groceryList');
 const {Pool} = require('pg');
 const {ingredientCategories} = require('./categorical')
 const user = "postgres";
