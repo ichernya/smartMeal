@@ -150,7 +150,7 @@ exports.pullpublicMeal = async (req, res) => {
     }
     
     //parse the data, replacing the numbers inside the week to be the recipe that matches that number 
-    for (let i in mealPlans)
+    for (let i in mealPlans) {
         if (mealPlans[i]) {
             for (let date in mealPlans[i].mealweek) {
                 // if id we dont care
@@ -167,12 +167,14 @@ exports.pullpublicMeal = async (req, res) => {
                     }
                 }
             }
-            res.status(200).json(mealPlans)
+            
             
         }
         else {
             res.status(404).send();
         }
+    }
+    res.status(200).json(mealPlans)
 }
 // public meal plan :: check if public is true, check query by the name of the mealplan
 
