@@ -258,7 +258,25 @@ function Menu(props) {
                       .map((_, ind) => {
                         const item = recipes[(ind * 2) + index];
                         if (!item) {
-                          return <div key={ind + index}/>;
+                          return (
+                            <ImageListItem
+                              className='margins'
+                              key={ind + index}
+                              style={{
+                                width: `${menuSize.current}px`,
+                                height: `${menuSize.current}px`,
+                              }}
+                            >
+                              <img
+                                loading="lazy"
+                                alt=''
+                                style={{
+                                  width: `${menuSize.current}px`,
+                                  height: `${menuSize.current}px`,
+                                }}
+                              />
+                            </ImageListItem>
+                          );
                         }
                         let image;
                         if (item['imagedata']) {
