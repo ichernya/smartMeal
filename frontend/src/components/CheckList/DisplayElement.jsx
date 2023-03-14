@@ -55,6 +55,7 @@ function DisplayElement() {
     });
     setAlteratives({});
     setView(false);
+    image = defaultImage;
   };
   // Change one ingredient for one meal
   const handleChange = () => {
@@ -208,6 +209,21 @@ function DisplayElement() {
     1: 'lunch',
     2: 'dinner',
   };
+  let image = null;
+  if (mealsWithIngredient.length) {
+    image =mealsWithIngredient[activeStep].meal.imagedata;
+    // image is present either in base64 or as a template
+    if (image) {
+      if (!image.startsWith('data:')) {
+        image = require('../../assets/templateImage/'+
+        image);
+      }
+    } else {
+      image = defaultImage;
+    }
+  } else {
+    image = defaultImage;
+  }
   return (
     <Grid
       container
@@ -225,9 +241,8 @@ function DisplayElement() {
               aspectRatio: 1,
             }}
             component="img"
-            src={isChosenIngredient.imageData ?
-              isChosenIngredient.imageData : defaultImage}
-            alt={isChosenIngredient.name}
+            src={image}
+            alt={defaultImage}
             loading="lazy"
           />
         </Grid>

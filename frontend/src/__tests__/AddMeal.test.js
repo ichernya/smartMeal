@@ -20,6 +20,142 @@ const start = startDay.toISOString().split('T')[0];
 
 
 const server = setupServer(
+  rest.get(URL + '/groceryList', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        [
+          {
+            'firstday': start,
+            'mealsid': 3,
+            'checklist': {
+              'Dairy': {
+                'amount': 2,
+                'hidden': false,
+                'ingredients': {
+                  'Butter': {
+                    'unit': 'nobs',
+                    'amount': '9',
+                    'checked': false,
+                  },
+                  'Cheese': {
+                    'unit': 'cups',
+                    'amount': '12',
+                    'checked': false,
+                  },
+                },
+                'amountChecked': 0,
+              },
+              'Other': {
+                'amount': 12,
+                'hidden': false,
+                'ingredients': {
+                  'Buns': {
+                    'unit': 'buns',
+                    'amount': '6',
+                    'checked': false,
+                  },
+                  'Ketchup': {
+                    'unit': 'tablespoon',
+                    'amount': '3',
+                    'checked': false,
+                  },
+                  'Pickels': {
+                    'unit': 'N/A',
+                    'amount': '12',
+                    'checked': false,
+                  },
+                  'Jalepeno': {
+                    'unit': 'jalepeno',
+                    'amount': '24',
+                    'checked': false,
+                  },
+                  'Parmesan': {
+                    'unit': 'cup',
+                    'amount': '3',
+                    'checked': false,
+                  },
+                  'Mayonaise': {
+                    'unit': 'tablespoon',
+                    'amount': '3',
+                    'checked': false,
+                  },
+                  'Pepperoni': {
+                    'unit': 'N/A',
+                    'amount': '30',
+                    'checked': false,
+                  },
+                  'Pizza Dough': {
+                    'unit': 'pound',
+                    'amount': '2',
+                    'checked': false,
+                  },
+                  'Chicken Breast': {
+                    'unit': 'skinless chicken breast halves',
+                    'amount': '16',
+                    'checked': false,
+                  },
+                  'Mozzarella Cheese': {
+                    'unit': 'slices',
+                    'amount': '4',
+                    'checked': false,
+                  },
+                  'Baby Bella Mushrooms': {
+                    'unit': 'mushrooms',
+                    'amount': '120',
+                    'checked': false,
+                  },
+                  'American Cheddar Cheese': {
+                    'unit': 'slices',
+                    'amount': '6',
+                    'checked': false,
+                  },
+                },
+                'amountChecked': 0,
+              },
+              'Grains': {
+                'amount': 1,
+                'hidden': false,
+                'ingredients': {
+                  'Pasta': {
+                    'unit': 'ounces',
+                    'amount': '24',
+                    'checked': false,
+                  },
+                },
+                'amountChecked': 0,
+              },
+              'Protein': {
+                'amount': 1,
+                'hidden': false,
+                'ingredients': {
+                  'Beef': {
+                    'unit': 'pounds',
+                    'amount': '0.5',
+                    'checked': false,
+                  },
+                },
+                'amountChecked': 0,
+              },
+              'Vegetables': {
+                'amount': 1,
+                'hidden': false,
+                'ingredients': {
+                  'Lettuce': {
+                    'unit': 'N/A',
+                    'amount': '2',
+                    'checked': false,
+                  },
+                },
+                'amountChecked': 0,
+              },
+            },
+          },
+        ],
+      ),
+    );
+  }),
+
   rest.post(URL + '/recipes', (req, res, ctx) => {
     return res(
       ctx.status(200),

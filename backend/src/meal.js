@@ -104,15 +104,15 @@ const addFood = async ( firstDay, mealsid) => {
 }
 
 exports.addFoodUser = async (req, res) => {
-    first = req.query.firstDay
-    mid = req.query.mealsid
+    const first = req.query.firstDay
+    const mid = req.query.mealsid
     await addFood(first, mid);
     res.status(201)
 }
 exports.pullFoodDay = async (req, res) => {
     // function caller, awaits pullFood to return database rows
-    first = req.query.firstDay
-    mid = req.query.mealsid
+    const first = req.query.firstDay
+    const mid = req.query.mealsid
     const food = await pullFood(req.query.dayof, mid, first);
     
     //replace recipe into id 
@@ -122,7 +122,7 @@ exports.pullFoodDay = async (req, res) => {
         
         for (let date in food[0].mealweek) {
             // if id we dont care
-            if (date == 'id') {
+            if (date === 'id') {
                 continue;
             }
             for (let meal in food[0].mealweek[date]) {
@@ -144,7 +144,7 @@ exports.pullFoodDay = async (req, res) => {
     }
     // otherwise meal for this week does not exist so create
     else {
-        meal = await addFood(first, mid);
+        const meal = await addFood(first, mid);
         res.status(201).json(meal)
         
     }
@@ -163,8 +163,8 @@ const updateFood = async ( mealsid, dayof, changes, firstDay) => {
     //const chagne = '{"breakfast": "2", "lunch": "2", "dinner": "4"}'
     //  "dayof": "{2023-02-24}",
     //  "changes": "{'breakfast': '2', 'lunch': '2', 'dinner': '4'}"
-    dayofFinal = dayof.replace(/\\/g, '').replace(/"/g, '');
-    changesFinal = changes.replace(/'/g, "\"")
+    const dayofFinal = dayof.replace(/\\/g, '').replace(/"/g, '');
+    const changesFinal = changes.replace(/'/g, "\"")
     
     const insert = `UPDATE meals SET
                     mealweek = jsonb_set(mealweek, $2, $3, true)
