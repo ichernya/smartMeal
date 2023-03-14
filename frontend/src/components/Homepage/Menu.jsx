@@ -115,6 +115,7 @@ function Menu(props) {
     getRecipes(setMenu, history);
   }, [history]);
 
+  // Chosen food from the menu
   const [chosenFood] = selectedFood || [null, null];
   const menuSize = React.useRef(width >= 1200 ? (width * .14) : 175);
 
@@ -153,12 +154,13 @@ function Menu(props) {
     }
   };
 
-
+  // Sets up the dialog for the ingredients
   const foodInfo = (food) => {
     setIngredient(food);
     setPopup(true);
   };
 
+  // Closes dialog of the ingredients
   const clearFoodInfo = () => {
     setIngredient({});
     setPopup(false);
@@ -274,10 +276,6 @@ function Menu(props) {
                             key={item['dishname'] + ind + index}
                           >
                             <img
-                              /* src={`${image}w=248&fit=crop&auto=format`}
-                              srcSet={
-                                `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                              } */
                               onClick={() => clickItem(item)}
                               id={item['dishname']}
                               src={image}

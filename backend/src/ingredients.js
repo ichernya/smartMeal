@@ -337,7 +337,6 @@ exports.pullGroceryList = async (req, res) => {
       oldlist = await deleteGrocerylist(req.query.mealsid, req.query.firstDay);
       newlist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
       for (const category in oldlist[0].checklist) {
-        
         for (const ingredient in oldlist[0].checklist[category].ingredients) {
           const oldAmount = oldlist[0].checklist[category].ingredients[ingredient].amount;
           const newAmount = newlist[0].checklist[category].ingredients[ingredient].amount;

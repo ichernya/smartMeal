@@ -25,7 +25,6 @@ const getMealsForWeek = (setMeal, userId) => {
     day = '0' + day;
   }
   const start = `${year}-${month}-${day}`;
-  console.log(start);
   fetch(
     `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
       method: 'get',

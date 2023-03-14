@@ -84,7 +84,6 @@ const searchPlans = (query, setPlans, publicMeals) => {
   if (query) {
     endpoint += `&mealName=${query}`;
   }
-  console.log(endpoint);
 
   fetch(endpoint, {
     method: 'get',
@@ -101,7 +100,6 @@ const searchPlans = (query, setPlans, publicMeals) => {
       return response.json();
     })
     .then((json) => {
-      console.log(json);
       setPlans(json);
     });
 };
@@ -309,6 +307,10 @@ function ViewMeals(props) {
   const [list, setList] = React.useState([]);
 
   React.useEffect(() => {
+    // Update plans if
+    // A plan was renamed
+    // The user searched something
+    // The user set to private/public
     searchPlans(mealSearch, setList, publicMeals);
   }, [mealSearch, publicMeals, mealPlan]);
 
@@ -318,6 +320,7 @@ function ViewMeals(props) {
     setMealSearch(value);
   };
 
+  // clear search bar
   const clearSearch = () => {
     setMealSearch('');
   };
@@ -348,6 +351,7 @@ function ViewMeals(props) {
     setPublic(!publicMeals);
   };
 
+  // Copy over the selected meal plan to the current meal plan
   const onSelectPlan = (data) => {
     parsePlanData(setPlan, data);
     updateCurrentPlan(data, startWeek);
