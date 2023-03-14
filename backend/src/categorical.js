@@ -18,7 +18,8 @@ const ingredientCategories = {
       "ground beef",
       "salmon fillet",
       "shrimp",
-      "skinless chicken breast halves"
+      "skinless chicken breast halves",
+      "pepperoni"
     ],
     "Grains": [
       "rice",
@@ -56,7 +57,7 @@ const ingredientCategories = {
       "corn",
       "mushrooms",
       "baby bella mushrooms",
-      "jalapeno",
+      "jalepeno",
       "carrot",
       "bell pepper",
       "red bell pepper",
@@ -82,7 +83,8 @@ const ingredientCategories = {
       "parmesan",
       "american cheddar cheese",
       "parmesan cheese",
-      "feta cheese"
+      "feta cheese",
+      "mozzarella cheese"
     ],
     "Oils": [
       "olive oil",
