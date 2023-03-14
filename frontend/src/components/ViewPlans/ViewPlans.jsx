@@ -84,6 +84,7 @@ const searchPlans = (query, setPlans, publicMeals) => {
   if (query) {
     endpoint += `&mealName=${query}`;
   }
+  console.log(endpoint);
 
   fetch(endpoint, {
     method: 'get',
@@ -100,6 +101,7 @@ const searchPlans = (query, setPlans, publicMeals) => {
       return response.json();
     })
     .then((json) => {
+      console.log(json);
       setPlans(json);
     });
 };
@@ -109,7 +111,7 @@ const grabImages = (data) => {
   const images = [];
   if (!data['mealweek']) {
     // Should never happen ideally
-    return;
+    return images;
   }
 
   for (const [key, day] of Object.entries(data['mealweek'])) {
@@ -118,7 +120,6 @@ const grabImages = (data) => {
     }
     for (const meal of Object.values(day)) {
       images.push(meal['imagedata']);
-      console.log(meal);
     }
   }
   return images;
@@ -131,21 +132,31 @@ const updateCurrentPlan = (data, firstDay) => {
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
 
-  const startDay = new Date(firstDay);
+  let [month, day, year] = firstDay.toLocaleDateString().split('/');
+  const startDay = new Date(year, month - 1, day);
 
-  const [month, day, year] = startDay.toLocaleDateString().split('/');
+  if (parseInt(month) < 10) {
+    month = '0' + month;
+  }
+  if (parseInt(day) < 10) {
+    day = '0' + day;
+  }
+
   const startIso = `${year}-${month}-${day}`;
 
-  // First day of the week of the plan we're copying
-  const firstCopyDay = (new Date(year, month - 1, day)).getDate();
 
-  for (const [day, meals] of Object.entries(data['mealweek'])) {
-    if (day === 'id') {
+  // First day of the week of the plan we're copying
+  const [copyY, copyM, copyD] = data['firstday'].split('-');
+  const firstCopyDay = (new Date(copyY, copyM - 1, copyD)).getDate();
+
+  for (const [copyDate, meals] of Object.entries(data['mealweek'])) {
+    if (copyDate === 'id') {
       continue;
     }
 
     // day of the week of the plan we're copying
-    const currentCopyDay = (new Date(day)).getDate();
+    const [currentCopyY, currentCopyM, currentCopyD] = copyDate.split('-');
+    const currentCopyDay = (new Date(currentCopyY, currentCopyM - 1, currentCopyD)).getDate();
     const dayOffset = currentCopyDay - firstCopyDay;
 
     // updated data in the formatted needed by backend
@@ -165,10 +176,16 @@ const updateCurrentPlan = (data, firstDay) => {
       `'lunch': '${update['lunch']}', ` +
       `'dinner': '${update['dinner']}'}`;
 
-    const setDateOffset = new Date(firstDay);
+    const setDateOffset = new Date(year, month - 1, day);
     setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
 
-    const [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
+    let [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
+    if (parseInt(dateM) < 10) {
+      dateM = '0' + dateM;
+    }
+    if (parseInt(dateD) < 10) {
+      dateD = '0' + dateD;
+    }
     const dayof = `${dateY}-${dateM}-${dateD}`;
 
     const body = {
@@ -271,7 +288,7 @@ function TablePaginationActions(props) {
  */
 function ViewMeals(props) {
   const {width} = useDimensions();
-  const {setPlan, startWeek} = useMeals();
+  const {setPlan, startWeek, mealPlan} = useMeals();
   const history = useNavigate();
   // Represents what page the user is on
   const [page, setPage] = React.useState(0);
@@ -287,7 +304,7 @@ function ViewMeals(props) {
 
   React.useEffect(() => {
     searchPlans(mealSearch, setList, publicMeals);
-  }, [mealSearch, publicMeals]);
+  }, [mealSearch, publicMeals, mealPlan]);
 
   // Update search bar query
   const searchInput = (event) => {

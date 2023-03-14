@@ -16,8 +16,16 @@ const getMealsForWeek = (setMeal, userId) => {
   const dateOffset = currentDay.getDay();
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
-  const [month, day, year] = startWeek.toLocaleDateString().split('/');
+  let [month, day, year] = startWeek.toLocaleDateString().split('/');
+
+  if (parseInt(month) < 10) {
+    month = '0' + month;
+  }
+  if (parseInt(day) < 10) {
+    day = '0' + day;
+  }
   const start = `${year}-${month}-${day}`;
+  console.log(start);
   fetch(
     `http://localhost:3010/v0/meals?dayof=${start}&mealsid=${userId}&firstDay=${start}`, {
       method: 'get',
