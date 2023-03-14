@@ -105,8 +105,6 @@ const userQueryPrivateMealPlan = async (mealName, mealsid) => {
 
 const userNoQueryPrivateMealPlan = async ( mealsid ) => {
     // unnest used to unwrap array in the database
-    console.log('entered')
-    
     const select = `SELECT meals.*, JSON_AGG(DISTINCT recipes) AS recipes
                     FROM meals 
                     LEFT JOIN jsonb_each(meals.mealweek) AS dates(date_key, date_value) 
@@ -137,23 +135,18 @@ exports.pullpublicMeal = async (req, res) => {
     // caller function for pullFoodFull awaits return of rows of database
     pub = req.query.public
     meal = req.query.mealName
-    
-    console.log(pub, meal)
+    //terrible code :-(
     if ((pub) && (!(meal == null))) {        // if the public is true, and query exists, query public meals by the query
         var mealPlans = await userQueryPublicMealPlan( pub, meal );
-        
     }
     else if ((pub) && (meal == null)) {    // if the public is true, and query is empty, return all public meal plans
-        var mealPlans = await userNoQueryPublicMealPlan( pub );
-        
+        var mealPlans = await userNoQueryPublicMealPlan( pub ); 
     }
     else if (!(pub) && !(meal == null)) {   // if the public is false, and query exists, return all users meal plans by query
-        var mealPlans = await userQueryPrivateMealPlan( meal, req.query.mealsid );
-        
+        var mealPlans = await userQueryPrivateMealPlan( meal, req.query.mealsid );   
     }
     else {                                           //public mst be false, and no query return all of users meal plans
-        var mealPlans = await userNoQueryPrivateMealPlan( req.query.mealsid );
-        
+        var mealPlans = await userNoQueryPrivateMealPlan( req.query.mealsid );  
     }
     
     //parse the data, replacing the numbers inside the week to be the recipe that matches that number 
@@ -173,7 +166,6 @@ exports.pullpublicMeal = async (req, res) => {
                     mealPlans[0].mealweek[date][meal] = recipe;
                 }
             }
-        
         }
         res.status(200).json(mealPlans)
         
@@ -182,7 +174,6 @@ exports.pullpublicMeal = async (req, res) => {
         res.status(404).send();
     }
 }
-
 // public meal plan :: check if public is true, check query by the name of the mealplan
 
 
