@@ -84,6 +84,8 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
           'Access-Control-Allow-Origin': '*',
         },
       });
+    }).then(() => {
+      
     });
 };
 
