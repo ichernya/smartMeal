@@ -47,7 +47,6 @@ const getMeal = (ingredient, setAlteratives) => {
 const filterMealsForIngredients =
 (mealPlan, setMealsWithIngredient, myIngredient) => {
   const mealsOfWithIng = [];
-  console.log(mealPlan);
   Object.keys(mealPlan)
     // ignore the keys 'amount' and 'id'
     .filter((key) => !['id', 'mealname', 'public', 'firstday'].includes(key))

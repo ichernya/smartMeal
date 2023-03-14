@@ -39,10 +39,8 @@ function DrawerContent(props) {
   const settingsOnclick = () => {
     setSettings(!settingsDialog);
   };
-
   const urls = ['/home', '/checklist', '/mealplans'];
   const icons = [<HomeIcon/>, <FormatListBulletedIcon/>, <LocalDiningIcon/>];
-
   return (
     <div className='options greyBack'>
       <List className='pages'>
