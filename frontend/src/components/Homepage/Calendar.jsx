@@ -27,12 +27,24 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const userId = person ? person.userid : '';
 
   // The first day of the week
-  const [month, day, year] = startWeek.toLocaleDateString().split('/');
+  let [month, day, year] = startWeek.toLocaleDateString().split('/');
+  if (parseInt(month) < 10) {
+    month = '0' + month;
+  }
+  if (parseInt(day) < 10) {
+    day = '0' + day;
+  }
 
   // The  day of the week that is being updated
   const dateCopy = new Date(year, month - 1, day);
   dateCopy.setDate(dateCopy.getDate() + weekday);
-  const [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
+  let [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
+  if (parseInt(dateM) < 10) {
+    dateM = '0' + dateM;
+  }
+  if (parseInt(dateD) < 10) {
+    dateD = '0' + dateD;
+  }
 
   const TIMES = ['breakfast', 'lunch', 'dinner'];
 
@@ -154,8 +166,16 @@ function Calendar(props) {
             >
               {mealPlan && mealPlan[day.toLowerCase()].map((item, ind) => {
                 const dayLower = day.toLowerCase();
-                const image = item['img'] ?
-                  item['img'] : require('../../assets/logo.png');
+                let image = item['imagedata'];
+                // image is present either in base64 or as a template
+                if (image) {
+                  if (!image.startsWith('data:')) {
+                    image = require('../../assets/templateImage/'+
+                      image);
+                  }
+                } else {
+                  image = require('../../assets/logo.png');
+                }
                 return (
                   <div key={item['dishname'] + dayLower + ind}>
                     <ImageList

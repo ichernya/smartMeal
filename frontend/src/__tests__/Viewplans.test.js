@@ -10,7 +10,7 @@ import App from '../App.js';
 
 const URL = 'http://localhost:3010/v0';
 window.alert = jest.fn();
-let search404 = false;
+const search404 = false;
 
 const currentDay = new Date();
 const dateOffset = currentDay.getDay();
@@ -82,7 +82,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -110,7 +110,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 4,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': true,
@@ -150,7 +150,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 7,
-              'imagedata': '/backend/images/cheeseburger.png',
+              'imagedata': 'cheeseburger.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -174,7 +174,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': false,
               'healthy': false,
@@ -198,7 +198,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -246,7 +246,6 @@ const server = setupServer(
   }),
 
   rest.get(URL + `/publicMeal`, (req, res, ctx) => {
-    console.log(search404);
     return res(
       ctx.status(200),
       ctx.json(
@@ -292,7 +291,7 @@ const server = setupServer(
                     },
                   },
                   'ingredientam': 7,
-                  'imagedata': '/backend/images/cheeseburger.png',
+                  'imagedata': 'cheeseburger.png',
                   'vegan': false,
                   'halal': true,
                   'healthy': false,
@@ -316,7 +315,7 @@ const server = setupServer(
                     },
                   },
                   'ingredientam': 3,
-                  'imagedata': '/test.png',
+                  'imagedata': 'test.png',
                   'vegan': false,
                   'halal': true,
                   'healthy': false,
@@ -344,7 +343,7 @@ const server = setupServer(
                     },
                   },
                   'ingredientam': 4,
-                  'imagedata': '/test.png',
+                  'imagedata': 'test.png',
                   'vegan': false,
                   'halal': true,
                   'healthy': true,
@@ -372,7 +371,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 3,
-                'imagedata': '/test.png',
+                'imagedata': 'test.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': false,
@@ -400,7 +399,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 4,
-                'imagedata': '/test.png',
+                'imagedata': 'test.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': true,
@@ -440,7 +439,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 7,
-                'imagedata': '/backend/images/cheeseburger.png',
+                'imagedata': 'cheeseburger.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': false,
@@ -464,7 +463,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 3,
-                'imagedata': '/test.png',
+                'imagedata': 'test.png',
                 'vegan': false,
                 'halal': false,
                 'healthy': false,
@@ -510,7 +509,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 3,
-                'imagedata': '/test.png',
+                'imagedata': 'test.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': false,
@@ -538,7 +537,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 4,
-                'imagedata': '/test.png',
+                'imagedata': 'test.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': true,
@@ -578,7 +577,7 @@ const server = setupServer(
                   },
                 },
                 'ingredientam': 7,
-                'imagedata': '/backend/images/cheeseburger.png',
+                'imagedata': 'cheeseburger.png',
                 'vegan': false,
                 'halal': true,
                 'healthy': false,
@@ -1343,163 +1342,133 @@ function setWidth(width) {
 /**
  */
 test('view meal plans', async () => {
-  window.alert.mockclear();
-  render(<app/>);
-  fireevent.click(screen.getbytext('login'));
+  window.alert.mockClear();
+  render(<App/>);
+  fireEvent.click(screen.getByText('Login'));
 
   // log in
-  await screen.findbytext('sign in');
-  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('email'),
+  await screen.findByText('Sign In');
+  fireEvent.change(screen.getByTestId('email'), {target: {value: ''}});
+  fireEvent.change(screen.getByTestId('password'), {target: {value: ''}});
+  fireEvent.change(screen.getByTestId('email'),
     {target: {value: 'molly@books.com'}});
-  fireevent.change(screen.getbylabeltext('password *'),
+  fireEvent.change(screen.getByLabelText('Password *'),
     {target: {value: 'mollymember'}});
   act(() => {
-    fireevent.click(screen.getbytext('sign in'));
+    fireEvent.click(screen.getByText('Sign In'));
   });
 
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
   });
-  await screen.findbytext('new meal');
-  await screen.findbytext('mushroom poppers');
-  await screen.findbytext('cheeseburger');
+  await screen.findByText('New Meal');
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
   act(() => {
-    fireevent.click(screen.getbytestid('mealsplans'));
+    fireEvent.click(screen.getByTestId('mealsPlans'));
   });
   act(() => {
-    fireevent.click(screen.getbytestid('privated'));
+    fireEvent.click(screen.getByTestId('privated'));
   });
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
   });
-  fireevent.click(screen.getbytestid('next'));
-  fireevent.click(screen.getbytestid('first'));
-  fireevent.click(screen.getbytestid('last'));
-  fireevent.click(screen.getbytestid('prev'));
+  fireEvent.click(screen.getByTestId('next'));
+  fireEvent.click(screen.getByTestId('first'));
+  fireEvent.click(screen.getByTestId('last'));
+  fireEvent.click(screen.getByTestId('prev'));
 });
 
 
 /**
  */
 test('view meal plans', async () => {
-  window.alert.mockclear();
-  render(<app/>);
-  fireevent.click(screen.getbytext('login'));
-
-  // log in
-  await screen.findbytext('sign in');
-  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('email'),
-    {target: {value: 'molly@books.com'}});
-  fireevent.change(screen.getbylabeltext('password *'),
-    {target: {value: 'mollymember'}});
+  window.alert.mockClear();
+  render(<App/>);
   act(() => {
-    fireevent.click(screen.getbytext('sign in'));
+    fireEvent.click(screen.getByTestId('privated'));
   });
-
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
   });
-  await screen.findbytext('new meal');
-  await screen.findbytext('mushroom poppers');
-  await screen.findbytext('cheeseburger');
-  act(() => {
-    fireevent.click(screen.getbytestid('mealsplans'));
-  });
-  act(() => {
-    fireevent.click(screen.getbytestid('privated'));
-  });
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
-  });
-  fireevent.click(screen.getbytestid('next'));
-  fireevent.click(screen.getbytestid('first'));
-  fireevent.click(screen.getbytestid('last'));
-  fireevent.click(screen.getbytestid('prev'));
+  fireEvent.click(screen.getByTestId('next'));
+  fireEvent.click(screen.getByTestId('first'));
+  fireEvent.click(screen.getByTestId('last'));
+  fireEvent.click(screen.getByTestId('prev'));
 });
 
 
 /**
  */
 test('view meal plans', async () => {
-  window.alert.mockclear();
-  render(<app/>);
-  fireevent.click(screen.getbytext('login'));
-
-  // log in
-  await screen.findbytext('sign in');
-  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('email'),
-    {target: {value: 'molly@books.com'}});
-  fireevent.change(screen.getbylabeltext('password *'),
-    {target: {value: 'mollymember'}});
+  window.alert.mockClear();
+  render(<App/>);
   act(() => {
-    fireevent.click(screen.getbytext('sign in'));
+    fireEvent.click(screen.getByTestId('privated'));
   });
-
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
   });
-  await screen.findbytext('new meal');
-  await screen.findbytext('mushroom poppers');
-  await screen.findbytext('cheeseburger');
-  act(() => {
-    fireevent.click(screen.getbytestid('mealsplans'));
-  });
-  act(() => {
-    fireevent.click(screen.getbytestid('privated'));
-  });
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
-  });
-  fireevent.click(screen.getbytestid('next'));
-  fireevent.click(screen.getbytestid('first'));
-  fireevent.click(screen.getbytestid('last'));
-  fireevent.click(screen.getbytestid('prev'));
+  fireEvent.click(screen.getByTestId('next'));
+  fireEvent.click(screen.getByTestId('first'));
+  fireEvent.click(screen.getByTestId('last'));
+  fireEvent.click(screen.getByTestId('prev'));
 });
+
+
+/**
+ */
+test('view meal plans', async () => {
+  window.alert.mockClear();
+  render(<App/>);
+  act(() => {
+    fireEvent.click(screen.getByTestId('privated'));
+  });
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('next'));
+  fireEvent.click(screen.getByTestId('first'));
+  fireEvent.click(screen.getByTestId('last'));
+  fireEvent.click(screen.getByTestId('prev'));
+});
+
+
+/**
+ */
+test('view meal plans', async () => {
+  window.alert.mockClear();
+  render(<App/>);
+  act(() => {
+    fireEvent.click(screen.getByTestId('privated'));
+  });
+  waitFor(() => {
+    const home = screen.getByText('New Meal');
+    expect(home).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByTestId('next'));
+  fireEvent.click(screen.getByTestId('first'));
+  fireEvent.click(screen.getByTestId('last'));
+  fireEvent.click(screen.getByTestId('prev'));
+});
+
 
 /**
  */
 test('search meal plan', async () => {
   window.alert.mockClear();
   render(<App/>);
-  fireevent.click(screen.getbytext('login'));
-
-  // log in
-  await screen.findbytext('sign in');
-  fireevent.change(screen.getbytestid('email'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('password'), {target: {value: ''}});
-  fireevent.change(screen.getbytestid('email'),
-    {target: {value: 'molly@books.com'}});
-  fireevent.change(screen.getbylabeltext('password *'),
-    {target: {value: 'mollymember'}});
-  act(() => {
-    fireevent.click(screen.getbytext('sign in'));
-  });
-
-  waitfor(() => {
-    const home = screen.getbytext('new meal');
-    expect(home).tobeinthedocument();
-  });
-  await screen.findbytext('new meal');
-  await screen.findbytext('mushroom poppers');
-  await screen.findbytext('cheeseburger');
-  act(() => {
-    fireevent.click(screen.getbytestid('mealsplans'));
-  });
-
   act(() => {
     fireEvent.click(screen.getByTestId('privated'));
+  });
+  waitFor(() => {
+    const home = screen.getByText('new meal');
+    expect(home).toBeInTheDocument();
   });
   fireEvent.click(screen.getByTestId('next'));
   fireEvent.click(screen.getByTestId('first'));
@@ -1509,18 +1478,13 @@ test('search meal plan', async () => {
     const home = screen.getByText('New Meal');
     expect(home).toBeInTheDocument();
   });
-  search404 = true;
 
   act(() => {
     fireEvent.change(screen.getByTestId('planSearch'),
       {target: {value: 'moll'}});
   });
-  search404 = false;
   act(() => {
     fireEvent.click(screen.getByTestId('cancelSearch'));
-  });
-  act(() => {
-    fireEvent.click(screen.getByTestId('copyNew Meal29'));
   });
 });
 

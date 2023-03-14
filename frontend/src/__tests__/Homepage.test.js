@@ -80,7 +80,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -108,7 +108,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 4,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': true,
@@ -148,7 +148,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 7,
-              'imagedata': '/backend/images/cheeseburger.png',
+              'imagedata': 'cheeseburger.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -172,7 +172,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': false,
               'healthy': false,
@@ -196,7 +196,7 @@ const server = setupServer(
                 },
               },
               'ingredientam': 3,
-              'imagedata': '/test.png',
+              'imagedata': 'test.png',
               'vegan': false,
               'halal': true,
               'healthy': false,
@@ -304,6 +304,29 @@ test('change name', async () => {
 
 /**
  */
+test('pick a meal', async () => {
+  window.alert.mockClear();
+  setWidth(1200);
+  render(<App/>);
+
+  await screen.findByText('Mushroom Poppers');
+  await screen.findByText('Cheeseburger');
+  await screen.findByText('New Meal');
+
+
+  act(() => {
+    fireEvent.click(screen.getByTestId('Cheeseburger'));
+  });
+  act(() => {
+    fireEvent.click(screen.getByTestId('Sun Lunch'));
+  });
+  waitFor(() => {
+    const items = screen.findAllByText('Cheeseburger');
+    expect(items).toHaveLength(2);
+  });
+});
+/**
+ */
 test('change to defualt name', async () => {
   window.alert.mockClear();
   render(<App/>);
@@ -334,24 +357,3 @@ test('change to defualt name', async () => {
   await screen.findByText(WEEK);
 });
 
-/**
- */
-test('pick a meal', async () => {
-  window.alert.mockClear();
-  setWidth(1200);
-  render(<App/>);
-
-  await screen.findByText('Mushroom Poppers');
-  await screen.findByText('Cheeseburger');
-  await screen.findByText('New Meal');
-
-
-  act(() => {
-    fireEvent.click(screen.getByTestId('Cheeseburger'));
-  });
-  act(() => {
-    fireEvent.click(screen.getByTestId('Sun Lunch'));
-  });
-  const items = await screen.findAllByText('Cheeseburger');
-  expect(items).toHaveLength(2);
-});

@@ -126,8 +126,10 @@ function Menu(props) {
     // Update search state
     if (search) {
       searchRecipes(search, setMenu);
+    } else {
+      getRecipes(setMenu, history);
     }
-  }, [search]);
+  }, [search, history]);
 
   React.useEffect(() => {
     // Update menu if user added a new meal
@@ -270,7 +272,6 @@ function Menu(props) {
                           <ImageListItem
                             className='margins'
                             key={item['dishname'] + ind + index}
-                            id={item['dishname']}
                           >
                             <img
                               /* src={`${image}w=248&fit=crop&auto=format`}
@@ -278,10 +279,12 @@ function Menu(props) {
                                 `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
                               } */
                               onClick={() => clickItem(item)}
+                              id={item['dishname']}
                               src={image}
+                              label={item['dishname']}
                               alt={item['dishname']}
                               loading="lazy"
-                              id={chosenFood === item ?
+                              className={chosenFood === item ?
                                 'selected' : 'unselected'}
                               style={{
                                 width: `${menuSize.current}px`,

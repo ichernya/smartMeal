@@ -244,7 +244,7 @@ function AddMealDialog(props) {
     // Initializing the dictionary
     const recipe = {dishname: recipeName,
       ingredients: formatIngredients(ingredients),
-      imageData: imageData,
+      imageData: imageData === '' ? 'default.png' : imageData,
       vegan: dietList.includes('Vegan') ? true : false,
       halal: dietList.includes('Halal') ? true : false,
       healthy: dietList.includes('Healthy') ? true : false,
