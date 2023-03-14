@@ -4,7 +4,6 @@ const createList = (setIngredientList, startWeek) => {
   const dateOffset = currentDay.getDay();
   startWeek.setDate(currentDay.getDate() - dateOffset);
   let [month, day, year] = startWeek.toLocaleDateString().split('/');
-
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
