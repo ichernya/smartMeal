@@ -11,7 +11,7 @@ const dateToIntConvert = (day) => {
   return dateMap[day];
 };
 
-export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
+export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
   weekday, timeOfDay, createList, setIngredientList) => {
   const parsedRecipe = {...newRecipe};
   parsedRecipe.ingredients = [];
@@ -38,11 +38,12 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
     const time = TIMES[ind];
     update[time] = `${meal['recipeid']}`;
   }
+  console.log(parsedRecipe);
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
-  fetch('http://localhost:3010/v0/recipes', {
+  return fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
     body: JSON.stringify(parsedRecipe),
     headers: {
@@ -95,6 +96,9 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
         .then(() => {
           createList(setIngredientList, startWeek);
         });
+      return id;
+    }).then((id) => {
+      return id;
     });
 };
 
@@ -123,7 +127,6 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
     day = '0' + day;
   }
   const start = `${year}-${month}-${day}`;
-
   // The  day of the week that is being updated
   const TIMES = ['breakfast', 'lunch', 'dinner'];
   mealsWithIngredient.forEach((meal, i) => {
@@ -144,12 +147,14 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
     delete parsedRecipe.recipeid;
     parsedRecipe.dishname = `(${specificIngredient}) ${meal.meal.dishname}`;
     Object.keys(meal.meal.ingredients).forEach((ingredient) => {
-      const ingredientParam = [];
-      ingredientParam.push(ingredient);
-      ingredientParam.push(meal.meal.ingredients[ingredient].unit);
-      ingredientParam.push(meal.meal.ingredients[ingredient].amount);
+      const ingredientParam = [ingredient,
+        meal.meal.ingredients[ingredient].amount,
+        meal.meal.ingredients[ingredient].unit,
+      ];
       parsedRecipe.ingredients.push(ingredientParam);
     });
+    parsedRecipe.imageData = parsedRecipe.imagedata;
+    delete parsedRecipe.imagedata;
     fetch('http://localhost:3010/v0/recipes', {
       method: 'POST',
       body: JSON.stringify(parsedRecipe),
@@ -169,8 +174,9 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
           toChangeDayMap[mealsWithIngredient[i].date][mealsWithIngredient[i]
             .timeOfDay] = id;
         });
+        return id;
       })
-      .then(() => {
+      .then((id) => {
         Object.keys(toChangeDayMap).forEach((day) => {
           if (Object.keys(toChangeDayMap[day]).length !== 0) {
             const timeOfDayNotChanged = ['0', '1', '2'].filter((val) =>
@@ -181,7 +187,9 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
             });
           }
         });
-      }).then(() => {
+        return id;
+      })
+      .then((id) => {
         Object.keys(toChangeDayMap).forEach((day) => {
           if (Object.keys(toChangeDayMap[day]).length !== 0) {
             // updated data in the formatted needed by backend
@@ -190,6 +198,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
               'lunch': '0',
               'dinner': '0',
             };
+            console.log(day);
             const dateCopy = new Date(startWeek);
             dateCopy.setDate(dateCopy.getDate() + dateToIntConvert(day));
             const [month, dday, year] =
@@ -222,6 +231,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
             });
           }
         });
+        console.log(id, uniqueMeals);
       });
   });
 };
