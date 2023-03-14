@@ -85,7 +85,9 @@ function IndeterminateCheckbox() {
     const bearerToken = person ? person.accessToken : '';
     const userId = person ? person.userid : '';
     const startDay = new Date(startWeek);
-    const startIso = startDay.toISOString().split('T')[0];
+    const [month, day, year] = startDay.toLocaleDateString().split('/');
+    const startIso = `${year}-${month}-${day}`;
+
     const ingredentsToChange = target[location].ingredients;
     Object.keys(ingredentsToChange).forEach((ingredent) => {
       if (ingredentsToChange[ingredent].checked !== value) {
@@ -159,7 +161,9 @@ function IndeterminateCheckbox() {
     const userId = person ? person.userid : '';
 
     const startDay = new Date(startWeek);
-    const startIso = startDay.toISOString().split('T')[0];
+    const [month, day, year] = startDay.toLocaleDateString().split('/');
+    const startIso = `${year}-${month}-${day}`;
+    console.log(startIso);
     const body = {
       'mealsid': userId,
       'firstDay': startIso,
