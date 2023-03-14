@@ -85,7 +85,7 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
         },
       });
     }).then(() => {
-      
+      console.log();
     });
 };
 
