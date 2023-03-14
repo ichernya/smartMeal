@@ -17,6 +17,8 @@ import defaultImage from '../../assets/qqq.png';
 import {useMeals} from '../MealContextProvider';
 import './Checkbox.css';
 import {postChangeRecipe, postChangeAllRecipes} from './HandleUpdate.jsx';
+import createList from '../GenerateList.jsx';
+
 
 /**
  * Left side view of the checklist where the user can select an ingredient
@@ -119,7 +121,8 @@ function DisplayElement() {
     specificMeal.dishname = `(${selectedAlterative}) ${specificMeal.dishname}`;
     delete specificMeal.ingredients[isChosenIngredient.name];
     postChangeRecipe(specificMeal, {...mealPlan}, startWeek,
-      specificMealtoChange.date, specificMealtoChange.timeOfDay);
+      specificMealtoChange.date, specificMealtoChange.timeOfDay,
+      createList, setIngredientList);
     setIngredientList(newList);
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -168,7 +171,7 @@ function DisplayElement() {
     setIngredientList(newList);
     setPlan(newMeals);
     postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
-      startWeek, selectedAlterative);
+      startWeek, selectedAlterative, createList, setIngredientList);
     handleCancel();
   };
 
@@ -222,8 +225,8 @@ function DisplayElement() {
               aspectRatio: 1,
             }}
             component="img"
-            src={isChosenIngredient.imagedata ?
-              isChosenIngredient.imagedata : defaultImage}
+            src={isChosenIngredient.imageData ?
+              isChosenIngredient.imageData : defaultImage}
             alt={isChosenIngredient.name}
             loading="lazy"
           />

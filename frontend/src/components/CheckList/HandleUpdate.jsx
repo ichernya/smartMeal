@@ -12,22 +12,19 @@ const dateToIntConvert = (day) => {
 };
 
 export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
-  weekday, timeOfDay) => {
+  weekday, timeOfDay, createList, setIngredientList) => {
   const parsedRecipe = {...newRecipe};
   parsedRecipe.ingredients = [];
   delete parsedRecipe.recipeid;
   Object.keys(newRecipe.ingredients).forEach((ingredient) => {
-    const ingredientParam = [];
-    ingredientParam.push(ingredient);
-    ingredientParam.push(newRecipe.ingredients[ingredient].unit);
-    ingredientParam.push(newRecipe.ingredients[ingredient].amount);
+    const ingredientParam = [ingredient,
+      newRecipe.ingredients[ingredient].amount,
+      newRecipe.ingredients[ingredient].unit];
     parsedRecipe.ingredients.push(ingredientParam);
   });
-  // The first day of the week
-  const [month, day, year] = startWeek.toLocaleDateString().split('/');
-  const startIso = `${year}-${month}-${day}`;
-
-  // The  day of the week that is being updated
+  parsedRecipe.imageData = parsedRecipe.imagedata;
+  delete parsedRecipe.imagedata;
+  // The day of the week that is being updated
   const dateCopy = new Date(startWeek);
   dateCopy.setDate(dateCopy.getDate() + dateToIntConvert(weekday));
   const TIMES = ['breakfast', 'lunch', 'dinner'];
@@ -61,9 +58,20 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
     })
     .then((id) => {
       update[TIMES[timeOfDay]] = id;
-      const [month, day, year] = dateCopy.toLocaleDateString().split('/');
-      const dateIso = `${year}-${month}-${day}`;
-
+      // calculates the start and end of the week
+      const currentDay = new Date();
+      const dateOffset = currentDay.getDay();
+      const startWeek = new Date();
+      startWeek.setDate(currentDay.getDate() - dateOffset);
+      let [month, day, year] = startWeek.toLocaleDateString().split('/');
+      if (parseInt(month) < 10) {
+        month = '0' + month;
+      }
+      if (parseInt(day) < 10) {
+        day = '0' + day;
+      }
+      const start = `${year}-${month}-${day}`;
+      console.log(start);
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '${update['breakfast']}', ` +
@@ -71,8 +79,8 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
         `'dinner': '${update['dinner']}'}`;
       const body = {
         'mealsid': userId,
-        'dayof': `{${dateIso}}`,
-        'firstDay': startIso,
+        'dayof': `{${start}}`,
+        'firstDay': start,
         'changes': bodyStringified,
       };
       fetch('http://localhost:3010/v0/meals', {
@@ -83,14 +91,15 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
-      });
-    }).then(() => {
-      console.log();
+      })
+        .then(() => {
+          createList(setIngredientList, startWeek);
+        });
     });
 };
 
 export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
-  startWeek, specificIngredient) => {
+  s, specificIngredient, createList, setIngredientList) => {
   const toChangeDayMap = {
     'sun': {},
     'mon': {},
@@ -101,9 +110,19 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
     'sat': {},
   };
   const uniqueMeals = {};
-  // The first day of the week
-  const [month, day, year] = startWeek.toLocaleDateString().split('/');
-  const startIso = `${year}-${month}-${day}`;
+  // calculates the start and end of the week
+  const currentDay = new Date();
+  const dateOffset = currentDay.getDay();
+  const startWeek = new Date();
+  startWeek.setDate(currentDay.getDate() - dateOffset);
+  let [month, day, year] = startWeek.toLocaleDateString().split('/');
+  if (parseInt(month) < 10) {
+    month = '0' + month;
+  }
+  if (parseInt(day) < 10) {
+    day = '0' + day;
+  }
+  const start = `${year}-${month}-${day}`;
 
   // The  day of the week that is being updated
   const TIMES = ['breakfast', 'lunch', 'dinner'];
@@ -131,7 +150,6 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
       ingredientParam.push(meal.meal.ingredients[ingredient].amount);
       parsedRecipe.ingredients.push(ingredientParam);
     });
-    console.log(meal);
     fetch('http://localhost:3010/v0/recipes', {
       method: 'POST',
       body: JSON.stringify(parsedRecipe),
@@ -188,7 +206,7 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
             const body = {
               'mealsid': userId,
               'dayof': `{${dateIso}}`,
-              'firstDay': startIso,
+              'firstDay': start,
               'changes': bodyStringified,
             };
             fetch('http://localhost:3010/v0/meals', {
@@ -199,6 +217,8 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
               },
+            }).then(() => {
+              createList(setIngredientList, startWeek);
             });
           }
         });
