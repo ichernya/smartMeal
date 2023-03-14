@@ -178,16 +178,8 @@ const updateCurrentPlan = (data, firstDay) => {
       currentD = '0' + currentD;
     }
     const changeDate = `${currentY}-${currentM}-${currentD}`;
-    console.log(changeDate);
     // Clear day of week
     if (!data['mealweek'][currentCopyDate]) {
-      // updated data in the formatted needed by backend
-      const update = {
-        'breakfast': '0',
-        'lunch': '0',
-        'dinner': '0',
-      };
-
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '0', ` +
@@ -227,6 +219,9 @@ const updateCurrentPlan = (data, firstDay) => {
     for (const [time, meal] of Object.entries(meals)) {
       // add the meal id for the specific time/day of the week
       update[time] = `${meal['recipeid']}`;
+      if (update[time] === 'undefined') {
+        update[time] = '0';
+      }
     }
 
     // format the changes in the format needed for backend
