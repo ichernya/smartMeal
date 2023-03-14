@@ -150,29 +150,29 @@ exports.pullpublicMeal = async (req, res) => {
     }
     
     //parse the data, replacing the numbers inside the week to be the recipe that matches that number 
-    if (mealPlans[0]) {
-        
-        for (let date in mealPlans[0].mealweek) {
-            // if id we dont care
-            if (date == 'id') {
-                continue;
-            }
-            for (let meal in mealPlans[0].mealweek[date]) {
-                let recipeId = parseInt(mealPlans[0].mealweek[date][meal]);
-                if (recipeId) {
-                    // Find the recipe in recipes with matching recipeid
-                    let recipe = mealPlans[0]["recipes"].find(recipe => recipe && recipe.recipeid == recipeId);
-                    // Replace the recipe id in mealPlan with the recipe object
-                    mealPlans[0].mealweek[date][meal] = recipe;
+    for (let i in mealPlans)
+        if (mealPlans[i]) {
+            for (let date in mealPlans[i].mealweek) {
+                // if id we dont care
+                if (date == 'id') {
+                    continue;
+                }
+                for (let meal in mealPlans[i].mealweek[date]) {
+                    let recipeId = parseInt(mealPlans[i].mealweek[date][meal]);
+                    if (recipeId) {
+                        // Find the recipe in recipes with matching recipeid
+                        let recipe = mealPlans[i]["recipes"].find(recipe => recipe && recipe.recipeid == recipeId);
+                        // Replace the recipe id in mealPlan with the recipe object
+                        mealPlans[i].mealweek[date][meal] = recipe;
+                    }
                 }
             }
+            res.status(200).json(mealPlans)
+            
         }
-        res.status(200).json(mealPlans)
-        
-    }
-    else {
-        res.status(404).send();
-    }
+        else {
+            res.status(404).send();
+        }
 }
 // public meal plan :: check if public is true, check query by the name of the mealplan
 
