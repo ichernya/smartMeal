@@ -230,26 +230,24 @@ exports.pullGroceryList = async (req, res) => {
   else {
     // ingredient categories, 
     // allows us to display the checklist grouped by categories
-    
     if (food[0]) {
       //if food exists,
       for (let date in food[0].mealweek) {
           // if id we dont care
-          if (date == 'id') {
+          if (date === 'id') {
               continue;
           }
-          //itterate through the dates, to recieve the meal object for the day
+          // itterate through the dates, to recieve the meal object for the day
           for (let meal in food[0].mealweek[date]) {
               let recipeId = parseInt(food[0].mealweek[date][meal]);
               if (recipeId) {
                   // Find the recipe in recipes with matching recipeid
                   // stackoverflow find function
-                  let recipe = food[0]["recipes"].find(recipe => recipe && recipe.recipeid == recipeId);
+                  let recipe = food[0]["recipes"].find(recipe => recipe && recipe.recipeid === recipeId);
                   // Replace the recipe id in mealPlan with the recipe object
                   food[0].mealweek[date][meal] = recipe;
               }
           }
-      
       }
     }
     const ingredientList = {};
@@ -272,8 +270,8 @@ exports.pullGroceryList = async (req, res) => {
         for (let ingredient in food[0].mealweek[date][mealtime].ingredients) {
           // print out the unit and amount of this ingredient
           // iterate through each ingredient of this meal
-          amountOf = food[0].mealweek[date][mealtime].ingredients[ingredient].amount;
-          unit = food[0].mealweek[date][mealtime].ingredients[ingredient].unit;
+          const amountOf = food[0].mealweek[date][mealtime].ingredients[ingredient].amount;
+          const unit = food[0].mealweek[date][mealtime].ingredients[ingredient].unit;
           // for every single ingredient, iterate throughtout categories, until category is found
           let category = '';
           for (const [categoryName, categoryIngredients] of Object.entries(ingredientCategories)) {
@@ -295,12 +293,11 @@ exports.pullGroceryList = async (req, res) => {
 
               };
             }
-            //else means the category does exists, so we need to:
-            //add the ingredient to the category 
-            else {
+            // else means the category does exists, so we need to:
+            // add the ingredient to the category 
               if (ingredientList[category].ingredients[ingredient]) {
                 // if the ingredient already exists, we must increment amount
-                amount = ingredientList[category].ingredients[ingredient].amount;
+                const amount = ingredientList[category].ingredients[ingredient].amount;
                 ingredientList[category].ingredients[ingredient] = {
                   checked: false,
                   amount: (+amountOf + +amount).toString(),
@@ -316,17 +313,15 @@ exports.pullGroceryList = async (req, res) => {
               };
               ingredientList[category].amount += 1;
               }
-            } 
-          
         }
       }
   }
     // pull the current grocerylist that is generated (old grocery list as new one is already generated)
-    grocerylistInitial = await checkGroceryList(req.query.mealsid, req.query.firstDay);
+    const grocerylistInitial = await checkGroceryList(req.query.mealsid, req.query.firstDay);
     // if the old grocery list doesnt exist, that means it never existed in the first place
     if (!grocerylistInitial[0]) {
       // generate a new grocery list using the generated one from the users current meal plan 
-      grocerylist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
+      const grocerylist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
       // send a 201 created and the current grocer list
       res.status(201).json(grocerylist)
     }
@@ -334,29 +329,33 @@ exports.pullGroceryList = async (req, res) => {
       // this means that the grocery list DOES exist, so we have to DELETE it, and compare the newly generated one
       // to the OLD one, to see the difference in ingredient amount
       // if an ingredient stays the same, but the amount increases, that means it should now be unchecked in the new grocerylist
-      oldlist = await deleteGrocerylist(req.query.mealsid, req.query.firstDay);
-      newlist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
-      for (const category in oldlist[0].checklist) {
-        for (const ingredient in oldlist[0].checklist[category].ingredients) {
-          const oldAmount = oldlist[0].checklist[category].ingredients[ingredient].amount;
-          const newAmount = newlist[0].checklist[category].ingredients[ingredient].amount;
-          const oldChecked = oldlist[0].checklist[category].ingredients[ingredient].checked;
-          //const newChecked = newlist[0].checklist[category].ingredients[ingredient].checked;
-          // iterate newlist
-          // make sure that the category exists
-          // check if the amount is greater, then downtick
-          // if true and AMOUNT is less than > then set to true
-          if (oldChecked && oldAmount >= newAmount) {
-            await updatePutQuery(req.query.firstDay, req.query.mealsid, category, ingredient);
+      const oldlist = await deleteGrocerylist(req.query.mealsid, req.query.firstDay);
+      const newlist = await createGroceryList(req.query.mealsid, req.query.firstDay, ingredientList);
+      for (const category in newlist[0].checklist) {
+        if (oldlist[0].checklist[category]) {
+          for (const ingredient in oldlist[0].checklist[category].ingredients) {
+            if (newlist[0].checklist[category].ingredients[ingredient]) {
+              const oldAmount = oldlist[0].checklist[category].ingredients[ingredient].amount;
+              const newAmount = newlist[0].checklist[category].ingredients[ingredient].amount;
+              const oldChecked = oldlist[0].checklist[category].ingredients[ingredient].checked;
+              //const newChecked = newlist[0].checklist[category].ingredients[ingredient].checked;
+              // iterate newlist
+              // make sure that the category exists
+              // check if the amount is greater, then downtick
+              // if true and AMOUNT is less than > then set to true
+              if (oldChecked && oldAmount >= newAmount) {
+                await updatePutQuery(req.query.firstDay, req.query.mealsid, category, ingredient);
+              }
+              // if (newAmount > oldAmount) {
+              //   // if the new amount is greater than the old amount then we should
+              //   // call the funcion that sets that ingredient to false
+              //   await downdatePutQuery(req.query.firstDay, req.query.mealsid, category, oldlist[0].checklist[category].ingredients[ingredient]);
+              // }
+            }
           }
-          // if (newAmount > oldAmount) {
-          //   // if the new amount is greater than the old amount then we should
-          //   // call the funcion that sets that ingredient to false
-          //   await downdatePutQuery(req.query.firstDay, req.query.mealsid, category, oldlist[0].checklist[category].ingredients[ingredient]);
-          // }
         }
       }
-      grocerylistFinal = await checkGroceryList(req.query.mealsid, req.query.firstDay);
+      const grocerylistFinal = await checkGroceryList(req.query.mealsid, req.query.firstDay);
       res.status(200).json(grocerylistFinal);
 
       }

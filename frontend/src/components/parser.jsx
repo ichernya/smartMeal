@@ -4,7 +4,6 @@
  * @param {json} json
  */
 function parsePlanData(setMeal, json) {
-  console.log(json);
   const data = json['mealweek'];
   const mealPlan = {'mealname': json['mealname']};
   const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];

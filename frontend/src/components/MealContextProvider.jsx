@@ -6,7 +6,7 @@ import createList from './GenerateList.jsx';
 const MealsContext = createContext();
 
 // Queries the database for the meals the user has chosen for the week
-const getMealsForWeek = (setMeal, userId) => {
+const getMealsForWeek = (setMeal, userId, setIngredientList) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
@@ -38,6 +38,9 @@ const getMealsForWeek = (setMeal, userId) => {
     })
     .then((json) => {
       parsePlanData(setMeal, json[0]);
+    })
+    .then(() => {
+      createList(setIngredientList, startWeek);
     });
 };
 
@@ -68,9 +71,7 @@ export const MealsProvider = ({children}) => {
   useEffect(() => {
     if (userId) {
       // Grab the meals for the week when loading the page
-      const startWeek = new Date();
-      getMealsForWeek(setPlan, userId);
-      createList(setIngredientList, startWeek);
+      getMealsForWeek(setPlan, userId, setIngredientList);
     }
   }, [userId]);
 
