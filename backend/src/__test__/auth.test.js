@@ -62,23 +62,5 @@ test('Signup without PW', async () => {
     .expect(400);
 });
 
-const newRecipe = {
-  'dishname': 'example',
-  'ingredients': [ ['Chicken', '1', 'lbs'] ],
-  'imageData': '/test.png',
-  'vegan': false,
-  'halal': false,
-  'healthy': true,
-  'kosher': false
-};
 
-test('POST recipe', async () => {
-  await request.post('/v0/recipes')
-    .send(newRecipe)
-    .expect(201)
-    .then((data) => {
-      expect(data).toBeDefined();
-      expect(data.body).toBeDefined();
-    });
-});
 

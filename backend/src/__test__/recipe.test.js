@@ -19,7 +19,7 @@ beforeAll(() => {
     server.listen();
     request = supertest(server);
   });
-  
+
   afterAll((done) => {
     server.close(done);
   });
@@ -29,7 +29,7 @@ const token = ['Authorization', `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ
 test('Get recipe with id', async () => {
     const meal = await request.get('/v0/recipe?recipeid=1').set(token[0], token[1])
     expect(meal.statusCode).toBe(200);
-   
+
   });
 
 test('Recieve non existing recipe', async () => {
@@ -52,4 +52,24 @@ test ('Create a new recipe', async () => {
       expect(recipe.statusCode).toBe(201);
 })
 
-  
+
+const newRecipe = {
+  'dishname': 'example',
+  'ingredients': [ ['Chicken', '1', 'lbs'] ],
+  'imageData': '/test.png',
+  'vegan': false,
+  'halal': false,
+  'healthy': true,
+  'kosher': false
+};
+
+test('POST recipe', async () => {
+  await request.post('/v0/recipes')
+    .send(newRecipe)
+    .expect(201)
+    .then((data) => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+    });
+});
+
