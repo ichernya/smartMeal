@@ -41,12 +41,26 @@ test('Login Fail', async () => {
     .expect(401);
 });
 
-const newUser = {'email': 'dburger@gmail.com', 'testingNewPW#123'};
-test('Signup success', asycn () => {
+const newUser = {'email': 'dburger@gmail.com', 'password': 'testingNewPW#123'};
+test('Signup success', async () => {
   await request.post('/v0/signup')
     .send(newUser)
-    .expect(201);
-})
+    .expect(200);
+});
+
+const oldUser = {'email': 'molly@books.com', 'password': 'mollymember'};
+test('Signup fail', async () => {
+  await request.post('/v0/signup')
+    .send(oldUser)
+    .expect(409);
+});
+
+const badUser = {'email': 'brodog'};
+test('Signup without PW', async () => {
+  await request.post('/v0/signup')
+    .send(badUser)
+    .expect(400);
+});
 
 const newRecipe = {
   'dishname': 'example',
@@ -61,36 +75,10 @@ const newRecipe = {
 test('POST recipe', async () => {
   await request.post('/v0/recipes')
     .send(newRecipe)
-    .expect(201);
+    .expect(201)
+    .then((data) => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+    });
 });
 
-
-/*
-{
-  "dishname": "string",
-  "ingredients": [
-    [
-      "egg",
-      "1",
-      "N/A"
-    ],
-    [
-      "bacon",
-      "1",
-      "g"
-    ],
-    [
-      "cheese",
-      "1",
-      "g"
-    ]
-  ],
-  "ingredientAm": 0,
-  "imageData": "string",
-  "vegan": true,
-  "halal": true,
-  "healthy": true,
-  "kosher": true
-}
-
- */
