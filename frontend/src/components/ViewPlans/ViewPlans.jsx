@@ -551,10 +551,7 @@ function ViewMeals(props) {
                                 className='margins'
                               >
                                 <img
-                                  src={`${img}w=248&fit=crop&auto=format`}
-                                  srcSet={
-                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                  }
+                                  src={img}
                                   alt={`img${ind.toString()}`}
                                   loading="lazy"
                                   style={{
