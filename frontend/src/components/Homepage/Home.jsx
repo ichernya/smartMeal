@@ -22,7 +22,9 @@ const saveUpdatedName = (name, startDay, userId) => {
 
 
   // The first day of the week
-  let [month, day, year] = startDay.toLocaleDateString().split('/');
+  let month = startDay.getMonth() + 1;
+  let day = startDay.getDate();
+  const year = startDay.getFullYear();
   if (parseInt(month) < 10) {
     month = '0' + month;
   }

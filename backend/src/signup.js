@@ -17,7 +17,7 @@ const pool = new Pool({
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const secrets = require('./secrets');
+// const secrets = require('./secrets');
 
 const checkUser = async(email) => {
   const select = 'SELECT * FROM users WHERE username = ($1)';
@@ -70,16 +70,16 @@ const createUser = async (email, password) => {
   // console.log(insert, query);
   // return id;
 };
-
-const testSignup = async (email, passwrd) => {
-  const saltRounds = 10;
-  bcrypt
-    .hash(passwrd, saltRounds)
-    .then(hash => {
-      console.log('Hash: ${hash}');
-    })
-    .catch(err => console.error(err.message));
-};
+//
+// const testSignup = async (email, passwrd) => {
+//   const saltRounds = 10;
+//   bcrypt
+//     .hash(passwrd, saltRounds)
+//     .then(hash => {
+//       console.log('Hash: ${hash}');
+//     })
+//     .catch(err => console.error(err.message));
+// };
 
 exports.putUser = async (req, res) => {
   console.log("here");

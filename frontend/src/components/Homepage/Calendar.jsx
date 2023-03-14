@@ -27,7 +27,9 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   const userId = person ? person.userid : '';
 
   // The first day of the week
-  let [month, day, year] = startWeek.toLocaleDateString().split('/');
+  let month = startWeek.getMonth() + 1;
+  let day = startWeek.getDate();
+  const year = startWeek.getFullYear();
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
@@ -38,7 +40,9 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   // The day of the week that is being updated
   const dateCopy = new Date(year, month - 1, day);
   dateCopy.setDate(dateCopy.getDate() + weekday);
-  let [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
+  let dateM = dateCopy.getMonth() + 1;
+  let dateD = dateCopy.getDate();
+  const dateY = dateCopy.getFullYear();
   if (parseInt(dateM) < 10) {
     dateM = '0' + dateM;
   }

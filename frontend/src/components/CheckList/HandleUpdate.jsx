@@ -64,7 +64,9 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
       const dateOffset = currentDay.getDay();
       const startWeek = new Date();
       startWeek.setDate(currentDay.getDate() - dateOffset);
-      let [month, day, year] = startWeek.toLocaleDateString().split('/');
+      let month = startWeek.getMonth() + 1;
+      let day = startWeek.getDate();
+      const year = startWeek.getFullYear();
       if (parseInt(month) < 10) {
         month = '0' + month;
       }
@@ -119,7 +121,9 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
   const dateOffset = currentDay.getDay();
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
-  let [month, dday, year] = startWeek.toLocaleDateString().split('/');
+  let month = startWeek.getMonth() + 1;
+  let dday = startWeek.getDate();
+  const year = startWeek.getFullYear();
   if (parseInt(month) < 10) {
     month = '0' + month;
   }

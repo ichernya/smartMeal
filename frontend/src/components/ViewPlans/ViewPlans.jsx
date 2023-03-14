@@ -138,7 +138,10 @@ const updateCurrentPlan = (data, firstDay) => {
 
   // Formatted string of the first day of the week
   const dateChange = new Date(firstDay);
-  let [month, day, year] = firstDay.toLocaleDateString().split('/');
+  let month = dateChange.getMonth() + 1;
+  let day = dateChange.getDate();
+  const year = dateChange.getFullYear();
+  console.log(dateChange);
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
@@ -150,12 +153,13 @@ const updateCurrentPlan = (data, firstDay) => {
 
   // First day of the week of the plan we're copying
   const [copyY, copyM, copyD] = data['firstday'].split('-');
-  const firstCopyDay = (new Date(copyY, copyM - 1, copyD));
+  const firstCopyDay = new Date(copyY, copyM - 1, copyD);
 
   for (let ind = 0; ind < 7; ind++) {
     // day of the week of the plan we're copying
-    let [currentCopyM, currentCopyD, currentCopyY] =
-     firstCopyDay.toLocaleDateString().split('/'); ;
+    let currentCopyM = firstCopyDay.getMonth() + 1;
+    let currentCopyD = firstCopyDay.getDate();
+    const currentCopyY = firstCopyDay.getFullYear();
     if (parseInt(currentCopyM) < 10) {
       currentCopyM = '0' + currentCopyM;
     }
@@ -165,8 +169,9 @@ const updateCurrentPlan = (data, firstDay) => {
     const currentCopyDate = `${currentCopyY}-${currentCopyM}-${currentCopyD}`;
 
 
-    let [currentY, currentM, currentD] =
-     dateChange.toLocaleDateString().split('/');
+    let currentM = dateChange.getMonth() + 1;
+    let currentD = dateChange.getDate();
+    const currentY = dateChange.getFullYear();
     if (parseInt(currentM) < 10) {
       currentM = '0' + currentM;
     }
@@ -176,13 +181,6 @@ const updateCurrentPlan = (data, firstDay) => {
     const changeDate = `${currentY}-${currentM}-${currentD}`;
     // Clear day of week
     if (!data['mealweek'][currentCopyDate]) {
-      // updated data in the formatted needed by backend
-      const update = {
-        'breakfast': '0',
-        'lunch': '0',
-        'dinner': '0',
-      };
-
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '0', ` +
@@ -195,6 +193,7 @@ const updateCurrentPlan = (data, firstDay) => {
         'firstDay': startIso,
         'changes': bodyStringified,
       };
+      console.log(body);
 
       fetch(`http://localhost:3010/v0/meals`, {
         method: 'PUT',
@@ -221,6 +220,9 @@ const updateCurrentPlan = (data, firstDay) => {
     for (const [time, meal] of Object.entries(meals)) {
       // add the meal id for the specific time/day of the week
       update[time] = `${meal['recipeid']}`;
+      if (update[time] === 'undefined') {
+        update[time] = '0';
+      }
     }
 
     // format the changes in the format needed for backend
@@ -235,6 +237,7 @@ const updateCurrentPlan = (data, firstDay) => {
       'firstDay': startIso,
       'changes': bodyStringified,
     };
+    console.log(body);
 
     fetch(`http://localhost:3010/v0/meals`, {
       method: 'PUT',
