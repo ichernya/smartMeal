@@ -1,0 +1,95 @@
+const ingredientCategories = {
+    "Protein": [
+      "Chicken",
+      "Beef",
+      "Pork",
+      "Fish",
+      "Tofu",
+      "Tempeh",
+      "Beans",
+      "Lentils",
+      "Eggs"
+    ],
+    "Grains": [
+      "Rice",
+      "Quinoa",
+      "Oats",
+      "Barley",
+      "Corn",
+      "Wheat",
+      "Bread",
+      "Pasta",
+      "Couscous",
+      "Bulgur",
+      "Farro"
+    ],
+    "Vegetables": [
+      "Broccoli",
+      "Carrots",
+      "Spinach",
+      "Kale",
+      "Lettuce",
+      "Tomatoes",
+      "Cucumbers",
+      "Peppers",
+      "Onions",
+      "Garlic",
+      "Potatoes",
+      "Sweet Potatoes",
+      "Squash",
+      "Zucchini",
+      "Asparagus",
+      "Green beans",
+      "Peas",
+      "Corn",
+      "Mushrooms"
+    ],
+    "Dairy": [
+      "Milk",
+      "Cheese",
+      "Yogurt",
+      "Butter",
+      "Cream",
+      "Sour Cream",
+      "Cream Cheese"
+    ],
+    "Oils": [
+      "Olive oil",
+      "Canola oil",
+      "Coconut oil",
+      "Vegetable oil",
+      "Avocado oil"
+    ],
+    "Fruit": [
+      "Apples",
+      "Bananas",
+      "Oranges",
+      "Grapefruit",
+      "Grapes",
+      "Berries",
+      "Kiwi",
+      "Mango",
+      "Pineapple",
+      "Peaches",
+      "Nectarines",
+      "Plums",
+      "Cherries",
+      "Lemons",
+      "Limes",
+      "Avocado"
+    ],
+    "Nuts and seeds": [
+      "Almonds",
+      "Walnuts",
+      "Pecans",
+      "Cashews",
+      "Peanuts",
+      "Pistachios",
+      "Sunflower seeds",
+      "Pumpkin seeds",
+      "Chia seeds",
+      "Flax seeds",
+      "Sesame seeds"
+    ]
+};
+module.exports = {ingredientCategories};
