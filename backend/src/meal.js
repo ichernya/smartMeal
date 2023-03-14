@@ -137,10 +137,7 @@ exports.pullFoodDay = async (req, res) => {
         
         }
         console.log(food)
-        
         res.status(200).json(food)
-        
-        
     }
     // otherwise meal for this week does not exist so create
     else {
