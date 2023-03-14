@@ -222,7 +222,8 @@ function DisplayElement() {
               aspectRatio: 1,
             }}
             component="img"
-            src={isChosenIngredient.img ? isChosenIngredient.img : defaultImage}
+            src={isChosenIngredient.imagedata ?
+              isChosenIngredient.imagedata : defaultImage}
             alt={isChosenIngredient.name}
             loading="lazy"
           />
