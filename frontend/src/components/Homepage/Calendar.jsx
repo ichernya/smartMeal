@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {styled} from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -166,10 +166,9 @@ function Calendar(props) {
             >
               {mealPlan && mealPlan[day.toLowerCase()].map((item, ind) => {
                 const dayLower = day.toLowerCase();
-                /* const image = item['img'] ?
-                  item['img'] : require('../../assets/logo.png'); */
                 let image = item['imagedata'];
-                if (image) { // image is present either in base64 or as a template
+                // image is present either in base64 or as a template
+                if (image) {
                   if (!image.startsWith('data:')) {
                     image = require('../../assets/templateImage/'+
                       image);
