@@ -67,7 +67,6 @@ function Tools(props) {
     setSearch(value);
   };
 
-
   return (
     <Toolbar
       className='tools'

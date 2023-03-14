@@ -84,7 +84,6 @@ const searchPlans = (query, setPlans, publicMeals) => {
   if (query) {
     endpoint += `&mealName=${query}`;
   }
-  console.log(endpoint);
 
   fetch(endpoint, {
     method: 'get',
@@ -101,7 +100,6 @@ const searchPlans = (query, setPlans, publicMeals) => {
       return response.json();
     })
     .then((json) => {
-      console.log(json);
       setPlans(json);
     });
 };
@@ -138,6 +136,7 @@ const updateCurrentPlan = (data, firstDay) => {
   const userId = person ? person.userid : '';
 
   // Formatted string of the first day of the week
+  const dateChange = new Date(firstDay);
   let [month, day, year] = firstDay.toLocaleDateString().split('/');
   if (parseInt(month) < 10) {
     month = '0' + month;
@@ -150,19 +149,64 @@ const updateCurrentPlan = (data, firstDay) => {
 
   // First day of the week of the plan we're copying
   const [copyY, copyM, copyD] = data['firstday'].split('-');
-  const firstCopyDay = (new Date(copyY, copyM - 1, copyD)).getDate();
+  const firstCopyDay = (new Date(copyY, copyM - 1, copyD));
 
-  for (const [copyDate, meals] of Object.entries(data['mealweek'])) {
-    if (copyDate === 'id') {
-      // Ignore the meal plans id
+  for (let ind = 0; ind < 7; ind++) {
+    // day of the week of the plan we're copying
+    let [currentCopyM, currentCopyD, currentCopyY] = firstCopyDay.toLocaleDateString().split('/'); ;
+    if (parseInt(currentCopyM) < 10) {
+      currentCopyM = '0' + currentCopyM;
+    }
+    if (parseInt(currentCopyD) < 10) {
+      currentCopyD = '0' + currentCopyD;
+    }
+    const currentCopyDate = `${currentCopyY}-${currentCopyM}-${currentCopyD}`;
+
+
+    let [currentY, currentM, currentD] = dateChange.toLocaleDateString().split('/');
+    if (parseInt(currentM) < 10) {
+      currentM = '0' + currentM;
+    }
+    if (parseInt(currentD) < 10) {
+      currentD = '0' + currentD;
+    }
+    const changeDate = `${currentY}-${currentM}-${currentD}`;
+    // Clear day of week
+    if (!data['mealweek'][currentCopyDate]) {
+      // updated data in the formatted needed by backend
+      const update = {
+        'breakfast': '0',
+        'lunch': '0',
+        'dinner': '0',
+      };
+
+      // format the changes in the format needed for backend
+      const bodyStringified =
+        `{'breakfast': '0', ` +
+        `'lunch': '0', ` +
+        `'dinner': '0'}`;
+
+      const body = {
+        'mealsid': userId,
+        'dayof': `{${changeDate}}`,
+        'firstDay': startIso,
+        'changes': bodyStringified,
+      };
+
+      fetch(`http://localhost:3010/v0/meals`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: new Headers({
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        }),
+      });
+      dateChange.setDate(dateChange.getDate() + 1);
+      firstCopyDay.setDate(firstCopyDay.getDate() + 1);
       continue;
     }
-
-    // day of the week of the plan we're copying
-    const [currentCopyY, currentCopyM, currentCopyD] = copyDate.split('-');
-    const currentCopyDay =
-      (new Date(currentCopyY, currentCopyM - 1, currentCopyD)).getDate();
-    const dayOffset = currentCopyDay - firstCopyDay;
+    const meals = data['mealweek'][currentCopyDate];
 
     // updated data in the formatted needed by backend
     const update = {
@@ -182,21 +226,9 @@ const updateCurrentPlan = (data, firstDay) => {
       `'lunch': '${update['lunch']}', ` +
       `'dinner': '${update['dinner']}'}`;
 
-    // Calculate which day of the current week the copied data is for
-    const setDateOffset = new Date(year, month - 1, day);
-    setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
-    let [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
-    if (parseInt(dateM) < 10) {
-      dateM = '0' + dateM;
-    }
-    if (parseInt(dateD) < 10) {
-      dateD = '0' + dateD;
-    }
-    const dayof = `${dateY}-${dateM}-${dateD}`;
-
     const body = {
       'mealsid': userId,
-      'dayof': `{${dayof}}`,
+      'dayof': `{${changeDate}}`,
       'firstDay': startIso,
       'changes': bodyStringified,
     };
@@ -210,6 +242,8 @@ const updateCurrentPlan = (data, firstDay) => {
         'Access-Control-Allow-Origin': '*',
       }),
     });
+    dateChange.setDate(dateChange.getDate() + 1);
+    firstCopyDay.setDate(firstCopyDay.getDate() + 1);
   }
 };
 
@@ -309,6 +343,10 @@ function ViewMeals(props) {
   const [list, setList] = React.useState([]);
 
   React.useEffect(() => {
+    // Update plans if
+    // A plan was renamed
+    // The user searched something
+    // The user set to private/public
     searchPlans(mealSearch, setList, publicMeals);
   }, [mealSearch, publicMeals, mealPlan]);
 
@@ -318,6 +356,7 @@ function ViewMeals(props) {
     setMealSearch(value);
   };
 
+  // clear search bar
   const clearSearch = () => {
     setMealSearch('');
   };
@@ -348,6 +387,7 @@ function ViewMeals(props) {
     setPublic(!publicMeals);
   };
 
+  // Copy over the selected meal plan to the current meal plan
   const onSelectPlan = (data) => {
     parsePlanData(setPlan, data);
     updateCurrentPlan(data, startWeek);
@@ -551,10 +591,7 @@ function ViewMeals(props) {
                                 className='margins'
                               >
                                 <img
-                                  src={`${img}w=248&fit=crop&auto=format`}
-                                  srcSet={
-                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                  }
+                                  src={img}
                                   alt={`img${ind.toString()}`}
                                   loading="lazy"
                                   style={{

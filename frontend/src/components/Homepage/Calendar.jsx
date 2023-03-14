@@ -35,7 +35,7 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
     day = '0' + day;
   }
 
-  // The  day of the week that is being updated
+  // The day of the week that is being updated
   const dateCopy = new Date(year, month - 1, day);
   dateCopy.setDate(dateCopy.getDate() + weekday);
   let [dateM, dateD, dateY] = dateCopy.toLocaleDateString().split('/');
@@ -107,6 +107,7 @@ function Calendar(props) {
     React.useState((selectedFood && selectedFood[1]) || 0);
 
   React.useEffect(() => {
+    // Updates the above states
     if (selectedFood) {
       setChosen(selectedFood[0]);
       setUsed(selectedFood[1]);
