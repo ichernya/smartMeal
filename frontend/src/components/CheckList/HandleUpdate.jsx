@@ -63,7 +63,9 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
       const dateOffset = currentDay.getDay();
       const startWeek = new Date();
       startWeek.setDate(currentDay.getDate() - dateOffset);
-      let [month, day, year] = startWeek.toLocaleDateString().split('/');
+      let month = startWeek.getMonth() + 1;
+      let day = startWeek.getDate();
+      const year = startWeek.getFullYear();
       if (parseInt(month) < 10) {
         month = '0' + month;
       }
@@ -115,7 +117,9 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
   const dateOffset = currentDay.getDay();
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
-  let [month, day, year] = startWeek.toLocaleDateString().split('/');
+  let month = startWeek.getMonth() + 1;
+  let day = startWeek.getDate();
+  const year = startWeek.getFullYear();
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
@@ -192,8 +196,9 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
             };
             const dateCopy = new Date(startWeek);
             dateCopy.setDate(dateCopy.getDate() + dateToIntConvert(day));
-            const [month, dday, year] =
-             dateCopy.toLocaleDateString().split('/');
+            let month = dateCopy.getMonth() + 1;
+            let dday = dateCopy.getDate();
+            const year = dateCopy.getFullYear();
             const dateIso = `${year}-${month}-${dday}`;
             for (const [ind, recipeid] of Object.entries(toChangeDayMap[day])) {
               const time = TIMES[ind];

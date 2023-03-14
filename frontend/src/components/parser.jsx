@@ -36,7 +36,9 @@ function parsePlanData(setMeal, json) {
   const startDate = new Date(year, month - 1, day);
 
   for (const weekday of daysOfWeek) {
-    let [month, day, year] = startDate.toLocaleDateString().split('/');
+    let month = startDate.getMonth() + 1;
+    let day = startDate.getDate();
+    const year = startDate.getFullYear();
     if (parseInt(month) < 10) {
       month = '0' + month;
     }

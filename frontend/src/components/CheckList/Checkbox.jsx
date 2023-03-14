@@ -87,7 +87,9 @@ function IndeterminateCheckbox() {
     const currentDay = new Date();
     const dateOffset = currentDay.getDay();
     startWeek.setDate(currentDay.getDate() - dateOffset);
-    let [month, day, year] = startWeek.toLocaleDateString().split('/');
+    let month = startWeek.getMonth() + 1;
+    let day = startWeek.getDate();
+    const year = startWeek.getFullYear();
     if (parseInt(month) < 10) {
       month = '0' + month;
     }
@@ -171,7 +173,9 @@ function IndeterminateCheckbox() {
     const currentDay = new Date();
     const dateOffset = currentDay.getDay();
     startWeek.setDate(currentDay.getDate() - dateOffset);
-    let [month, day, year] = startWeek.toLocaleDateString().split('/');
+    let month = startWeek.getMonth() + 1;
+    let day = startWeek.getDate();
+    const year = startWeek.getFullYear();
     if (parseInt(month) < 10) {
       month = '0' + month;
     }
