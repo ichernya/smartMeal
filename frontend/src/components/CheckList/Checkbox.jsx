@@ -84,14 +84,24 @@ function IndeterminateCheckbox() {
     const person = JSON.parse(item);
     const bearerToken = person ? person.accessToken : '';
     const userId = person ? person.userid : '';
-    const startDay = new Date(startWeek);
-    const startIso = startDay.toISOString().split('T')[0];
+    const currentDay = new Date();
+    const dateOffset = currentDay.getDay();
+    startWeek.setDate(currentDay.getDate() - dateOffset);
+    let [month, day, year] = startWeek.toLocaleDateString().split('/');
+    if (parseInt(month) < 10) {
+      month = '0' + month;
+    }
+    if (parseInt(day) < 10) {
+      day = '0' + day;
+    }
+    const start = `${year}-${month}-${day}`;
+
     const ingredentsToChange = target[location].ingredients;
     Object.keys(ingredentsToChange).forEach((ingredent) => {
       if (ingredentsToChange[ingredent].checked !== value) {
         const body = {
           'mealsid': userId,
-          'firstDay': startIso,
+          'firstDay': start,
           'category': location,
           'ingredient': ingredent,
           'check': value,
@@ -158,11 +168,21 @@ function IndeterminateCheckbox() {
     const bearerToken = person ? person.accessToken : '';
     const userId = person ? person.userid : '';
 
-    const startDay = new Date(startWeek);
-    const startIso = startDay.toISOString().split('T')[0];
+    const currentDay = new Date();
+    const dateOffset = currentDay.getDay();
+    startWeek.setDate(currentDay.getDate() - dateOffset);
+    let [month, day, year] = startWeek.toLocaleDateString().split('/');
+    if (parseInt(month) < 10) {
+      month = '0' + month;
+    }
+    if (parseInt(day) < 10) {
+      day = '0' + day;
+    }
+    const start = `${year}-${month}-${day}`;
+    console.log(start);
     const body = {
       'mealsid': userId,
-      'firstDay': startIso,
+      'firstDay': start,
       'category': parentCategory,
       'ingredient': myIngredient,
       'check': alter[parentCategory]['ingredients'][myIngredient].checked,

@@ -194,10 +194,7 @@ function Calendar(props) {
                         />
                         <img
                           component="img"
-                          src={`${image}?w=248&fit=crop&auto=format`}
-                          srcSet={
-                            `${image}?w=248&fit=crop&auto=format&dpr=2 2x`
-                          }
+                          src={image}
                           alt={item['dishname']}
                           loading="lazy"
                           style={{
