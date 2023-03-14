@@ -40,3 +40,57 @@ test('Login Fail', async () => {
     .send(wrongUser)
     .expect(401);
 });
+
+const newUser = {'email': 'dburger@gmail.com', 'testingNewPW#123'};
+test('Signup success', asycn () => {
+  await request.post('/v0/signup')
+    .send(newUser)
+    .expect(201);
+})
+
+const newRecipe = {
+  'dishname': 'example',
+  'ingredients': [ ['Chicken', '1', 'lbs'] ],
+  'imageData': '/test.png',
+  'vegan': false,
+  'halal': false,
+  'healthy': true,
+  'kosher': false
+};
+
+test('POST recipe', async () => {
+  await request.post('/v0/recipes')
+    .send(newRecipe)
+    .expect(201);
+});
+
+
+/*
+{
+  "dishname": "string",
+  "ingredients": [
+    [
+      "egg",
+      "1",
+      "N/A"
+    ],
+    [
+      "bacon",
+      "1",
+      "g"
+    ],
+    [
+      "cheese",
+      "1",
+      "g"
+    ]
+  ],
+  "ingredientAm": 0,
+  "imageData": "string",
+  "vegan": true,
+  "halal": true,
+  "healthy": true,
+  "kosher": true
+}
+
+ */
