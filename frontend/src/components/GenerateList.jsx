@@ -29,6 +29,7 @@ const createList = (setIngredientList, startWeek) => {
       return res.json();
     })
     .then((json) => {
+      console.log(json[0].checklist);
       setIngredientList(json.checklist ?? json[0].checklist);
     });
 };

@@ -100,7 +100,8 @@ const postOneRecipe = async(newRecipe) => {
     const recipeid = parseInt(id.rows[0].recipeid);
     return recipeid;
 }
-
+const v = '{"tomatoe": {"amount": 3, "unit": "tomatoe"}, "cucumber": {"amount": 1, "unit": "unit"}, "red onion": {"amount": 1, "unit": "red onion"}, "kalamata olives": {"amount": 100, "unit": "g"}, "feta cheese": {"amount": 100, "unit": "g"}, "olive oil": {"amount": 3, "unit": "tbs"}, "red wine vinegar": {"amount": 1, "unit": "tbs"}, "oregano": {"amount": 1, "unit": "tsp"}, "salt": {"amount": 1, "unit": "tsp"}, "black pepper": {"amount": 1, "unit": "tsp"}}'
+const j = '{"Buns": {"amount": 2, "unit": "buns"}, "Ketchup": {"amount": 1, "unit": "tablespoon"}, "Lettuce": {"amount": 1, "unit": "N/A"}, "Pickles": {"amount": 4, "unit": "pickles"}, "Mayonaise": {"amount": 1, "unit": "tablespoon"}, "American Cheddar Cheese": {"amount": 2, "unit": "slices"}, "Bison": {"amount": .25, "unit": "pounds"}}'
 exports.postRecipe = async (req, res) => {
     const newRecipe = {};
     //add the stuff here
@@ -112,6 +113,9 @@ exports.postRecipe = async (req, res) => {
     let max = req.body.ingredients.length;
     for (const i of req.body.ingredients) {
       let [food, quant, unit] = i;
+      if (quant < 1) {
+        quant = quant.toString();
+      }
       if (count < max && count > 0) {
         format += ', '
       }
@@ -123,6 +127,10 @@ exports.postRecipe = async (req, res) => {
     console.log(`${format}'`)
     console.log(req.body.ingredients);
     console.log('finished ingredientsList');
+
+    // newRecipe.ingredients = req.body.ingredients;
+    newRecipe.ingredients = `${format}}`;
+
 
     // newRecipe.ingredients = req.body.ingredients;
     newRecipe.ingredients = `${format}}`;

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -153,7 +154,8 @@ const updateCurrentPlan = (data, firstDay) => {
 
   for (let ind = 0; ind < 7; ind++) {
     // day of the week of the plan we're copying
-    let [currentCopyM, currentCopyD, currentCopyY] = firstCopyDay.toLocaleDateString().split('/'); ;
+    let [currentCopyM, currentCopyD, currentCopyY] =
+     firstCopyDay.toLocaleDateString().split('/'); ;
     if (parseInt(currentCopyM) < 10) {
       currentCopyM = '0' + currentCopyM;
     }
@@ -163,7 +165,8 @@ const updateCurrentPlan = (data, firstDay) => {
     const currentCopyDate = `${currentCopyY}-${currentCopyM}-${currentCopyD}`;
 
 
-    let [currentY, currentM, currentD] = dateChange.toLocaleDateString().split('/');
+    let [currentY, currentM, currentD] =
+     dateChange.toLocaleDateString().split('/');
     if (parseInt(currentM) < 10) {
       currentM = '0' + currentM;
     }

@@ -39,6 +39,7 @@ const getMealsForWeek = (setMeal, userId, setIngredientList) => {
       parsePlanData(setMeal, json[0]);
     })
     .then(() => {
+      console.log(123);
       createList(setIngredientList, startWeek);
     });
 };
@@ -94,7 +95,7 @@ export const MealsProvider = ({children}) => {
       alteratives, setAlteratives,
       mealPlan, setPlan,
       mealsWithIngredient, setMealsWithIngredient,
-      WEEK, startWeek, userId, setId,
+      WEEK, startWeek, userId, setId, getMealsForWeek,
     }}>
       {children}
     </MealsContext.Provider>

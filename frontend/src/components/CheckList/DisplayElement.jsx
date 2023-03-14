@@ -29,7 +29,7 @@ function DisplayElement() {
   const {ingredientList, setIngredientList,
     mealsWithIngredient, setMealsWithIngredient,
     isChosenIngredient, setChosenIngredient,
-    alteratives, setAlteratives,
+    alteratives, setAlteratives, getMealsForWeek,
     mealPlan, setPlan, startWeek} = useMeals();
   const [selectedAlterative, setSelectedAlterative] = useState(null);
   const [modifiedState, setModifiedState] = useState({});
@@ -155,10 +155,11 @@ function DisplayElement() {
     delete newListElement[isChosenIngredient.name];
     // Updating the recipes
     // Creating a very deep copy
-    const newMeals = JSON.parse(JSON.stringify(mealPlan));
+    // const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Go over all the meal that has the ingredient
     console.log(mealsWithIngredient);
     // and change the ingredient in it
+    /*
     mealsWithIngredient.forEach((e) => {
       const specificMeal = newMeals[e.date][e.timeOfDay];
       specificMeal.ingredients[selectedAlterative] =
@@ -170,11 +171,10 @@ function DisplayElement() {
       delete specificMeal.ingredients[isChosenIngredient.name];
       delete e.meal.ingredients[isChosenIngredient.name];
     });
-    setPlan(newMeals);
-    const id = await postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
-      startWeek, selectedAlterative, createList, setIngredientList);
-    console.log(id);
-    setIngredientList(newList);
+    */
+    postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
+      selectedAlterative, isChosenIngredient.name,
+      getMealsForWeek, setPlan, setIngredientList);
     handleCancel();
   };
 

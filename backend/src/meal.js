@@ -147,8 +147,6 @@ exports.pullFoodDay = async (req, res) => {
     }
 }
 
-
-
 const updateFood = async ( mealsid, dayof, changes, firstDay) => {
     //var insert = 'UPDATE meals SET breakfast = $2, lunch = $3, dinner = $4 WHERE mealsid = $1 AND dayof = $5'
         //{ "id": "1", "2023-02-17": {"breaktfast": "1", "lunch": "2", "dinner": "3"}
