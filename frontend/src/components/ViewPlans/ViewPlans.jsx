@@ -118,6 +118,7 @@ const grabImages = (data) => {
     }
     for (const meal of Object.values(day)) {
       images.push(meal['imagedata']);
+      console.log(meal);
     }
   }
   return images;
@@ -351,7 +352,7 @@ function ViewMeals(props) {
             variant="h4"
             component="div"
           >
-            numSelected selected
+            View Plans
           </Typography>
         </Toolbar>
         <Toolbar
@@ -452,16 +453,21 @@ function ViewMeals(props) {
                       >
                         {grabImages(meal1)
                           .map((img, ind) => {
+                            if (img) {
+                              if (!img.startsWith('data:')) {
+                                img = require('../../assets/templateImage/'+
+                                  img);
+                              }
+                            } else {
+                              img = require('../../assets/default.png');
+                            }
                             return (
                               <ImageListItem
                                 key={img + ind.toString()}
                                 className='margins'
                               >
                                 <img
-                                  src={`${img}w=248&fit=crop&auto=format`}
-                                  srcSet={
-                                    `${img}?w=248&fit=crop&auto=format&dpr=2 2x`
-                                  }
+                                  src={img}
                                   loading="lazy"
                                   alt={`img${ind.toString()}`}
                                   style={{

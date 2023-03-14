@@ -154,8 +154,17 @@ function Calendar(props) {
             >
               {mealPlan && mealPlan[day.toLowerCase()].map((item, ind) => {
                 const dayLower = day.toLowerCase();
-                const image = item['img'] ?
-                  item['img'] : require('../../assets/logo.png');
+                /* const image = item['img'] ?
+                  item['img'] : require('../../assets/logo.png'); */
+                let image = item['imagedata'];
+                if (image) { //image is present either in base64 or as a template
+                  if (!image.startsWith('data:')) {
+                    image = require('../../assets/templateImage/'+
+                      image);
+                  }                 
+                } else {
+                  image = require('../../assets/logo.png');
+                }
                 return (
                   <div key={item['dishname'] + dayLower + ind}>
                     <ImageList
