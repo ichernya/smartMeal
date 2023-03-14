@@ -275,7 +275,7 @@ exports.pullGroceryList = async (req, res) => {
           // for every single ingredient, iterate throughtout categories, until category is found
           let category = '';
           for (const [categoryName, categoryIngredients] of Object.entries(ingredientCategories)) {
-            if (categoryIngredients.includes(ingredient)) {
+            if (categoryIngredients.includes(ingredient.toLowerCase())) {
                           category = categoryName;
             } if (category === '') {
               // If no category found, add the ingredient to the Other category
