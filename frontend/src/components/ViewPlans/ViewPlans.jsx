@@ -111,15 +111,20 @@ const grabImages = (data) => {
   const images = [];
   if (!data['mealweek']) {
     // Should never happen ideally
+    // when garbage data that is not in the correct format
     return images;
   }
 
   for (const [key, day] of Object.entries(data['mealweek'])) {
     if (key === 'id') {
+      // Ignore the recipe's id
       continue;
     }
     for (const meal of Object.values(day)) {
-      images.push(meal['imagedata']);
+      // There exists a meal at this time and date
+      if (meal !== '0') {
+        images.push(meal['imagedata']);
+      }
     }
   }
   return images;
@@ -132,16 +137,14 @@ const updateCurrentPlan = (data, firstDay) => {
   const bearerToken = person ? person.accessToken : '';
   const userId = person ? person.userid : '';
 
+  // Formatted string of the first day of the week
   let [month, day, year] = firstDay.toLocaleDateString().split('/');
-  const startDay = new Date(year, month - 1, day);
-
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
   if (parseInt(day) < 10) {
     day = '0' + day;
   }
-
   const startIso = `${year}-${month}-${day}`;
 
 
@@ -151,12 +154,14 @@ const updateCurrentPlan = (data, firstDay) => {
 
   for (const [copyDate, meals] of Object.entries(data['mealweek'])) {
     if (copyDate === 'id') {
+      // Ignore the meal plans id
       continue;
     }
 
     // day of the week of the plan we're copying
     const [currentCopyY, currentCopyM, currentCopyD] = copyDate.split('-');
-    const currentCopyDay = (new Date(currentCopyY, currentCopyM - 1, currentCopyD)).getDate();
+    const currentCopyDay =
+      (new Date(currentCopyY, currentCopyM - 1, currentCopyD)).getDate();
     const dayOffset = currentCopyDay - firstCopyDay;
 
     // updated data in the formatted needed by backend
@@ -167,6 +172,7 @@ const updateCurrentPlan = (data, firstDay) => {
     };
 
     for (const [time, meal] of Object.entries(meals)) {
+      // add the meal id for the specific time/day of the week
       update[time] = `${meal['recipeid']}`;
     }
 
@@ -176,9 +182,9 @@ const updateCurrentPlan = (data, firstDay) => {
       `'lunch': '${update['lunch']}', ` +
       `'dinner': '${update['dinner']}'}`;
 
+    // Calculate which day of the current week the copied data is for
     const setDateOffset = new Date(year, month - 1, day);
     setDateOffset.setDate(setDateOffset.getDate() + dayOffset);
-
     let [dateM, dateD, dateY] = setDateOffset.toLocaleDateString().split('/');
     if (parseInt(dateM) < 10) {
       dateM = '0' + dateM;
@@ -470,13 +476,9 @@ function ViewMeals(props) {
                       >
                         {grabImages(meal1)
                           .map((img, ind) => {
-                            if (img) {
-                              if (!img.startsWith('data:')) {
-                                img = require('../../assets/templateImage/'+
-                                  img);
-                              }
-                            } else {
-                              img = require('../../assets/default.png');
+                            if (!img.startsWith('data:')) {
+                              img = require('../../assets/templateImage/'+
+                                img);
                             }
                             return (
                               <ImageListItem
@@ -488,8 +490,8 @@ function ViewMeals(props) {
                                   loading="lazy"
                                   alt={`img${ind.toString()}`}
                                   style={{
-                                    width: `100px`,
-                                    height: `100px`,
+                                    width: `97px`,
+                                    height: `97px`,
                                   }}
                                 />
                               </ImageListItem>
@@ -539,6 +541,10 @@ function ViewMeals(props) {
                       >
                         {meal2 ? (grabImages(meal2)
                           .map((img, ind) => {
+                            if (!img.startsWith('data:')) {
+                              img = require('../../assets/templateImage/'+
+                                img);
+                            }
                             return (
                               <ImageListItem
                                 key={img + '2' + ind.toString()}
@@ -552,8 +558,8 @@ function ViewMeals(props) {
                                   alt={`img${ind.toString()}`}
                                   loading="lazy"
                                   style={{
-                                    width: `100px`,
-                                    height: `100px`,
+                                    width: `97px`,
+                                    height: `97px`,
                                   }}
                                 />
                               </ImageListItem>
