@@ -344,7 +344,6 @@ exports.pullGroceryList = async (req, res) => {
               // check if the amount is greater, then downtick
               // if true and AMOUNT is less than > then set to true
               if (oldChecked && oldAmount >= newAmount) {
-                console.log(13123);
                 await updatePutQuery(req.query.firstDay, req.query.mealsid, category, ingredient);
               }
               // if (newAmount > oldAmount) {

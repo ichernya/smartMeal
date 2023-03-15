@@ -41,7 +41,6 @@ const getMealsForWeek = (setMeal, userId, setIngredientList) => {
       parsePlanData(setMeal, json[0]);
     })
     .then(() => {
-      console.log(123);
       createList(setIngredientList, startWeek);
     });
 };

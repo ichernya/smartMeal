@@ -38,11 +38,11 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
     const time = TIMES[ind];
     update[time] = `${meal['recipeid']}`;
   }
-  console.log(parsedRecipe);
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
+  console.log(parsedRecipe);
   return fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
     body: JSON.stringify(parsedRecipe),
@@ -74,7 +74,6 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
         day = '0' + day;
       }
       const start = `${year}-${month}-${day}`;
-      console.log(start);
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '${update['breakfast']}', ` +
@@ -94,10 +93,9 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
-      })
-        .then(() => {
-          createList(setIngredientList, startWeek);
-        });
+      }).then(() => {
+        createList(setIngredientList, startWeek);
+      });
       return id;
     }).then((id) => {
       return id;
@@ -160,8 +158,8 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
       parsedRecipe.ingredients.push(ingredientParam);
     });
     parsedRecipe.imageData = parsedRecipe.imagedata;
-    console.log(parsedRecipe);
     delete parsedRecipe.imagedata;
+    console.log(parsedRecipe);
     fetches.push(
       fetch('http://localhost:3010/v0/recipes', {
         method: 'POST',
@@ -204,7 +202,6 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
                 'lunch': '0',
                 'dinner': '0',
               };
-              console.log(parseInt(dday), dateToIntConvert(day));
               const dateIso =
              `${year}-${month}-${parseInt(dday) + dateToIntConvert(day)}`;
               for (const [ind, recipeid] of
@@ -222,7 +219,6 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
                 'firstDay': start,
                 'changes': bodyStringified,
               };
-              console.log(body);
               fetch('http://localhost:3010/v0/meals', {
                 method: 'PUT',
                 body: JSON.stringify(body),
