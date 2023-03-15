@@ -74,6 +74,9 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
         day = '0' + day;
       }
       const start = `${year}-${month}-${day}`;
+      console.log(start);
+      const dayOf =
+        `${year}-${month}-${parseInt(day) + dateToIntConvert(weekday)}`;
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '${update['breakfast']}', ` +
@@ -81,7 +84,7 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
         `'dinner': '${update['dinner']}'}`;
       const body = {
         'mealsid': userId,
-        'dayof': `{${start}}`,
+        'dayof': `{${dayOf}}`,
         'firstDay': start,
         'changes': bodyStringified,
       };
