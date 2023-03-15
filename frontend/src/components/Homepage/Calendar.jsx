@@ -90,7 +90,6 @@ const addMeal = (startWeek, mealForDay, weekday) => {
       'Access-Control-Allow-Origin': '*',
     }),
   });
-  console.log(body);
 };
 
 
@@ -160,7 +159,6 @@ function Calendar(props) {
     meal[time] = {...defaultMeal};
     setPlan({...mealPlan, [day]: meal});
     // Adds the meal to the backend meal plan
-    console.log(meal);
     addMeal(startWeek, meal, weekday);
     // Holding shift key allows for multi-select
   };
