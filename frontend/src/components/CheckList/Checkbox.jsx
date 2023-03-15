@@ -240,8 +240,11 @@ function IndeterminateCheckbox() {
           {!loading ? Object.keys(ingredientList[category]['ingredients'])
             .map((ingredient) =>
             // All the ingredients within the category
-              (<Box sx={{display: ingredientList[category].hidden ?
-                'none' : 'inline-block', ml: 3, gap: 1, mt: 1}}
+              (<Box sx={{'display': ingredientList[category].hidden ?
+                'none' : 'inline-block',
+              'ml': 3, 'gap': 1, 'mt': 1, 'textOverflow': 'ellipsis',
+              'overflow': 'hidden',
+              'whiteSpace': 'nowrap'}}
               key={ingredient}>
                 <FormControlLabel
                   control={

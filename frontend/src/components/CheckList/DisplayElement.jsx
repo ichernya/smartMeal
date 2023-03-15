@@ -65,7 +65,11 @@ function DisplayElement() {
     const newListElement =
       oldListElement.ingredients[isChosenIngredient.name];
     const oldMealsWithIngredient = mealsWithIngredient;
-    const specificMealtoChange = mealsWithIngredient[activeStep];
+    const specificMealtoChange = oldMealsWithIngredient[activeStep];
+    const newChosenMeal = specificMealtoChange.meal;
+    const ingredientElement =
+    newChosenMeal.ingredients[isChosenIngredient.name];
+    newListElement.amount -= ingredientElement.amount;
     // CheckList update
     // If the amount in the checklist is 0
     if (newListElement.amount === 0) {
@@ -87,21 +91,24 @@ function DisplayElement() {
     // Create a deep copy
     const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Update the specific meal step is on
-    console.log(specificMealtoChange);
     const specificMeal =
       newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
     // Changing the name
     specificMeal.ingredients[selectedAlterative] =
       specificMeal.ingredients[isChosenIngredient.name];
-    specificMeal.ingredients[selectedAlterative].dishname =
-      `(${selectedAlterative}) ${specificMeal
-        .ingredients[selectedAlterative].dishname}`;
-    // Remove the old name
-    specificMeal.dishname = `(${selectedAlterative}) ${specificMeal.dishname}`;
+    const re = /(\(.*?\))/;
+    if (re.test(specificMeal.dishname)) {
+      specificMeal.dishname =
+        specificMeal.dishname.replace(/(\(.*?\))/, `(${selectedAlterative})`);
+    } else {
+      specificMeal.dishname =
+          `(${selectedAlterative}) ${specificMeal.dishname}`;
+    }
     delete specificMeal.ingredients[isChosenIngredient.name];
     const id = await postChangeRecipe(specificMeal, {...mealPlan}, startWeek,
       specificMealtoChange.date, specificMealtoChange.timeOfDay,
       createList, setIngredientList);
+    console.log(id);
     specificMeal.recipeid = id;
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -110,6 +117,23 @@ function DisplayElement() {
 
   // Change one ingredient for all the meals with that ingredient
   const handleChangeAll = async () => {
+    // Updating CheckList
+    // Creating a very deep copy
+    const newMeals = JSON.parse(JSON.stringify(mealPlan));
+    // Go over all the meal that has the ingredient
+    console.log(mealsWithIngredient);
+    // and change the ingredient in it
+    mealsWithIngredient.forEach((e) => {
+      const specificMeal = newMeals[e.date][e.timeOfDay];
+      specificMeal.ingredients[selectedAlterative] =
+        specificMeal.ingredients[isChosenIngredient.name];
+      e.meal.ingredients[selectedAlterative] =
+      specificMeal.ingredients[isChosenIngredient.name];
+      specificMeal.dishname =
+       `(${selectedAlterative}) ${specificMeal.dishname}`;
+      delete specificMeal.ingredients[isChosenIngredient.name];
+      delete e.meal.ingredients[isChosenIngredient.name];
+    });
     postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
       selectedAlterative, isChosenIngredient.name,
       getMealsForWeek, setPlan, setIngredientList);
@@ -262,7 +286,7 @@ function DisplayElement() {
                   alignItems="flex-start" key={a}>
                   <Grid item>
                     <Typography>
-                      {a}
+                      {a === 'tradefor' ? 'Trade for' : 'Vegan alternative'}
                       <IconButton onClick={() => (handleHidden(a))}>
                         {modifiedState[a].hidden ?
                           <ExpandMoreIcon id={a}/> : <ExpandLessIcon id={a}/>}
