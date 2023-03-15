@@ -16,7 +16,6 @@ const publicMeal = require('./publicMeal');
 const signup = require('./signup');
 const ingredients = require('./ingredients');
 const tags = require('./tags');
-const groceryList = require('./groceryList')
 
 // use express to create the app
 const app = express();
