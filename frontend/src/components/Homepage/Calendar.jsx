@@ -3,8 +3,10 @@ import {styled} from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import ImageList from '@mui/material/ImageList';
+import IconButton from '@mui/material/IconButton';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
 
 import {useMeals} from '../MealContextProvider.jsx';
@@ -20,7 +22,7 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 // Adds a meal to the week
-const addMeal = (mealId, startWeek, mealForDay, weekday) => {
+const addMeal = (startWeek, mealForDay, weekday) => {
   const item = localStorage.getItem('user');
   const person = JSON.parse(item);
   const bearerToken = person ? person.accessToken : '';
@@ -62,6 +64,9 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
   for (const [ind, meal] of Object.entries(mealForDay)) {
     const time = TIMES[ind];
     update[time] = `${meal['recipeid']}`;
+    if (update[time] === undefined) {
+      update[time] = '0';
+    }
   }
 
   // format the changes in the format needed for backend
@@ -126,7 +131,7 @@ function Calendar(props) {
       meal[time] = {...chosenFood};
       setPlan({...mealPlan, [day]: meal});
       // Adds the meal to the backend meal plan
-      addMeal(chosenFood['mealsid'], startWeek, meal, weekday);
+      addMeal(startWeek, meal, weekday);
       // Holding shift key allows for multi-select
       if (!event['shiftKey']) {
         setSelected(null);
@@ -134,6 +139,28 @@ function Calendar(props) {
         setSelected([chosenFood, chosenUsed + 1]);
       }
     }
+  };
+
+  // Remove a food from the week plan
+  const removeFood = (day, time, weekday) => {
+    const defaultMeal = {
+      'recipeid': 0,
+      'dishname': '',
+      'ingredients': [
+      ],
+      'ingredientam': 0,
+      'imagedata': '',
+      'vegan': false,
+      'halal': false,
+      'healthy': false,
+      'kosher': false,
+    };
+    const meal = [...mealPlan[day]];
+    meal[time] = {...defaultMeal};
+    setPlan({...mealPlan, [day]: meal});
+    // Adds the meal to the backend meal plan
+    addMeal(startWeek, meal, weekday);
+    // Holding shift key allows for multi-select
   };
 
   const times = ['Breakfast', 'Lunch', 'Dinner'];
@@ -211,6 +238,15 @@ function Calendar(props) {
                           title={item['dishname']}
                           className='imgListBar'
                           style={{display: item['dishname'] ? '' : 'none'}}
+                          actionIcon={
+                            <IconButton
+                              onClick={
+                                () => removeFood(dayLower, ind, weekday)
+                              }
+                            >
+                              <DeleteIcon className='aliceBlueColor'/>
+                            </IconButton>
+                          }
                         />
                       </ImageListItem>
                     </ImageList>

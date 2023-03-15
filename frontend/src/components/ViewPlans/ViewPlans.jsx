@@ -193,7 +193,6 @@ const updateCurrentPlan = (data, firstDay) => {
         'firstDay': startIso,
         'changes': bodyStringified,
       };
-      console.log(body);
 
       fetch(`http://localhost:3010/v0/meals`, {
         method: 'PUT',
@@ -237,7 +236,6 @@ const updateCurrentPlan = (data, firstDay) => {
       'firstDay': startIso,
       'changes': bodyStringified,
     };
-    console.log(body);
 
     fetch(`http://localhost:3010/v0/meals`, {
       method: 'PUT',
@@ -395,7 +393,7 @@ function ViewMeals(props) {
 
   // Copy over the selected meal plan to the current meal plan
   const onSelectPlan = (data) => {
-    parsePlanData(setPlan, data);
+    parsePlanData(setPlan, data, mealPlan['mealname']);
     updateCurrentPlan(data, startWeek);
     history('/home');
   };

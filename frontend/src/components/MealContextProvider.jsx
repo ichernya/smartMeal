@@ -38,7 +38,7 @@ const getMealsForWeek = (setMeal, userId, setIngredientList) => {
       return response.json();
     })
     .then((json) => {
-      parsePlanData(setMeal, json[0]);
+      parsePlanData(setMeal, json[0], null);
     })
     .then(() => {
       createList(setIngredientList, startWeek);
