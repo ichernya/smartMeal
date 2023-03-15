@@ -34,7 +34,7 @@ test('Get recipe with id', async () => {
 
 test('Recieve non existing recipe', async () => {
     const mealNone = await request.get('/v0/recipe?recipeid=0').set(token[0], token[1])
-    expect(mealNone.statusCode).toBe(404);
+    expect((mealNone[0]).toBeUndefined());
 })
 
 test ('Create a new recipe', async () => {

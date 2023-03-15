@@ -32,3 +32,13 @@ test('user search with userinput and userid', async () => {
   const meal = await request.get('/v0/userSearch?userInput=che&userid=1').set(token[0], token[1])
   expect(meal.statusCode).toBe(200);
 });
+
+test('user search with userinput matching none and userid', async () => {
+  const meal = await request.get('/v0/userSearch?userInput=jhadwdjijiqwjid&userid=1').set(token[0], token[1])
+  expect(meal.statusCode).toBe(404);
+});
+
+test('user search with userinput and userid', async () => {
+  const meal = await request.get('/v0/userSearch?userInput=che&userid=2').set(token[0], token[1])
+  expect(meal.statusCode).toBe(200);
+});

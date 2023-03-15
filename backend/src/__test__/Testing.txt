@@ -1,0 +1,23 @@
+basic Testing written for meals, publicMeal, recipe, tags, userSearch
+
+testing looks for proper status codes to be returned when behaivor is known for queries or select statements
+
+for meals: test getMeal with (dayof , mealsid, firstDay) ----(should be 200)
+for meals: Create meal with (dayof , mealsid, firstDay) ----(should be 201)
+for meals: Create grocerylist with (mealsid, firstDay) ----(should be 201)
+
+for publicMeals: test Get public meals query empty (public) ----(should be 200)
+for publicMeals: test Get public meals query full (public) ----(should be 200)
+for publicMeals: test Get private meals query empty user1 (private) ----(should be 200)
+for publicMeals: test Get private meals query full user1 (private) ----(should be 200)
+
+for recipe: test Get recipe with (mealsid) ----(should be 200)
+for recipe: test Recieve non existing recipe ----(should be 404)
+for recipe: test Create a new recipe ----(should be 200)
+for recipe: test POST recipe ----(should be 201)
+
+for tags: test Get tags with id ----(should be 200)
+for tags: test put tags with id, tag and boolean ---- (should be 200)
+
+for userSearch: test user search with userinput and userid ----(should be 200)
+for userSearch: user search with userinput matching none and userid ----(should be 404)
