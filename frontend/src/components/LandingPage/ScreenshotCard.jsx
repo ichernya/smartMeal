@@ -27,7 +27,7 @@ function MediaCard() {
           Personalize your weekly meal plan,
           find the meals that fit you the best
           and add them to your schedule.
-          Balance your calories amount with the filter tool and much more
+          Choose your preferred diet with the filter tool and much more
         </Typography>
       </CardContent>
       <CardActions>
