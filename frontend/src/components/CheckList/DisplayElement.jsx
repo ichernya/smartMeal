@@ -201,7 +201,7 @@ function DisplayElement() {
     'mon': 'Monday',
     'tues': 'Tuesday',
     'wed': 'Wednesday',
-    'thrus': 'Thrusday',
+    'thurs': 'Thrusday',
     'fri': 'Friday',
     'sat': 'Saturday',
     'sun': 'Sunday',
