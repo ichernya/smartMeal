@@ -76,7 +76,6 @@ const addMeal = (mealId, startWeek, mealForDay, weekday) => {
     'firstDay': `${year}-${month}-${day}`,
     'changes': bodyStringified,
   };
-  console.log(body);
   fetch(`http://localhost:3010/v0/meals`, {
     method: 'PUT',
     body: JSON.stringify(body),

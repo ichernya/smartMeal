@@ -150,7 +150,6 @@ function IndeterminateCheckbox() {
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
-    console.log(mealPlan);
     filterMealsForIngredients(mealPlan, setMealsWithIngredient,
       myIngredient);
   };
@@ -182,7 +181,6 @@ function IndeterminateCheckbox() {
       day = '0' + day;
     }
     const start = `${year}-${month}-${day}`;
-    console.log(start);
     const body = {
       'mealsid': userId,
       'firstDay': start,
