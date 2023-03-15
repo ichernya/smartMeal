@@ -76,20 +76,6 @@ const userQuery = async (userInput, userid) => {
     }
     rows = await pool.query(query);
     return rows['rows'];
-
-    const selecttest = `
-    
-    SELECT * FROM recipes 
-    WHERE 
-    ((vegan = false OR vegan = (SELECT vegan FROM users WHERE userid = $1))
-    AND 
-    (halal = false OR halal = (SELECT halal FROM users WHERE userid = $1))
-    AND 
-    (healthy = false OR healthy = (SELECT healthy FROM users WHERE userid = $1))
-    AND 
-    (kosher = false OR kosher = (SELECT kosher FROM users WHERE userid = $1)))
-    
-        `
 }
 
 

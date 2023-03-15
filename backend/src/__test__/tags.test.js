@@ -36,14 +36,12 @@ test('put tags with id, tag and boolean', async () => {
     const testUser = {'email': 'molly@books.com', 'password': 'mollymember'}
     .send(testUser)
     .expect(200);
-
     const body ={
              "mealsid": 1,
             "dietTag": "vegan",
             "newValue": false
-             
     }
-    const meal = await request.get('/v0/diets?mealsid=1').send(body);
+    const meal = await request.get('/v0/diets?mealsid=1').set(token[0], token[1]).send(body);
     expect(meal.statusCode).toBe(200);
   });
 
