@@ -22,7 +22,7 @@
 }
 
 #cancelSearch {
-    z-index: 10000;
+    z-index: 10;
     right: 0px;
     position: absolute;
 }

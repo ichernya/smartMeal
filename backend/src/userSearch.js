@@ -40,9 +40,10 @@ const userQuery = async (userInput, userid) => {
         }
     }
 
-    let base = 'SELECT * FROM recipes WHERE LOWER(dishname) LIKE LOWER($1)';
+    let base = 'SELECT * FROM recipes WHERE';
+    const name = ' LOWER(dishname) LIKE LOWER($1)';
 
-    let select = base;
+    let select = base + name;
 
     // Determines whether to add an "AND"
     let tagsFilter = '';
@@ -63,7 +64,11 @@ const userQuery = async (userInput, userid) => {
 
     select += tagsFilter + ' UNION ' + base + tagsFilter;
 
-    select += ' AND EXISTS (SELECT FROM jsonb_each(recipes.ingredients) AS food(food_key, food_value) WHERE LOWER(food_key) LIKE LOWER($1))';
+    if (tagsFilter) {
+      select += 'AND'
+    }
+
+    select += ' EXISTS (SELECT FROM jsonb_each(recipes.ingredients) AS food(food_key, food_value) WHERE LOWER(food_key) LIKE LOWER($1))';
 
     query = {
         text: select,
