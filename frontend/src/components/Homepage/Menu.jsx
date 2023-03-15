@@ -13,7 +13,9 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {Link, useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 
+import createList from '../GenerateList';
 import Tools from './Tools.jsx';
+import {useMeals} from '../MealContextProvider';
 import './Menu.css';
 import './Home.css';
 
@@ -91,7 +93,7 @@ function Menu(props) {
     setAddMeal, addMeal, showAlert, setChange,
     alignmentsChange, setPopup, setFoodIngredient,
   } = React.useContext(props['HomeContext']);
-
+  const {setIngredientList, startWeek} = useMeals();
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
   // number of rows for the menu display
@@ -156,6 +158,9 @@ function Menu(props) {
 
   const handleBotScroll = (scroll) => {
     topMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+  const onClickNav = () => {
+    createList(setIngredientList, startWeek);
   };
 
   return (
@@ -270,7 +275,7 @@ function Menu(props) {
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>
-            <IconButton id='checklist'>
+            <IconButton id='checklist' onClick={() => onClickNav()}>
               <FormatListBulletedIcon className='btn brownColor'/>
             </IconButton>
           </Link>

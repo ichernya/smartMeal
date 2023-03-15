@@ -81,7 +81,6 @@ const addMeal = (startWeek, mealForDay, weekday) => {
     'firstDay': `${year}-${month}-${day}`,
     'changes': bodyStringified,
   };
-
   fetch(`http://localhost:3010/v0/meals`, {
     method: 'PUT',
     body: JSON.stringify(body),
@@ -228,12 +227,16 @@ function Calendar(props) {
                     >
                       <ImageListItem>
                         <ImageListItemBar
+                          onClick={(event) =>
+                            chooseFood(event, dayLower, ind, weekday)}
                           title={times[ind]}
                           position='top'
                           onClick={(event) =>
                             chooseFood(event, dayLower, ind, weekday)}
                         />
                         <img
+                          onClick={(event) =>
+                            chooseFood(event, dayLower, ind, weekday)}
                           component="img"
                           src={image}
                           alt={item['dishname']}

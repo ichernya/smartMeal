@@ -37,7 +37,6 @@ const userQueryPublicMealPlan = async (pub, mealName) => {
                     meals.mealweek;
                     `
                     
-                
     const query = {
         text: select,
         values: [ '%' + mealName + '%', pub]
@@ -64,8 +63,7 @@ const userNoQueryPublicMealPlan = async (pub) => {
                     meals.firstday,
                     meals.mealweek;
                     `
-                    
-                
+                     
     const query = {
         text: select,
         values: [pub]
@@ -94,7 +92,6 @@ const userQueryPrivateMealPlan = async (mealName, mealsid) => {
                     meals.mealweek;
                     `
                     
-                
     const query = {
         text: select,
         values: [mealsid, '%' + mealName + '%']
@@ -121,8 +118,7 @@ const userNoQueryPrivateMealPlan = async ( mealsid ) => {
                     meals.firstday,
                     meals.mealweek;
                     `
-                    
-                
+                          
     const query = {
         text: select,
         values: [ mealsid ]

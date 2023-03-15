@@ -47,7 +47,6 @@ const getMeal = (ingredient, setAlteratives) => {
 const filterMealsForIngredients =
 (mealPlan, setMealsWithIngredient, myIngredient) => {
   const mealsOfWithIng = [];
-  console.log(mealPlan);
   Object.keys(mealPlan)
     // ignore the keys 'amount' and 'id'
     .filter((key) => !['id', 'mealname', 'public', 'firstday'].includes(key))
@@ -151,7 +150,6 @@ function IndeterminateCheckbox() {
       'category': parentCategory,
     });
     getMeal(myIngredient, setAlteratives);
-    console.log(mealPlan);
     filterMealsForIngredients(mealPlan, setMealsWithIngredient,
       myIngredient);
   };
@@ -183,7 +181,6 @@ function IndeterminateCheckbox() {
       day = '0' + day;
     }
     const start = `${year}-${month}-${day}`;
-    console.log(start);
     const body = {
       'mealsid': userId,
       'firstDay': start,

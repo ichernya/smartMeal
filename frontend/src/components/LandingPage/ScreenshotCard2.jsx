@@ -16,11 +16,11 @@ function MediaCard() {
       <CardMedia
         sx={{height: 165}}
         image={immagine}
-        title="You recipes"
+        title="Your recipes"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          You recipes
+          Your recipes
         </Typography>
         <Typography variant="body2" color="text.secondary">
           You can create any recipe you want adding a title, an image

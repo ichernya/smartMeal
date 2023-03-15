@@ -246,6 +246,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        404:
+          description: not found
+          
   /mealName:
     put:
       security:

@@ -94,32 +94,44 @@ const postOneRecipe = async(newRecipe) => {
         text: insert,
         values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData, newRecipe.vegan, newRecipe.halal, newRecipe.healthy, newRecipe.kosher],
     };
-    console.log(insert);
+    console.log('insert:', insert);
     const id = await pool.query(query);
     console.log(id.rows[0].recipeid);
     const recipeid = parseInt(id.rows[0].recipeid);
     return recipeid;
 }
-
 exports.postRecipe = async (req, res) => {
     const newRecipe = {};
     //add the stuff here
     //dishname
     newRecipe.dishname = req.body.dishname;
-
     //create dictionary
-    let ingredientsList = {};
-    for (const elem of req.body.ingredients) {
-        // console.log(elem[0], elem[1], elem[2]);
-        ingredientsList[elem[0]] = {'quantity': elem[1], 'unit': elem[2]};
-        // console.log(ingredientsList);
-    };
+    let format = `{`
+    let count = 0
+    let max = req.body.ingredients.length;
+    for (const i of req.body.ingredients) {
+      let [food, quant, unit] = i;
+      if (quant < 1 && quant.toString()[0] !== '0') {
+        quant = '0' + quant.toString();
+      }
+      if (count < max && count > 0) {
+        format += ', '
+      }
+      format += `"${food}": {`;
+      format += `"amount":${quant}, "unit": "${unit}"`
+      format += '}'
+      count += 1;
+    }
+    console.log(`${format}'`)
+    console.log(req.body.ingredients);
     console.log('finished ingredientsList');
-    console.log(ingredientsList);
+
+    // newRecipe.ingredients = req.body.ingredients;
+    newRecipe.ingredients = `${format}}`;
 
 
     // newRecipe.ingredients = req.body.ingredients;
-    newRecipe.ingredients = ingredientsList;
+    newRecipe.ingredients = `${format}}`;
     //idea -> newRecipe.ingredients = new dictionary created from req.body.ingredients
     // console.log(req.body.ingredients);
 

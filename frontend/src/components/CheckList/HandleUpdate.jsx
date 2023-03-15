@@ -11,7 +11,7 @@ const dateToIntConvert = (day) => {
   return dateMap[day];
 };
 
-export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
+export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
   weekday, timeOfDay, createList, setIngredientList) => {
   const parsedRecipe = {...newRecipe};
   parsedRecipe.ingredients = [];
@@ -42,7 +42,8 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
-  fetch('http://localhost:3010/v0/recipes', {
+  console.log(parsedRecipe);
+  return fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
     body: JSON.stringify(parsedRecipe),
     headers: {
@@ -74,6 +75,8 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
       }
       const start = `${year}-${month}-${day}`;
       console.log(start);
+      const dayOf =
+        `${year}-${month}-${parseInt(day) + dateToIntConvert(weekday)}`;
       // format the changes in the format needed for backend
       const bodyStringified =
         `{'breakfast': '${update['breakfast']}', ` +
@@ -81,7 +84,7 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
         `'dinner': '${update['dinner']}'}`;
       const body = {
         'mealsid': userId,
-        'dayof': `{${start}}`,
+        'dayof': `{${dayOf}}`,
         'firstDay': start,
         'changes': bodyStringified,
       };
@@ -93,15 +96,17 @@ export const postChangeRecipe = (newRecipe, mealForDay, startWeek,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
-      })
-        .then(() => {
-          createList(setIngredientList, startWeek);
-        });
+      }).then(() => {
+        createList(setIngredientList, startWeek);
+      });
+      return id;
+    }).then((id) => {
+      return id;
     });
 };
 
-export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
-  s, specificIngredient, createList, setIngredientList) => {
+export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
+  specificIngredient, oldIng, getMealsForWeek, setPlan, setIngredientList) => {
   const toChangeDayMap = {
     'sun': {},
     'mon': {},
@@ -118,16 +123,15 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
   const startWeek = new Date();
   startWeek.setDate(currentDay.getDate() - dateOffset);
   let month = startWeek.getMonth() + 1;
-  let day = startWeek.getDate();
+  let dday = startWeek.getDate();
   const year = startWeek.getFullYear();
   if (parseInt(month) < 10) {
     month = '0' + month;
   }
-  if (parseInt(day) < 10) {
-    day = '0' + day;
+  if (parseInt(dday) < 10) {
+    dday = '0' + dday;
   }
-  const start = `${year}-${month}-${day}`;
-
+  const start = `${year}-${month}-${dday}`;
   // The  day of the week that is being updated
   const TIMES = ['breakfast', 'lunch', 'dinner'];
   mealsWithIngredient.forEach((meal, i) => {
@@ -142,91 +146,97 @@ export const postChangeAllRecipes = (mealsWithIngredient, mealPlan,
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
-  Object.values(uniqueMeals).forEach((meal) => {
+  const fetches = [];
+  for (const meal of Object.values(uniqueMeals)) {
     const parsedRecipe = {...meal.meal};
     parsedRecipe.ingredients = [];
     delete parsedRecipe.recipeid;
     parsedRecipe.dishname = `(${specificIngredient}) ${meal.meal.dishname}`;
     Object.keys(meal.meal.ingredients).forEach((ingredient) => {
-      const ingredientParam = [];
-      ingredientParam.push(ingredient);
-      ingredientParam.push(meal.meal.ingredients[ingredient].unit);
-      ingredientParam.push(meal.meal.ingredients[ingredient].amount);
+      const ingredientParam = [ingredient === oldIng ?
+        specificIngredient : ingredient,
+      meal.meal.ingredients[ingredient].amount,
+      meal.meal.ingredients[ingredient].unit,
+      ];
       parsedRecipe.ingredients.push(ingredientParam);
     });
-    fetch('http://localhost:3010/v0/recipes', {
-      method: 'POST',
-      body: JSON.stringify(parsedRecipe),
-      headers: {
-        'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw res;
-        }
-        return res.json();
+    parsedRecipe.imageData = parsedRecipe.imagedata;
+    delete parsedRecipe.imagedata;
+    console.log(parsedRecipe);
+    fetches.push(
+      fetch('http://localhost:3010/v0/recipes', {
+        method: 'POST',
+        body: JSON.stringify(parsedRecipe),
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
       })
-      .then((id) => {
-        meal.index.forEach((i) => {
-          toChangeDayMap[mealsWithIngredient[i].date][mealsWithIngredient[i]
-            .timeOfDay] = id;
-        });
-      })
-      .then(() => {
-        Object.keys(toChangeDayMap).forEach((day) => {
-          if (Object.keys(toChangeDayMap[day]).length !== 0) {
-            const timeOfDayNotChanged = ['0', '1', '2'].filter((val) =>
-              !Object.keys(toChangeDayMap[day]).includes(val));
-            timeOfDayNotChanged.forEach((timeOfDay) => {
-              toChangeDayMap[day][timeOfDay] =
-               mealPlan[day][timeOfDay].recipeid ?? 0;
-            });
+        .then((res) => {
+          if (!res.ok) {
+            throw res;
           }
-        });
-      }).then(() => {
-        Object.keys(toChangeDayMap).forEach((day) => {
-          if (Object.keys(toChangeDayMap[day]).length !== 0) {
-            // updated data in the formatted needed by backend
-            const update = {
-              'breakfast': '0',
-              'lunch': '0',
-              'dinner': '0',
-            };
-            const dateCopy = new Date(startWeek);
-            dateCopy.setDate(dateCopy.getDate() + dateToIntConvert(day));
-            let month = dateCopy.getMonth() + 1;
-            let dday = dateCopy.getDate();
-            const year = dateCopy.getFullYear();
-            const dateIso = `${year}-${month}-${dday}`;
-            for (const [ind, recipeid] of Object.entries(toChangeDayMap[day])) {
-              const time = TIMES[ind];
-              update[time] = `${recipeid}`;
+          return res.json();
+        })
+        .then((id) => {
+          meal.index.forEach((i) => {
+            toChangeDayMap[mealsWithIngredient[i].date][mealsWithIngredient[i]
+              .timeOfDay] = id;
+          });
+        })
+        .then(() => {
+          Object.keys(toChangeDayMap).forEach((day) => {
+            if (Object.keys(toChangeDayMap[day]).length !== 0) {
+              const timeOfDayNotChanged = ['0', '1', '2'].filter((val) =>
+                !Object.keys(toChangeDayMap[day]).includes(val));
+              timeOfDayNotChanged.forEach((timeOfDay) => {
+                toChangeDayMap[day][timeOfDay] =
+               mealPlan[day][timeOfDay].recipeid ?? 0;
+              });
             }
-            const bodyStringified =
+          });
+        })
+        .then(() => {
+          Object.keys(toChangeDayMap).forEach((day) => {
+            if (Object.keys(toChangeDayMap[day]).length !== 0) {
+            // updated data in the formatted needed by backend
+              const update = {
+                'breakfast': '0',
+                'lunch': '0',
+                'dinner': '0',
+              };
+              const dateIso =
+             `${year}-${month}-${parseInt(dday) + dateToIntConvert(day)}`;
+              for (const [ind, recipeid] of
+                Object.entries(toChangeDayMap[day])) {
+                const time = TIMES[ind];
+                update[time] = `${recipeid}`;
+              }
+              const bodyStringified =
             `{'breakfast': '${update['breakfast']}', ` +
             `'lunch': '${update['lunch']}', ` +
             `'dinner': '${update['dinner']}'}`;
-            const body = {
-              'mealsid': userId,
-              'dayof': `{${dateIso}}`,
-              'firstDay': start,
-              'changes': bodyStringified,
-            };
-            fetch('http://localhost:3010/v0/meals', {
-              method: 'PUT',
-              body: JSON.stringify(body),
-              headers: {
-                'Authorization': `Bearer ${bearerToken}`,
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-              },
-            }).then(() => {
-              createList(setIngredientList, startWeek);
-            });
-          }
-        });
-      });
+              const body = {
+                'mealsid': userId,
+                'dayof': `{${dateIso}}`,
+                'firstDay': start,
+                'changes': bodyStringified,
+              };
+              fetch('http://localhost:3010/v0/meals', {
+                method: 'PUT',
+                body: JSON.stringify(body),
+                headers: {
+                  'Authorization': `Bearer ${bearerToken}`,
+                  'Content-Type': 'application/json',
+                  'Access-Control-Allow-Origin': '*',
+                },
+              });
+            }
+          });
+        }),
+    );
+  };
+  Promise.all(fetches).then(function() {
+    getMealsForWeek(setPlan, userId, setIngredientList);
   });
 };

@@ -96,7 +96,7 @@ export const MealsProvider = ({children}) => {
       alteratives, setAlteratives,
       mealPlan, setPlan,
       mealsWithIngredient, setMealsWithIngredient,
-      WEEK, startWeek, userId, setId,
+      WEEK, startWeek, userId, setId, getMealsForWeek,
     }}>
       {children}
     </MealsContext.Provider>

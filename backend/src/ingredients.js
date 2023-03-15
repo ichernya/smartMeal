@@ -1,4 +1,4 @@
-const groceryList = require('./groceryList');
+//const groceryList = require('./groceryList');
 const {Pool} = require('pg');
 const {ingredientCategories} = require('./categorical')
 const user = "postgres";
@@ -162,7 +162,7 @@ const downdatePutQuery = async (firstDay, mealsid, category, ingredient) => {
 //we know that whatever value is sent is the right one
 exports.updateAsChecked = async (req, res) => {
   if (req.body.check) {var update = await updatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
-  else {var update = await downdatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
+  else {update = await downdatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);}
   res.status(201).json(update)
 }
 // creates a grocerylist, given a generated list made from meal plans and passed as a parameter
@@ -275,7 +275,7 @@ exports.pullGroceryList = async (req, res) => {
           // for every single ingredient, iterate throughtout categories, until category is found
           let category = '';
           for (const [categoryName, categoryIngredients] of Object.entries(ingredientCategories)) {
-            if (categoryIngredients.includes(ingredient)) {
+            if (categoryIngredients.includes(ingredient.toLowerCase())) {
                           category = categoryName;
             } if (category === '') {
               // If no category found, add the ingredient to the Other category
