@@ -64,7 +64,10 @@ function Tools(props) {
 
   const searchInput = (event) => {
     const {value} = event.target;
-    setSearch(value);
+    const re = /^[a-zA-Z0-9 ]*$/;
+    if (re.test(value)) {
+      setSearch(value);
+    }
   };
 
   return (

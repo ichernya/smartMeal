@@ -65,34 +65,11 @@ function DisplayElement() {
     const newListElement =
       oldListElement.ingredients[isChosenIngredient.name];
     const oldMealsWithIngredient = mealsWithIngredient;
-    const specificMealtoChange = oldMealsWithIngredient[activeStep];
-    const newChosenMeal = specificMealtoChange.meal;
-    const ingredientElement =
-    newChosenMeal.ingredients[isChosenIngredient.name];
-    newListElement.amount -= ingredientElement.amount;
+    const specificMealtoChange = mealsWithIngredient[activeStep];
     // CheckList update
     // If the amount in the checklist is 0
     if (newListElement.amount === 0) {
-      if (oldListElement.checked === true) {
-        --oldListElement.amountChecked;
-      }
-      --oldListElement.amount;
-      // Remove the old element from the checklist
-      delete oldListElement.ingredients[isChosenIngredient.name];
       setAlteratives({});
-    } else {
-      ++oldListElement.amount;
-    }
-    // If the intended swap ingredient is already in the checklist
-    if (oldListElement.ingredients[selectedAlterative]) {
-      oldListElement.amountChecked -= 1;
-      oldListElement.ingredients[selectedAlterative].amount +=
-        ingredientElement.amount;
-      oldListElement.ingredients[selectedAlterative].checked = false;
-    } else { // The intended ingredient is not in the checklist
-      const newIngredient = {...ingredientElement};
-      newIngredient.checked = false;
-      oldListElement['ingredients'][selectedAlterative] = newIngredient;
     }
     // From the list of all the meals with the ingredient
     // remove the current meal
@@ -110,6 +87,7 @@ function DisplayElement() {
     // Create a deep copy
     const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Update the specific meal step is on
+    console.log(specificMealtoChange);
     const specificMeal =
       newMeals[specificMealtoChange.date][specificMealtoChange.timeOfDay];
     // Changing the name
@@ -132,44 +110,6 @@ function DisplayElement() {
 
   // Change one ingredient for all the meals with that ingredient
   const handleChangeAll = async () => {
-    // Updating CheckList
-    const newList = {...ingredientList};
-    const oldListElement = newList[isChosenIngredient.category];
-    const newListElement = oldListElement.ingredients;
-    if (Object.keys(newListElement).includes(selectedAlterative)) {
-      oldListElement.amount -= 1;
-      if (newListElement[isChosenIngredient.name].checked) {
-        oldListElement.amountChecked -= 1;
-      }
-      newListElement[selectedAlterative].amount +=
-        newListElement[isChosenIngredient.name].amount;
-    } else {
-      newListElement[selectedAlterative] =
-      newListElement[isChosenIngredient.name];
-    }
-    if (newListElement[selectedAlterative].checked) {
-      newListElement[selectedAlterative].checked = false;
-      oldListElement.amountChecked -= 1;
-    };
-    delete newListElement[isChosenIngredient.name];
-    // Updating the recipes
-    // Creating a very deep copy
-    // const newMeals = JSON.parse(JSON.stringify(mealPlan));
-    // Go over all the meal that has the ingredient
-    // and change the ingredient in it
-    /*
-    mealsWithIngredient.forEach((e) => {
-      const specificMeal = newMeals[e.date][e.timeOfDay];
-      specificMeal.ingredients[selectedAlterative] =
-        specificMeal.ingredients[isChosenIngredient.name];
-      e.meal.ingredients[selectedAlterative] =
-      specificMeal.ingredients[isChosenIngredient.name];
-      specificMeal.dishname =
-       `(${selectedAlterative}) ${specificMeal.dishname}`;
-      delete specificMeal.ingredients[isChosenIngredient.name];
-      delete e.meal.ingredients[isChosenIngredient.name];
-    });
-    */
     postChangeAllRecipes(mealsWithIngredient, {...mealPlan},
       selectedAlterative, isChosenIngredient.name,
       getMealsForWeek, setPlan, setIngredientList);
@@ -314,7 +254,8 @@ function DisplayElement() {
         </FormControl>
         <Grid>
           {isView ?
-            Object.keys(modifiedState).filter((key) => key !== 'ingredient')
+            Object.keys(modifiedState).filter((key) => key !== 'ingredient' &&
+              modifiedState[key].alteratives)
               .map((a) => (
                 <Grid container direction="column"
                   justifyContent="flex-strt"
