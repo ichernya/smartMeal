@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">55.55% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/18</span>
+                <span class='fraction'>10/18</span>
             </div>
         
             
@@ -181,9 +181,7 @@
 <a name='L116'></a><a href='#L116'>116</a>
 <a name='L117'></a><a href='#L117'>117</a>
 <a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a>
-<a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -209,30 +207,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">59x</span>
-<span class="cline-any cline-yes">59x</span>
-<span class="cline-any cline-yes">59x</span>
-<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">59x</span>
-<span class="cline-any cline-yes">59x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">177x</span>
+<span class="cline-any cline-yes">159x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -267,7 +263,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">118x</span>
+<span class="cline-any cline-yes">106x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -344,10 +340,8 @@ function DrawerContent(props) {
   const settingsOnclick = () =&gt; {
     setSettings(!settingsDialog);
   };
-&nbsp;
   const urls = ['/home', '/checklist', '/mealplans'];
   const icons = [&lt;HomeIcon/&gt;, &lt;FormatListBulletedIcon/&gt;, &lt;LocalDiningIcon/&gt;];
-&nbsp;
   return (
     &lt;div className='options greyBack'&gt;
       &lt;List className='pages'&gt;
@@ -361,7 +355,7 @@ function DrawerContent(props) {
               &lt;ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? <span class="branch-0 cbranch-no" title="branch not covered" >'initial' </span>: 'center',
                   px: 2.5,
                 }}
                 onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >onClickNav(urls[index])}</span>
@@ -369,14 +363,14 @@ function DrawerContent(props) {
                 &lt;ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
+                    mr: open ? <span class="branch-0 cbranch-no" title="branch not covered" >3 </span>: 'auto',
                     justifyContent: 'center',
                   }}
                 &gt;
                   {icons[index]}
                 &lt;/ListItemIcon&gt;
                 &lt;ListItemText className='blackColor'
-                  primary={text} sx={{opacity: open ? 1 : 0}}
+                  primary={text} sx={{opacity: open ? <span class="branch-0 cbranch-no" title="branch not covered" >1 </span>: 0}}
                 /&gt;
               &lt;/ListItemButton&gt;
             &lt;/Link&gt;
@@ -397,21 +391,21 @@ function DrawerContent(props) {
             &lt;ListItemButton
               sx={{
                 minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
+                justifyContent: open ? <span class="branch-0 cbranch-no" title="branch not covered" >'initial' </span>: 'center',
                 px: 2.5,
               }}
             &gt;
               &lt;ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: open ? 3 : 'auto',
+                  mr: open ? <span class="branch-0 cbranch-no" title="branch not covered" >3 </span>: 'auto',
                   justifyContent: 'center',
                 }}
               &gt;
                 {index % 2 === 0 ? &lt;SettingsIcon /&gt; : &lt;LogoutIcon /&gt;}
               &lt;/ListItemIcon&gt;
               &lt;ListItemText className='blackColor'
-                primary={text} sx={{opacity: open ? 1 : 0}}
+                primary={text} sx={{opacity: open ? <span class="branch-0 cbranch-no" title="branch not covered" >1 </span>: 0}}
               /&gt;
             &lt;/ListItemButton&gt;
           &lt;/ListItem&gt;
@@ -430,7 +424,7 @@ export default DrawerContent;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T05:46:52.080Z
+                at 2023-03-15T04:07:13.930Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

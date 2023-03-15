@@ -48,7 +48,6 @@ const updateTag = async (mealsid, tag, value) => {
         text: update,
         values: [value, mealsid],
     }
-    console.log(query)
     await pool.query(query);
 }
 

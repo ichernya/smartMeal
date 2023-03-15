@@ -94,9 +94,7 @@ const postOneRecipe = async(newRecipe) => {
         text: insert,
         values: [newRecipe.dishname, newRecipe.ingredients, newRecipe.ingredientAm, newRecipe.imageData, newRecipe.vegan, newRecipe.halal, newRecipe.healthy, newRecipe.kosher],
     };
-    console.log('insert:', insert);
     const id = await pool.query(query);
-    console.log(id.rows[0].recipeid);
     const recipeid = parseInt(id.rows[0].recipeid);
     return recipeid;
 }
@@ -122,9 +120,6 @@ exports.postRecipe = async (req, res) => {
       format += '}'
       count += 1;
     }
-    console.log(`${format}'`)
-    console.log(req.body.ingredients);
-    console.log('finished ingredientsList');
 
     // newRecipe.ingredients = req.body.ingredients;
     newRecipe.ingredients = `${format}}`;
@@ -133,7 +128,6 @@ exports.postRecipe = async (req, res) => {
     // newRecipe.ingredients = req.body.ingredients;
     newRecipe.ingredients = `${format}}`;
     //idea -> newRecipe.ingredients = new dictionary created from req.body.ingredients
-    // console.log(req.body.ingredients);
 
     //ingredients jsonb
     //ingredientAm
@@ -147,6 +141,5 @@ exports.postRecipe = async (req, res) => {
     newRecipe.kosher = req.body.kosher;
     const id = await postOneRecipe(newRecipe);
     newRecipe.recipeid = id;
-    console.log(id, newRecipe.recipeid);
     res.status(201).json(newRecipe.recipeid);
 }
