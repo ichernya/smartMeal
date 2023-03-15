@@ -99,8 +99,10 @@ const addMeal = (startWeek, mealForDay, weekday) => {
  * @return {JSX} Jsx
  */
 function Calendar(props) {
-  const {width, cardSize, selectedFood, setSelected, startWeek} =
-    React.useContext(props['HomeContext']);
+  const {
+    width, cardSize, selectedFood, setSelected, startWeek,
+    setPopup, setFoodIngredient,
+  } = React.useContext(props['HomeContext']);
   const {mealPlan, setPlan} = useMeals();
 
   // Represents the food currently selected from the menu as well as the number
@@ -119,6 +121,9 @@ function Calendar(props) {
     if (selectedFood) {
       setChosen(selectedFood[0]);
       setUsed(selectedFood[1]);
+    } else {
+      setChosen(null);
+      setUsed(0);
     }
   }, [selectedFood]);
 
@@ -138,6 +143,11 @@ function Calendar(props) {
       } else {
         setSelected([chosenFood, chosenUsed + 1]);
       }
+    } else if (mealPlan[day][time]['recipeid']) {
+      // Clicking a food on the calendar without selecting
+      // something from the menu shows ingredients for that meal
+      setFoodIngredient(mealPlan[day][time]);
+      setPopup(true);
     }
   };
 
@@ -160,7 +170,6 @@ function Calendar(props) {
     setPlan({...mealPlan, [day]: meal});
     // Adds the meal to the backend meal plan
     addMeal(startWeek, meal, weekday);
-    // Holding shift key allows for multi-select
   };
 
   const times = ['Breakfast', 'Lunch', 'Dinner'];
@@ -222,6 +231,8 @@ function Calendar(props) {
                             chooseFood(event, dayLower, ind, weekday)}
                           title={times[ind]}
                           position='top'
+                          onClick={(event) =>
+                            chooseFood(event, dayLower, ind, weekday)}
                         />
                         <img
                           onClick={(event) =>
@@ -230,6 +241,8 @@ function Calendar(props) {
                           src={image}
                           alt={item['dishname']}
                           loading="lazy"
+                          onClick={(event) =>
+                            chooseFood(event, dayLower, ind, weekday)}
                           style={{
                             width: `${cardSize.current}px`,
                             height: `${cardSize.current}px`,

@@ -12,17 +12,6 @@ import {styled} from '@mui/material/styles';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {Link, useNavigate} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Divider from '@mui/material/Divider';
-
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import {useTheme} from '@mui/material/styles';
 
 import createList from '../GenerateList';
 import Tools from './Tools.jsx';
@@ -102,14 +91,11 @@ function Menu(props) {
   const {
     width, selectedFood, setSelected, search,
     setAddMeal, addMeal, showAlert, setChange,
-    alignmentsChange,
+    alignmentsChange, setPopup, setFoodIngredient,
   } = React.useContext(props['HomeContext']);
   const {setIngredientList, startWeek} = useMeals();
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
-  // Represents whether to show the ingredients popup
-  const [ingredient, setIngredient] = React.useState({});
-  const [ingredientPopup, setPopup] = React.useState(false);
   // number of rows for the menu display
   const ROWS = 2;
 
@@ -158,18 +144,9 @@ function Menu(props) {
 
   // Sets up the dialog for the ingredients
   const foodInfo = (food) => {
-    setIngredient(food);
+    setFoodIngredient(food);
     setPopup(true);
   };
-
-  // Closes dialog of the ingredients
-  const clearFoodInfo = () => {
-    setIngredient({});
-    setPopup(false);
-  };
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Use references to move both menu sliders together
   const topMenu = React.useRef(0);
@@ -189,47 +166,6 @@ function Menu(props) {
   return (
     <div>
       <Tools HomeContext={props['HomeContext']}/>
-      <Dialog
-        fullScreen={fullScreen}
-        open={ingredientPopup}
-        onClose={clearFoodInfo}
-        aria-labelledby="responsive-dialog-title"
-        style={{display: ingredientPopup ? '' : 'none'}}
-      >
-        <DialogTitle id="responsive-dialog-title">
-          {`Ingredients for ${ingredient['dishname']}`}
-        </DialogTitle>
-        <DialogContent>
-          <List>
-            {ingredient['ingredients'] &&
-            Object.keys(ingredient['ingredients']).map((food) => {
-              const data = ingredient['ingredients'][food];
-              const amount = data['amount'] || data['quantity'];
-              let unit = data['unit'] === 'N/A' ? food : data['unit'];
-              if (
-                parseInt(amount) > 1 && data['unit'] === 'N/A'
-              ) {
-                unit += 's';
-              }
-              return (
-
-                <div key={food}>
-                  <ListItem>
-                    {`${food}: ${amount} ${unit}`}
-                  </ListItem>
-                  <Divider/>
-                </div>
-              );
-            })
-            }
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={clearFoodInfo} autoFocus id='closeSetting'>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Grid
         container
         spacing={0}

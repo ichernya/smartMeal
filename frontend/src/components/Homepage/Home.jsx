@@ -1,13 +1,13 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-
-
 import {Alert} from '@mui/material';
+
 import {useDimensions} from '../DimensionsProvider.jsx';
 import {useMeals} from '../MealContextProvider.jsx';
 import Calendar from './Calendar.jsx';
 import AddMealDialog from './AddRecipe/AddMealDialog.jsx';
+import IngredientPopup from './Ingredients.jsx';
 import Menu from './Menu.jsx';
 import Tags from './Filter/Tags.jsx';
 import './Home.css';
@@ -101,6 +101,10 @@ function Homepage(props) {
   const [alignments, setAlignment] = React.useState({});
   // Represents whether the alignments have changed
   const [alignmentsChange, setChange] = React.useState({});
+  // Represents the food to display for the ingredients popup
+  const [foodIngredient, setFoodIngredient] = React.useState({});
+  // Represents whether to show the ingredients popup
+  const [ingredientPopup, setPopup] = React.useState(false);
 
   React.useEffect(() => {
     queryAlignments(userId, setAlignment);
@@ -108,7 +112,6 @@ function Homepage(props) {
 
   React.useEffect(() => {
     // Initial setup for the current plan name
-    console.log(mealPlan);
     if ((mealPlan && planName) || changeName) {
       // pass
     } else if (mealPlan && mealPlan['mealname'] === '' && planName !== WEEK) {
@@ -159,6 +162,8 @@ function Homepage(props) {
         setSearch, search, startWeek, tagsDrawer, setDrawer,
         alignments, setAlignment, addMeal, setAddMeal,
         showAlert, setShowAlert, alignmentsChange, setChange,
+        foodIngredient, setFoodIngredient, ingredientPopup,
+        setPopup,
       }}
     >
       {showAlert &&
@@ -172,6 +177,7 @@ function Homepage(props) {
         onKeyUp={shiftRelease}
         id='homepage'
       >
+        <IngredientPopup HomeContext={HomeContext}/>
         <AddMealDialog HomeContext={HomeContext}/>
         <Tags HomeContext={HomeContext}/>
         <div
