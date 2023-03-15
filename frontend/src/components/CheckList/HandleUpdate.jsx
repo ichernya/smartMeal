@@ -74,7 +74,6 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
         day = '0' + day;
       }
       const start = `${year}-${month}-${day}`;
-      console.log(start);
       const dayOf =
         `${year}-${month}-${parseInt(day) + dateToIntConvert(weekday)}`;
       // format the changes in the format needed for backend
@@ -134,6 +133,7 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
   const start = `${year}-${month}-${dday}`;
   // The  day of the week that is being updated
   const TIMES = ['breakfast', 'lunch', 'dinner'];
+  // Get only the unique meals
   mealsWithIngredient.forEach((meal, i) => {
     if (Object.keys(uniqueMeals).includes(meal.meal.recipeid.toString())) {
       uniqueMeals[meal.meal.recipeid]['index'].push(i);
@@ -147,11 +147,20 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
   const fetches = [];
+  // Loop over the unique meals and create a new meal with an ingredient change
   for (const meal of Object.values(uniqueMeals)) {
+    // Format it for the backend
     const parsedRecipe = {...meal.meal};
     parsedRecipe.ingredients = [];
     delete parsedRecipe.recipeid;
-    parsedRecipe.dishname = `(${specificIngredient}) ${meal.meal.dishname}`;
+    const re = /(\(.*?\))/;
+    console.log(re.test(parsedRecipe.dishname));
+    if (re.test(parsedRecipe.dishname)) {
+      parsedRecipe.dishname =
+      parsedRecipe.dishname.replace(/(\(.*?\))/, `(${specificIngredient})`);
+    } else {
+      parsedRecipe.dishname = `(${specificIngredient}) ${meal.meal.dishname}`;
+    }
     Object.keys(meal.meal.ingredients).forEach((ingredient) => {
       const ingredientParam = [ingredient === oldIng ?
         specificIngredient : ingredient,
@@ -162,7 +171,6 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
     });
     parsedRecipe.imageData = parsedRecipe.imagedata;
     delete parsedRecipe.imagedata;
-    console.log(parsedRecipe);
     fetches.push(
       fetch('http://localhost:3010/v0/recipes', {
         method: 'POST',
@@ -222,21 +230,26 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
                 'firstDay': start,
                 'changes': bodyStringified,
               };
-              fetch('http://localhost:3010/v0/meals', {
-                method: 'PUT',
-                body: JSON.stringify(body),
-                headers: {
-                  'Authorization': `Bearer ${bearerToken}`,
-                  'Content-Type': 'application/json',
-                  'Access-Control-Allow-Origin': '*',
-                },
-              });
+              // Updating the calander
+              fetches.push(
+                fetch('http://localhost:3010/v0/meals', {
+                  method: 'PUT',
+                  body: JSON.stringify(body),
+                  headers: {
+                    'Authorization': `Bearer ${bearerToken}`,
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                  },
+                }),
+              );
             }
           });
         }),
     );
   };
+  // Make sure everything is complete
   Promise.all(fetches).then(function() {
     getMealsForWeek(setPlan, userId, setIngredientList);
+    console.log(mealPlan);
   });
 };
