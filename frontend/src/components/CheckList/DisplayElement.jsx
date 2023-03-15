@@ -124,7 +124,6 @@ function DisplayElement() {
     const id = await postChangeRecipe(specificMeal, {...mealPlan}, startWeek,
       specificMealtoChange.date, specificMealtoChange.timeOfDay,
       createList, setIngredientList);
-    console.log(id);
     specificMeal.recipeid = id;
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
@@ -157,7 +156,6 @@ function DisplayElement() {
     // Creating a very deep copy
     // const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Go over all the meal that has the ingredient
-    console.log(mealsWithIngredient);
     // and change the ingredient in it
     /*
     mealsWithIngredient.forEach((e) => {

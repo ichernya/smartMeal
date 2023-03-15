@@ -141,7 +141,6 @@ const updateCurrentPlan = (data, firstDay) => {
   let month = dateChange.getMonth() + 1;
   let day = dateChange.getDate();
   const year = dateChange.getFullYear();
-  console.log(dateChange);
   if (parseInt(month) < 10) {
     month = '0' + month;
   }

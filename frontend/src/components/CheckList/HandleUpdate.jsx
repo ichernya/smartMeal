@@ -42,7 +42,6 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
-  console.log(parsedRecipe);
   return fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
     body: JSON.stringify(parsedRecipe),
@@ -74,7 +73,6 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
         day = '0' + day;
       }
       const start = `${year}-${month}-${day}`;
-      console.log(start);
       const dayOf =
         `${year}-${month}-${parseInt(day) + dateToIntConvert(weekday)}`;
       // format the changes in the format needed for backend
