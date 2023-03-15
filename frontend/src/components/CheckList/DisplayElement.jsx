@@ -108,7 +108,6 @@ function DisplayElement() {
     const id = await postChangeRecipe(specificMeal, {...mealPlan}, startWeek,
       specificMealtoChange.date, specificMealtoChange.timeOfDay,
       createList, setIngredientList);
-    console.log(id);
     specificMeal.recipeid = id;
     setSelectedAlterative(null);
     setMealsWithIngredient(oldMealsWithIngredient);
