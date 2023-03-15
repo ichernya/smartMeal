@@ -24,7 +24,9 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import {useTheme} from '@mui/material/styles';
 
+import createList from '../GenerateList';
 import Tools from './Tools.jsx';
+import {useMeals} from '../MealContextProvider';
 import './Menu.css';
 import './Home.css';
 
@@ -102,7 +104,7 @@ function Menu(props) {
     setAddMeal, addMeal, showAlert, setChange,
     alignmentsChange,
   } = React.useContext(props['HomeContext']);
-
+  const {setIngredientList, startWeek} = useMeals();
   // Represents the current recipes displayed on the menu
   const [recipes, setMenu] = React.useState([]);
   // Represents whether to show the ingredients popup
@@ -179,6 +181,9 @@ function Menu(props) {
 
   const handleBotScroll = (scroll) => {
     topMenu.current.scrollLeft = scroll.target.scrollLeft;
+  };
+  const onClickNav = () => {
+    createList(setIngredientList, startWeek);
   };
 
   return (
@@ -334,7 +339,7 @@ function Menu(props) {
             <AddIcon className='btn brownColor'/>
           </IconButton>
           <Link to='/checklist'>
-            <IconButton id='checklist'>
+            <IconButton id='checklist' onClick={() => onClickNav()}>
               <FormatListBulletedIcon className='btn brownColor'/>
             </IconButton>
           </Link>
