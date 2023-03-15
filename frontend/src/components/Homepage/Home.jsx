@@ -108,6 +108,7 @@ function Homepage(props) {
 
   React.useEffect(() => {
     // Initial setup for the current plan name
+    console.log(mealPlan)
     if ((mealPlan && planName) || changeName) {
       // pass
     } else if (mealPlan && mealPlan['mealname'] === '' && planName !== WEEK) {

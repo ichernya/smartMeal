@@ -2,10 +2,11 @@
  * Queries the database for the meals the user has chosen for the week
  * @param {object} setMeal
  * @param {json} json
+ * @param {string} newName the new name for the meal plan
  */
-function parsePlanData(setMeal, json) {
+function parsePlanData(setMeal, json, newName) {
   const data = json['mealweek'];
-  const mealPlan = {'mealname': json['mealname']};
+  const mealPlan = {'mealname': newName || json['mealname']};
   const daysOfWeek = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
   const TIMES = ['breakfast', 'lunch', 'dinner'];
 
