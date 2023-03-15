@@ -227,16 +227,12 @@ function Calendar(props) {
                     >
                       <ImageListItem>
                         <ImageListItemBar
-                          onClick={(event) =>
-                            chooseFood(event, dayLower, ind, weekday)}
                           title={times[ind]}
                           position='top'
                           onClick={(event) =>
                             chooseFood(event, dayLower, ind, weekday)}
                         />
                         <img
-                          onClick={(event) =>
-                            chooseFood(event, dayLower, ind, weekday)}
                           component="img"
                           src={image}
                           alt={item['dishname']}

@@ -282,7 +282,6 @@ exports.pullGroceryList = async (req, res) => {
               category = 'Other';
             } 
           }
-            console.log(category, ingredient)
             if (!ingredientList[category]) {
               // If the category doesn't exist in the ingredient list, create it
               ingredientList[category] = {

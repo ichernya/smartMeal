@@ -66,7 +66,6 @@
 // }
 // exports.updateAsChecked = async (req, res) => {
 //   var update;
-//   console.log(req.body.check);
 //     if (req.body.check) {
 //       update = await updatePutQuery(req.body.firstDay, req.body.mealsid, req.body.category, req.body.ingredient);
 //     } else {

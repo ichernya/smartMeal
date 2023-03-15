@@ -42,7 +42,6 @@ export const postChangeRecipe = async (newRecipe, mealForDay, startWeek,
   const person = JSON.parse(item);
   const userId = person.userid;
   const bearerToken = person ? person.accessToken : '';
-  console.log(parsedRecipe);
   return fetch('http://localhost:3010/v0/recipes', {
     method: 'POST',
     body: JSON.stringify(parsedRecipe),

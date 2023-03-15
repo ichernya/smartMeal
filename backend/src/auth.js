@@ -27,7 +27,6 @@ const selectEmailPassword = async (email) => {
     values: [email],
   };
   const {rows} = await pool.query(query);
-  console.log(rows);
   return rows;
 };
 
@@ -39,7 +38,6 @@ exports.login = async (req, res) => {
     user = {'userid': loginInfo[0].userid, 'email': loginInfo[0].username, 'password': loginInfo[0].passwrd};
   }
   if (user.email === email && bcrypt.compareSync(password, user.password)) {
-    console.log('made it in ');
     const accessToken = jwt.sign(
       {email: user.email},
       secrets.accessToken, {
