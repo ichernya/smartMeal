@@ -120,7 +120,6 @@ function DisplayElement() {
     // Creating a very deep copy
     const newMeals = JSON.parse(JSON.stringify(mealPlan));
     // Go over all the meal that has the ingredient
-    console.log(mealsWithIngredient);
     // and change the ingredient in it
     mealsWithIngredient.forEach((e) => {
       const specificMeal = newMeals[e.date][e.timeOfDay];

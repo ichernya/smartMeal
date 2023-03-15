@@ -153,7 +153,6 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
     parsedRecipe.ingredients = [];
     delete parsedRecipe.recipeid;
     const re = /(\(.*?\))/;
-    console.log(re.test(parsedRecipe.dishname));
     if (re.test(parsedRecipe.dishname)) {
       parsedRecipe.dishname =
       parsedRecipe.dishname.replace(/(\(.*?\))/, `(${specificIngredient})`);
@@ -249,6 +248,5 @@ export const postChangeAllRecipes = async (mealsWithIngredient, mealPlan,
   // Make sure everything is complete
   Promise.all(fetches).then(function() {
     getMealsForWeek(setPlan, userId, setIngredientList);
-    console.log(mealPlan);
   });
 };
