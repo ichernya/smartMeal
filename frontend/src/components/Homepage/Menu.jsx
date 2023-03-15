@@ -114,6 +114,7 @@ function Menu(props) {
   React.useEffect(() => {
     // Update search state
     if (search) {
+      console.log(search);
       searchRecipes(search, setMenu);
     } else {
       getRecipes(setMenu, history);
