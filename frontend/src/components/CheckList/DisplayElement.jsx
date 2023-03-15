@@ -212,7 +212,8 @@ function DisplayElement() {
     2: 'dinner',
   };
   let image = null;
-  if (mealsWithIngredient.length) {
+  if (mealsWithIngredient.length &&
+     mealsWithIngredient[activeStep] && mealsWithIngredient[activeStep].meal) {
     image = mealsWithIngredient[activeStep].meal.imagedata;
     // image is present either in base64 or as a template
     if (image) {
